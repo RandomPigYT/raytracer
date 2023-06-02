@@ -32,9 +32,7 @@ def generateShaderProgram(vertexPath, fragmentPath):
     gl.glShaderSource(vertex, vertexCode)
     gl.glCompileShader(vertex)
 
-    status = None
-
-    gl.glGetShaderiv(vertex, gl.GL_COMPILE_STATUS, status)
+    status = gl.glGetShaderiv(vertex, gl.GL_COMPILE_STATUS)
     if not status:
         infolog = gl.glGetShaderInfoLog(vertex)
         stderr.write("Error: Vertex shader compilation failed.\n" + infolog)
@@ -45,9 +43,7 @@ def generateShaderProgram(vertexPath, fragmentPath):
     gl.glShaderSource(fragment, fragmentCode)
     gl.glCompileShader(fragment)
 
-    status = None
-
-    gl.glGetShaderiv(fragment, gl.GL_COMPILE_STATUS, status)
+    status = gl.glGetShaderiv(fragment, gl.GL_COMPILE_STATUS)
     if not status:
         infolog = gl.glGetShaderInfoLog(fragment)
         stderr.write("Error: Fragment shader compilation failed.\n" + infolog)
