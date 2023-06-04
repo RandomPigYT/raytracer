@@ -1,15 +1,9 @@
 from glfw.GLFW import *
 import OpenGL.GL as gl
 from sys import stderr
+import util
 
 
-def readFile(filePath):
-    file = open(filePath, "r")
-
-    contents = file.read()
-
-    file.close()
-    return contents
 
 
 def useShader(ID):
@@ -18,8 +12,8 @@ def useShader(ID):
 
 def generateShaderProgram(vertexPath, fragmentPath):
     try:
-        vertexCode = readFile(vertexPath)
-        fragmentCode = readFile(fragmentPath)
+        vertexCode = util.readFile(vertexPath)
+        fragmentCode = util.readFile(fragmentPath)
 
     except:
         stderr.write("Error: Shader file not successfully read\n")

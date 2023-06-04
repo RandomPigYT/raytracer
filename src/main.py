@@ -2,6 +2,7 @@ import graphics.window
 from glfw.GLFW import *
 import OpenGL.GL as gl
 import graphics.shader as shader
+import graphics.computeShader as comp
 import numpy as np
 
 vertices = np.array([-0.5, -0.5, 0.0, 0.23,
@@ -21,6 +22,11 @@ def main():
     program = shader.generateShaderProgram(
         "./src/shader_code/vertex.vert", "./src/shader_code/fragment.frag"
     )
+
+    computeProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
+    shader.useShader(computeProgram)
+    gl.glDispatchCompute(5, 5, 1)
+
     shader.useShader(program)
 
     vbo = gl.glGenBuffers(1)
