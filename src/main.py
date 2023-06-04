@@ -4,7 +4,9 @@ import OpenGL.GL as gl
 import graphics.shader as shader
 import numpy as np
 
-vertices = np.array([-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0], dtype="float32")
+vertices = np.array([-0.5, -0.5, 0.0, 0.23,
+                     0.5, -0.5, 0.0, 0.69,
+                     0.0, 0.5, 0.0, 0.420], dtype="float32")
 
 
 def main():
@@ -28,8 +30,11 @@ def main():
     vao = gl.glGenVertexArrays(1)
     gl.glBindVertexArray(vao)
 
-    gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 0, None)
+    gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 16, None)
+    gl.glVertexAttribPointer(1, 1, gl.GL_FLOAT, gl.GL_FALSE, 16, None)
+
     gl.glEnableVertexAttribArray(0)
+    gl.glEnableVertexAttribArray(1)
 
     while not glfwWindowShouldClose(window):
         gl.glClearColor(0.2, 0.3, 0.3, 1.0)
