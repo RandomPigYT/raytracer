@@ -7,8 +7,9 @@ def framebufferSizeCallback(window, width, height):
     gl.glViewport(0, 0, width, height)
 
 
-def createWindow(width, height, title):
-    window = glfwCreateWindow(width, height, title, None, None)
+def createWindow(width, height, title, monitor = None):
+
+    window = glfwCreateWindow(width, height, title, monitor, None)
 
     if not window:
         stderr.write("Failed to create GLFW window\n")
