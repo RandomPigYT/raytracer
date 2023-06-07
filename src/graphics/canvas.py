@@ -60,9 +60,9 @@ def initRenderCavas():
    
     shader.useShader(shaderProgram)
     
-    texture = gl.glGenTextures(1)
+    tex = gl.glGenTextures(1)
     gl.glActiveTexture(gl.GL_TEXTURE0)
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
     #gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "ourTex"), 0)
 
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
@@ -72,14 +72,16 @@ def initRenderCavas():
     width = viewport[2]
     height = viewport[3]
     
-    print(width, height)
-    image = Image.open("./madeline.jpg").convert('RGB')
-    data = np.array(list(image.getdata()), np.uint8)
+    print("image units = ", gl.glGetIntegerv(gl.GL_MAX_IMAGE_UNITS))
 
-    gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, width, height, 0, gl.GL_RGB, gl.GL_FLOAT, None)
+#   print(width, height)
+#   image = Image.open("./madeline.jpg").convert('RGB')
+#   data = np.array(list(image.getdata()), np.uint8)
+
+    gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_FLOAT, None)
     #gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, 1920, 1080, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, data)
 
-    gl.glBindImageTexture(0, texture, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGB)
-    
+    #gl.glBindImageTexture(0, tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGB)
+    gl.glBindImageTexture(0, tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F)
 
 
