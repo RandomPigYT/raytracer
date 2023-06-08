@@ -17,36 +17,38 @@ def main():
 
     window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
 
-#   program = shader.generateShaderProgram(
-#       "./src/shader_code/vertex.vert", "./src/shader_code/fragment.frag"
-#   )
 
-#   computeProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
-#   shader.useShader(computeProgram)
-#   gl.glDispatchCompute(5, 5, 1)
+    viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
+    width = viewport[2]
+    height = viewport[3]
 
-#   shader.useShader(program)
 
-#   vbo = gl.glGenBuffers(1)
-#   gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
-#   gl.glBufferData(gl.GL_ARRAY_BUFFER, vertices, gl.GL_STATIC_DRAW)
+    compShaderProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
 
-#   vao = gl.glGenVertexArrays(1)
-#   gl.glBindVertexArray(vao)
+    tex, shaderProgram = canvas.initRenderCavas()
 
-#   gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 16, None)
-#   gl.glVertexAttribPointer(1, 1, gl.GL_FLOAT, gl.GL_FALSE, 16, None)
+    pixels: np.array = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_FLOAT)
+    
 
-#   gl.glEnableVertexAttribArray(0)
-#   gl.glEnableVertexAttribArray(1)
-#   
-
-#   print(glfwGetWindowSize(window))
-
-    canvas.initRenderCavas()
+    
+    
     while not glfwWindowShouldClose(window):
-        gl.glClearColor(0.2, 0.3, 0.3, 1.0)
+
+
+
+
+        shader.useShader(compShaderProgram)
+        gl.glDispatchCompute(width, height, 1)
+    
+        gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+
+
+        #gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        shader.useShader(shaderProgram)
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
     
     
         #gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, 0)
