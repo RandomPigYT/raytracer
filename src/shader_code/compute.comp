@@ -3,15 +3,92 @@
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 layout (rgba32f, binding = 0) uniform image2D imgOutput;
 
+
+vec4 vecMix(vec4 u, vec4 v, float t){
+
+	return vec4(
+
+		mix(u.x, v.x, t),
+		mix(u.y, v.y, t),
+		mix(u.z, v.z, t),
+		mix(u.w, v.w, t)
+
+	);
+}
+
+
+float magnitude(vec2 v){
+
+	return sqrt((v.x * v.x) + (v.y * v.y));
+}
+
+
+uint calcMandelbrot(uint maxIterations){
+
+	uvec3 workGroups = gl_NumWorkGroups;
+
+	float zoom = 500.0;
+
+	vec2 z = vec2(0.0, 0.0);
+	vec2 c = vec2(gl_GlobalInvocationID.x - (float(workGroups.x) / 2), gl_GlobalInvocationID.y - (float(workGroups.y) / 2)) / zoom;
+
+	
+	uint numIterations = 0;
+	for(int i = 0; i < maxIterations; i++, numIterations++){
+		
+		// Calculate the real ang imaginary components
+		float Re = (z.x * z.x) - (z.y * z.y);
+		float Im = 2 * z.x * z.y;
+
+		// Calculate z
+		z = vec2(Re, Im) + c;
+		
+		// Check for termination
+		if (magnitude(z) >= 2){
+
+			break;
+		}
+	}
+
+	return numIterations;
+}
+
+vec4 genColour(uint iterations, uint maxIterations){
+
+	float k = float(iterations) / float(maxIterations);
+	
+	vec4 escapeColour = vec4(1.0, 1.0, 1.0, 1.0);
+	vec4 setColour = vec4(0.0, 0.0, 0.0, 0.0);
+	
+	vec4 colour = vec4(
+		smoothstep(escapeColour.r, setColour.r, k),
+		smoothstep(escapeColour.g, setColour.g, k),
+		smoothstep(escapeColour.b, setColour.b, k),
+		smoothstep(escapeColour.a, setColour.a, k)
+	);
+	
+	return colour;
+}
+
 void main(){
 
-	vec4 value = vec4(0.0, 0.0, 0.0, 1.0);
+
+	vec4 startColour = vec4(0.0, 6.0, 94.0, 1.0);
+	vec4 endColour = vec4(0.0, 0.0, 0.0, 1.0);
+
+
+	uint maxIterations = 1000;
+	float colourConst = float(calcMandelbrot(maxIterations)) / float(maxIterations);
+
+	//vec4 colour = vec4(colourConst, 0.0, 0.0, 1.0);
+	vec4 colour = genColour(calcMandelbrot(maxIterations), maxIterations);
+
+
 	ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
 
-	value.x = float(texelCoord.x)/(gl_NumWorkGroups.x);
-	value.y = float(texelCoord.y)/(gl_NumWorkGroups.y);
 
-	imageStore(imgOutput, texelCoord, value);
+
+	imageStore(imgOutput, texelCoord, colour);
 }
 
 

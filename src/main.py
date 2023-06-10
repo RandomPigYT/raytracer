@@ -4,7 +4,7 @@ import OpenGL.GL as gl
 import graphics.shader as shader
 import graphics.computeShader as comp
 import numpy as np
-import graphics.canvas as canvas
+import renderer.canvas as canvas
 
 
 
@@ -15,7 +15,8 @@ def main():
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
-    window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    #window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    window = graphics.window.createWindow(1920, 1080, "test")
 
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
@@ -26,15 +27,22 @@ def main():
     compShaderProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
 
     tex, shaderProgram = canvas.initRenderCavas()
+    
+    targetFPS = 60
+    frameTime = 1 / targetFPS
 
-    pixels: np.array = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_FLOAT)
-    
-
-    
-    
+    prevTime = glfwGetTime()
     while not glfwWindowShouldClose(window):
+        
+        currentTime = glfwGetTime()
+        dt = currentTime - prevTime
+    
 
+        while dt < frameTime:
+            currentTime = glfwGetTime()
+            dt = currentTime - prevTime
 
+        prevTime = currentTime
 
 
         shader.useShader(compShaderProgram)
