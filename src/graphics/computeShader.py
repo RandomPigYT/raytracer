@@ -21,7 +21,7 @@ def compileComputeShader(computeShaderPath):
 
     status = gl.glGetShaderiv(compute, gl.GL_COMPILE_STATUS)
     if not status:
-        infolog = gl.glGetShaderInfoLog(vertex)
+        infolog = gl.glGetShaderInfoLog(compute)
         stderr.write(
             "Error: Compute shader compilation failed.\n" + infolog.decode("utf-8")
         )
