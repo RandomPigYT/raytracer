@@ -4,8 +4,6 @@ from sys import stderr
 import util
 
 
-
-
 def useShader(ID):
     gl.glUseProgram(ID)
 

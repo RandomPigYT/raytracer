@@ -5,19 +5,17 @@ import util
 
 
 def compileComputeShader(computeShaderPath):
-    
-    try: 
+    try:
         computeCode = util.readFile(computeShaderPath)
 
     except:
         stderr.write("Error while reading file")
         exit(1)
-    
+
     # compile the shader
     compute = gl.glCreateShader(gl.GL_COMPUTE_SHADER)
     gl.glShaderSource(compute, computeCode)
     gl.glCompileShader(compute)
-    
 
     status = gl.glGetShaderiv(compute, gl.GL_COMPILE_STATUS)
     if not status:
@@ -33,7 +31,6 @@ def compileComputeShader(computeShaderPath):
     gl.glAttachShader(program, compute)
     gl.glLinkProgram(program)
 
-
     status = gl.glGetProgramiv(program, gl.GL_LINK_STATUS)
     if not status:
         infolog = gl.glGetProgramInfoLog(program)
@@ -42,6 +39,6 @@ def compileComputeShader(computeShaderPath):
         )
         glfwTerminate()
         exit(1)
-    
+
     gl.glDeleteShader(compute)
     return program
