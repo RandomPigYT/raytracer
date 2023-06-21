@@ -1,5 +1,6 @@
 import renderer.scene as sc
 import ctypes as ct
+import platform
 
 class ArgData(ct.Structure):
 
@@ -11,7 +12,15 @@ class ArgData(ct.Structure):
 
 def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
     
-    rt_ext = ct.CDLL("c_extension/lib/extension.so")
+    rt_ext = None
+
+    if platform.platform() == 'Windows':
+        rt_ext = ct.CDLL("c_extension/lib/extension.dll")
+
+    else:
+        rt_ext = ct.CDLL("c_extension/lib/extension.so")
+        
+
 
     rt_ext.sendToShader.restype = None
     rt_ext.sendToShader.argtypes = [ct.POINTER(sc.Vertex),

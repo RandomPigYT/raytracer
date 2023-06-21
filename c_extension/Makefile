@@ -6,6 +6,9 @@ LDFLAGS:=-L/usr/local/lib -lglfw -pthread -lGL -lrt -lXrandr -lXxf86vm -lXi -lXi
 
 WINFLAGS:=-L/usr/i686-w64-mingw32/bin/glfw3.dll
 
+PLATFORM:=linux
+
+
 BIN:=bin
 OBJ:=obj
 SRC:=src
@@ -14,6 +17,11 @@ LIB:=lib
 
 TARGET:=$(BIN)/PigEngine.out
 LIBTARGET:=$(LIB)/extension.so
+
+ifeq ($(PLATFORM), windows)
+	LDFLAGS = $(WINFLAGS)
+	LIBTARGET = $(LIB)/extension.dll
+endif
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.c")
 OBJS:=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
