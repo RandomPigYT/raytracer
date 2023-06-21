@@ -25,8 +25,8 @@ class Mesh(ct.Structure):
 
     _fields_ = [("startingVertex", ct.c_uint64),
                ("numTriangles", ct.c_uint64),
-               ("materialID", ct.c_uint32),
-               ("objectID", ct.c_uint32)]
+               ("materialID", ct.c_uint64),
+               ("objectID", ct.c_uint64)]
 
 
 class Object(ct.Structure):

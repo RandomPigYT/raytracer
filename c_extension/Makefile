@@ -10,8 +10,10 @@ BIN:=bin
 OBJ:=obj
 SRC:=src
 INCLUDE:=include
+LIB:=lib
 
 TARGET:=$(BIN)/PigEngine.out
+LIBTARGET:=$(LIB)/extension.so
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.c")
 OBJS:=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
@@ -21,12 +23,17 @@ DIRS:=$(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
 
 CREATE_DIR_COMMAND:=./dirs.sh
 
-.PHONY: all clean dirs
+.PHONY: all clean dirs library
 
 all: dirs $(TARGET)
 
+library: $(LIBTARGET)
+
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
+
+$(LIBTARGET): $(SRCS)
+	$(CC) $(CFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS)
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

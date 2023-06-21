@@ -22,7 +22,7 @@ def main():
     width = viewport[2]
     height = viewport[3]
 
-    compShaderProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
+    compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
 
     tex, shaderProgram = canvas.initRenderCavas()
 
