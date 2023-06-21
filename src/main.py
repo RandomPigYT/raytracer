@@ -5,6 +5,7 @@ import graphics.shader as shader
 import graphics.computeShader as comp
 import numpy as np
 import renderer.canvas as canvas
+import renderer.raytrace as rt
 
 
 def main():
@@ -14,7 +15,7 @@ def main():
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
-    # window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    #window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
     window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
@@ -24,6 +25,8 @@ def main():
     compShaderProgram = comp.compileComputeShader("./src/shader_code/compute.comp")
 
     tex, shaderProgram = canvas.initRenderCavas()
+
+    rt.raytrace(None, 0, 0)
 
     targetFPS = 60
     frameTime = 1 / targetFPS
@@ -52,7 +55,7 @@ def main():
         gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        #gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, 4)
+        # gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, 4)
 
         glfwSwapBuffers(window)
         glfwPollEvents()

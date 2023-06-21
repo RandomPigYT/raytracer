@@ -10,26 +10,10 @@ import random as rand
 
 # vertex -> x, y, z, u, v
 vertices = [
-    -1,
-    1,
-    0,
-    0,
-    0,  # top-left
-    1,
-    1,
-    0,
-    1,
-    0,  # top-right
-    1,
-    -1,
-    0,
-    1,
-    1,  # bottom-right
-    -1,
-    -1,
-    0,
-    0,
-    1,  # bottom-left
+    -1, 1, 0, 0, 0,  # top-left
+    1, 1, 0, 1, 0,  # top-right
+    1, -1, 0, 1, 1,  # bottom-right
+    -1, -1, 0, 0, 1,  # bottom-left
 ]
 
 indices = [0, 1, 3, 1, 2, 3]  # upper triangle  # lower triangle
@@ -62,6 +46,7 @@ def initRenderCavas():
         np.array(indices, dtype="uint32"),
         gl.GL_STATIC_DRAW,
     )
+
 
     gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 5 * floatSize, None)
     gl.glVertexAttribPointer(

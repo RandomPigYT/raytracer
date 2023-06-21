@@ -1,41 +1,38 @@
-class Vertex:
-    def __init__(self, position, normal, textureCoord):
-        self.position = position
-        self.normal = normal
-        self.textureCoord = textureCoord
+import ctypes as ct
 
 
-class Material:
-    def __init__(
-        self,
-        colour,
-        specularColour,
-        roughness,
-        metallicity,
-        transparency,
-        refractiveIndex,
-    ):
-        self.colour = colour
-        self.specularColour = specularColour
-        self.roughness = roughness
-        self.metallicity = metallicity
-        self.transmittivity = transmittivity
+class Vertex(ct.Structure):
+    _fields_ = [("position", ct.c_float * 3), 
+                ("padding0", ct.c_float),
+                ("normal", ct.c_float * 3),
+                ("padding1", ct.c_float),
+                ("textureCoord", ct.c_float * 3),
+                ("padding2", ct.c_float)]
 
 
-class Mesh:
-    def __init__(self, startingVertex, numTriangles, objectId, material):
-        self.startingVertex = startingVertex
-        self.numTriangles = numTriangles
-        self.materialID = material
+class Material(ct.Structure):
+                                        
+    _fields_ = [("kd", ct.c_float * 3),      
+                ("alpha_x", ct.c_float),    
+                ("ks", ct.c_float * 3),      
+                ("alpha_y", ct.c_float),     
+                ("emission", ct.c_float * 3),
+                ("padding3", ct.c_float)]
 
-        self.objectId = objectId
 
 
-class Object:
-    def __init__(self, name, ID, pos):
-        self.ID = ID
-        self.name = name
-        self.pos = pos
+class Mesh(ct.Structure):
+
+    _fields_ = [("startingVertex", ct.c_uint64),
+               ("numTriangles", ct.c_uint64),
+               ("materialID", ct.c_uint32),
+               ("objectID", ct.c_uint32)]
+
+
+class Object(ct.Structure):
+    
+    _fields_ = [("pos", ct.c_float * 3),
+                ("ID", ct.c_uint32)]
 
 
 class Scene:
@@ -48,8 +45,9 @@ class Scene:
         materials,
         meshes,
         objects,
+        objectNames,
         shaderProgram,
-        computeProgram,
+        computeProgram
     ):
         self.name = name
 
@@ -63,3 +61,4 @@ class Scene:
         self.material = materials
         self.meshes = meshes
         self.objects = objects
+        self.objectNames = objectNames
