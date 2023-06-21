@@ -4,7 +4,7 @@ LD:=ld
 CFLAGS:=-Wall -Wextra -g -std=gnu17 
 LDFLAGS:=-L/usr/local/lib -lglfw -pthread -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11
 
-WINFLAGS:=-L/usr/i686-w64-mingw32/bin/glfw3.dll
+WINFLAGS:=-L/usr/x86_64-w64-mingw32/bin/glfw3.dll
 
 PLATFORM:=linux
 
@@ -19,8 +19,9 @@ TARGET:=$(BIN)/PigEngine.out
 LIBTARGET:=$(LIB)/extension.so
 
 ifeq ($(PLATFORM), windows)
-	LDFLAGS = $(WINFLAGS)
+ 	LDFLAGS = $(WINFLAGS)
 	LIBTARGET = $(LIB)/extension.dll
+	CC = x86_64-w64-mingw32-gcc
 endif
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.c")

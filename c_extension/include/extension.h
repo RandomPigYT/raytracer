@@ -2,7 +2,7 @@
 #define RAYTRACE_EXTENSION_H
 
 #include "glad/glad.h"
-#include <cglm/cglm.h>
+#include "./cglm/cglm.h"
 #include <stdint.h>
 
 
