@@ -1,6 +1,6 @@
 import renderer.scene as sc
 import ctypes as ct
-import platform
+import os
 
 class ArgData(ct.Structure):
 
@@ -14,7 +14,7 @@ def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
     
     rt_ext = None
 
-    if platform.platform() == 'Windows':
+    if os.name == 'nt':
         rt_ext = ct.CDLL("c_extension/lib/extension.dll")
 
     else:

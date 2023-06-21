@@ -35,7 +35,7 @@ CREATE_DIR_COMMAND:=./dirs.sh
 
 all: dirs $(TARGET)
 
-library: $(LIBTARGET)
+lib: $(LIBTARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
@@ -52,6 +52,7 @@ dirs:
 clean:
 	-@rm -rf $(OBJ)/*
 	-@rm -rf $(BIN)/*
+	-@rm -rf $(LIB)/*
 
 run: $(TARGET)
 	@./$(TARGET)
