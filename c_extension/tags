@@ -73,7 +73,7 @@ APIENTRYP	include/glad/glad.h	/^#define APIENTRYP /;"	d
 BIN	Makefile	/^BIN:=bin$/;"	m
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 $/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 GLAD_GL_VERSION_1_0	include/glad/glad.h	/^GLAPI int GLAD_GL_VERSION_1_0;$/;"	v	typeref:typename:GLAPI int
