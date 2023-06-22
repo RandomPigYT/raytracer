@@ -12,6 +12,18 @@ class ArgData(ct.Structure):
     ]
 
 
+class SceneData(ct.Structure):
+    _fields_ = [
+        ("cameraPos", ct.c_float * 3),
+        ("cameraDir", ct.c_float * 3),
+        ("vertices", ct.POINTER(sc.Vertex)),
+        ("materials", ct.POINTER(sc.Material)),
+        ("meshes", ct.POINTER(sc.Mesh)),
+        ("objects", ct.POINTER(sc.Object)),
+        ("shaderProgram", ct.c_uint32),
+    ]
+
+
 def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
     rt_ext = None
 
@@ -22,16 +34,17 @@ def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
         rt_ext = ct.CDLL("c_extension/lib/extension.so")
 
     rt_ext.sendToShader.restype = None
-    rt_ext.sendToShader.argtypes = [
-        ct.c_float * 3,
-        ct.c_float * 3,
-        ct.POINTER(sc.Vertex),
-        ct.POINTER(sc.Material),
-        ct.POINTER(sc.Mesh),
-        ct.POINTER(sc.Object),
-        ArgData,
-        ct.c_uint32,
-    ]
+    rt_ext.sendToShader.argtypes = [SceneData, ArgData]
+
+    data = SceneData(
+        scene.cameraPos,
+        scene.cameraDirection,
+        scene.vertices,
+        scene.materials,
+        scene.meshes,
+        scene.objects,
+        scene.computeProgram,
+    )
 
     argumentInfo = ArgData(
         numVertices=len(scene.vertices),
@@ -40,13 +53,4 @@ def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
         numObjects=len(scene.objects),
     )
 
-    rt_ext.sendToShader(
-        scene.cameraPos,
-        scene.cameraDirection,
-        scene.vertices,
-        scene.materials,
-        scene.meshes,
-        scene.objects,
-        argumentInfo,
-        scene.computeProgram,
-    )
+    rt_ext.sendToShader(data, argumentInfo)

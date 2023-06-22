@@ -2,18 +2,17 @@
 
 #include "../include/extension.h"
 
-void sendToShader(vec3 cameraPos, vec3 cameraDir, struct vertex *vertices,
-                  struct material *materials, struct mesh *meshes,
-                  struct object *objects, struct argData_t argData,
-									uint32_t shaderProgram) {
+void sendToShader(struct SceneData scene, struct argData args) {
 
-  for (int i = 0; i < argData.numMeshes; i++) {
-	
-		printf("%f %f %f\n%f %f %f\n", cameraPos[0], cameraPos[1], cameraPos[2], cameraDir[0], cameraDir[1], cameraDir[2]);
+    printf("cameraPos %f %f %f\ncameraDir %f %f %f\n", scene.cameraPos[0], scene.cameraPos[1],
+           scene.cameraPos[2], scene.cameraDir[0], scene.cameraDir[1],
+           scene.cameraDir[2]);
+    printf("program - %d\n", scene.shaderProgram);
+  for (int i = 0; i < args.numMeshes; i++) {
 
-    printf("%ld %ld %ld %ld\n", meshes[i].startingVertex,
-           meshes[i].numTriangles, meshes[i].materialID, meshes[i].objectID);
+    printf("%ld %ld %ld %ld\n", scene.meshes[i].startingVertex,
+           scene.meshes[i].numTriangles, scene.meshes[i].materialID,
+           scene.meshes[i].objectID);
 
-		printf("program - %d\n", shaderProgram);
   }
 }

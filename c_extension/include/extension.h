@@ -1,9 +1,8 @@
 #ifndef RAYTRACE_EXTENSION_H
 #define RAYTRACE_EXTENSION_H
 
-#include <stdint.h>
 #include <cglm/cglm.h>
-
+#include <stdint.h>
 
 struct vertex {
   vec3 position;
@@ -35,7 +34,19 @@ struct object {
   uint32_t id;
 };
 
-struct argData_t {
+struct SceneData {
+  vec3 cameraPos;
+  vec3 cameraDir;
+
+  struct vertex* vertices;
+  struct material* materials;
+  struct mesh* meshes;
+  struct object* objects;
+
+  uint32_t shaderProgram;
+};
+
+struct argData {
   uint64_t numVertices;
   uint64_t numMaterials;
   uint64_t numMeshes;

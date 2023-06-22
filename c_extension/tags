@@ -2290,9 +2290,10 @@ PLATFORM	Makefile	/^PLATFORM:=linux$/;"	m
 RAYTRACE_EXTENSION_H	include/extension.h	/^#define RAYTRACE_EXTENSION_H$/;"	d
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
+SceneData	include/extension.h	/^struct SceneData {$/;"	s
 TARGET	Makefile	/^TARGET:=$(BIN)\/PigEngine.out$/;"	m
 VAL_OUT	Makefile	/^VAL_OUT:=valgrind-out.txt$/;"	m
-WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-w64-mingw32\/bin\/glfw3.dll -L\/usr\/x86_64-mingw32\/lib\/libcglm.a$/;"	m
+WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-w64-mingw32\/bin\/glfw3.dll -L\/usr\/x86_64-mingw32\/bin\/cglm.dll$/;"	m
 _GLAD_IS_SOME_NEW_VERSION	src/glad.c	/^#define _GLAD_IS_SOME_NEW_VERSION /;"	d	file:
 __anonb15c29ec0103	include/KHR/khrplatform.h	/^typedef enum {$/;"	g
 __gl_h_	include/glad/glad.h	/^#define __gl_h_$/;"	d
@@ -2301,7 +2302,9 @@ __khrplatform_h_	include/KHR/khrplatform.h	/^#define __khrplatform_h_$/;"	d
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
 alpha_x	include/extension.h	/^  float alpha_x;$/;"	m	struct:material	typeref:typename:float
 alpha_y	include/extension.h	/^  float alpha_y;$/;"	m	struct:material	typeref:typename:float
-argData_t	include/extension.h	/^struct argData_t {$/;"	s
+argData	include/extension.h	/^struct argData {$/;"	s
+cameraDir	include/extension.h	/^  vec3 cameraDir;$/;"	m	struct:SceneData	typeref:typename:vec3
+cameraPos	include/extension.h	/^  vec3 cameraPos;$/;"	m	struct:SceneData	typeref:typename:vec3
 clean	Makefile	/^clean:$/;"	t
 close_gl	src/glad.c	/^static void close_gl(void) {$/;"	f	typeref:typename:void	file:
 dirs	Makefile	/^dirs:$/;"	t
@@ -4477,19 +4480,22 @@ load_GL_VERSION_4_6	src/glad.c	/^static void load_GL_VERSION_4_6(GLADloadproc lo
 major	include/glad/glad.h	/^  int major;$/;"	m	struct:gladGLversionStruct	typeref:typename:int
 material	include/extension.h	/^struct material {$/;"	s
 materialID	include/extension.h	/^  uint64_t materialID;$/;"	m	struct:mesh	typeref:typename:uint64_t
+materials	include/extension.h	/^  struct material* materials;$/;"	m	struct:SceneData	typeref:struct:material *
 max_loaded_major	src/glad.c	/^static int max_loaded_major;$/;"	v	typeref:typename:int	file:
 max_loaded_minor	src/glad.c	/^static int max_loaded_minor;$/;"	v	typeref:typename:int	file:
 mesh	include/extension.h	/^struct mesh {$/;"	s
+meshes	include/extension.h	/^  struct mesh* meshes;$/;"	m	struct:SceneData	typeref:struct:mesh *
 minor	include/glad/glad.h	/^  int minor;$/;"	m	struct:gladGLversionStruct	typeref:typename:int
 normal	include/extension.h	/^  vec3 normal;$/;"	m	struct:vertex	typeref:typename:vec3
-numMaterials	include/extension.h	/^  uint64_t numMaterials;$/;"	m	struct:argData_t	typeref:typename:uint64_t
-numMeshes	include/extension.h	/^  uint64_t numMeshes;$/;"	m	struct:argData_t	typeref:typename:uint64_t
-numObjects	include/extension.h	/^  uint64_t numObjects;$/;"	m	struct:argData_t	typeref:typename:uint64_t
+numMaterials	include/extension.h	/^  uint64_t numMaterials;$/;"	m	struct:argData	typeref:typename:uint64_t
+numMeshes	include/extension.h	/^  uint64_t numMeshes;$/;"	m	struct:argData	typeref:typename:uint64_t
+numObjects	include/extension.h	/^  uint64_t numObjects;$/;"	m	struct:argData	typeref:typename:uint64_t
 numTriangles	include/extension.h	/^  uint64_t numTriangles;$/;"	m	struct:mesh	typeref:typename:uint64_t
-numVertices	include/extension.h	/^  uint64_t numVertices;$/;"	m	struct:argData_t	typeref:typename:uint64_t
+numVertices	include/extension.h	/^  uint64_t numVertices;$/;"	m	struct:argData	typeref:typename:uint64_t
 num_exts_i	src/glad.c	/^static int num_exts_i = 0;$/;"	v	typeref:typename:int	file:
 object	include/extension.h	/^struct object {$/;"	s
 objectID	include/extension.h	/^  uint64_t objectID;$/;"	m	struct:mesh	typeref:typename:uint64_t
+objects	include/extension.h	/^  struct object* objects;$/;"	m	struct:SceneData	typeref:struct:object *
 open_gl	src/glad.c	/^static int open_gl(void) {$/;"	f	typeref:typename:int	file:
 padding0	include/extension.h	/^  float padding0;$/;"	m	struct:material	typeref:typename:float
 padding0	include/extension.h	/^  float padding0;$/;"	m	struct:vertex	typeref:typename:float
@@ -4498,8 +4504,10 @@ padding2	include/extension.h	/^  float padding2;$/;"	m	struct:vertex	typeref:typ
 pos	include/extension.h	/^  vec3 pos;$/;"	m	struct:object	typeref:typename:vec3
 position	include/extension.h	/^  vec3 position;$/;"	m	struct:vertex	typeref:typename:vec3
 run	Makefile	/^run: $(TARGET)$/;"	t
-sendToShader	src/shaderIO.c	/^void sendToShader(vec3 cameraPos, vec3 cameraDir, struct vertex *vertices,$/;"	f	typeref:typename:void
+sendToShader	src/shaderIO.c	/^void sendToShader(struct SceneData scene, struct argData args) {$/;"	f	typeref:typename:void
+shaderProgram	include/extension.h	/^  uint32_t shaderProgram;$/;"	m	struct:SceneData	typeref:typename:uint32_t
 startingVertex	include/extension.h	/^  uint64_t startingVertex;$/;"	m	struct:mesh	typeref:typename:uint64_t
 textureCoord	include/extension.h	/^  vec3 textureCoord;$/;"	m	struct:vertex	typeref:typename:vec3
 valgrind	Makefile	/^valgrind:$/;"	t
 vertex	include/extension.h	/^struct vertex {$/;"	s
+vertices	include/extension.h	/^  struct vertex* vertices;$/;"	m	struct:SceneData	typeref:struct:vertex *
