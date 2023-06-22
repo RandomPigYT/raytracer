@@ -22,23 +22,23 @@
                                              float *top,   float *bottom,
                                              float *left,  float *right)
    CGLM_INLINE void  glms_persp_decompv_lh_no(mat4s proj, float dest[6])
-   CGLM_INLINE void  glms_persp_decomp_x_lh_no(mat4s proj, float *left, float *right)
-   CGLM_INLINE void  glms_persp_decomp_y_lh_no(mat4s proj, float *top, float *bottom)
-   CGLM_INLINE void  glms_persp_decomp_z_lh_no(mat4s proj, float *nearv, float *farv)
-   CGLM_INLINE void  glms_persp_decomp_far_lh_no(mat4s proj, float *farZ)
-   CGLM_INLINE void  glms_persp_decomp_near_lh_no(mat4s proj, float *nearZ)
-   CGLM_INLINE float glms_persp_fovy_lh_no(mat4s proj)
-   CGLM_INLINE float glms_persp_aspect_lh_no(mat4s proj)
-   CGLM_INLINE vec4s glms_persp_sizes_lh_no(mat4s proj, float fovy)
+   CGLM_INLINE void  glms_persp_decomp_x_lh_no(mat4s proj, float *left, float
+ *right) CGLM_INLINE void  glms_persp_decomp_y_lh_no(mat4s proj, float *top,
+ float *bottom) CGLM_INLINE void  glms_persp_decomp_z_lh_no(mat4s proj, float
+ *nearv, float *farv) CGLM_INLINE void  glms_persp_decomp_far_lh_no(mat4s proj,
+ float *farZ) CGLM_INLINE void  glms_persp_decomp_near_lh_no(mat4s proj, float
+ *nearZ) CGLM_INLINE float glms_persp_fovy_lh_no(mat4s proj) CGLM_INLINE float
+ glms_persp_aspect_lh_no(mat4s proj) CGLM_INLINE vec4s
+ glms_persp_sizes_lh_no(mat4s proj, float fovy)
  */
 
 #ifndef cglms_persp_lh_no_h
 #define cglms_persp_lh_no_h
 
-#include "../../common.h"
-#include "../../types-struct.h"
-#include "../../plane.h"
 #include "../../cam.h"
+#include "../../common.h"
+#include "../../plane.h"
+#include "../../types-struct.h"
 
 /*!
  * @brief set up perspective peprojection matrix
@@ -54,10 +54,8 @@
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_frustum_lh_no(float left,   float right,
-                   float bottom, float top,
-                   float nearZ,  float farZ) {
+mat4s glms_frustum_lh_no(float left, float right, float bottom, float top,
+                         float nearZ, float farZ) {
   mat4s dest;
   glm_frustum_lh_no(left, right, bottom, top, nearZ, farZ, dest.raw);
   return dest;
@@ -75,8 +73,8 @@ glms_frustum_lh_no(float left,   float right,
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_perspective_lh_no(float fovy, float aspect, float nearZ, float farZ) {
+mat4s glms_perspective_lh_no(float fovy, float aspect, float nearZ,
+                             float farZ) {
   mat4s dest;
   glm_perspective_lh_no(fovy, aspect, nearZ, farZ, dest.raw);
   return dest;
@@ -87,18 +85,17 @@ glms_perspective_lh_no(float fovy, float aspect, float nearZ, float farZ) {
  *        with a left-hand coordinate system and a
  *        clip-space of [-1, 1].
  *
- * NOTE: if you dodn't want to create new matrix then use array api on struct.raw
- *       like glms_persp_move_far_lh_no(prooj.raw, deltaFar) to avoid create new mat4
- *       each time
- *       
+ * NOTE: if you dodn't want to create new matrix then use array api on
+ * struct.raw like glms_persp_move_far_lh_no(prooj.raw, deltaFar) to avoid
+ * create new mat4 each time
+ *
  * this function does not guarantee far >= near, be aware of that!
  *
  * @param[in, out] proj      projection matrix to extend
  * @param[in]      deltaFar  distance from existing far (negative to shink)
  */
 CGLM_INLINE
-mat4s
-glms_persp_move_far_lh_no(mat4s proj, float deltaFar) {
+mat4s glms_persp_move_far_lh_no(mat4s proj, float deltaFar) {
   mat4s dest;
   dest = proj;
   glm_persp_move_far_lh_no(dest.raw, deltaFar);
@@ -114,8 +111,7 @@ glms_persp_move_far_lh_no(mat4s proj, float deltaFar) {
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_perspective_default_lh_no(float aspect) {
+mat4s glms_perspective_default_lh_no(float aspect) {
   mat4s dest;
   glm_perspective_default_lh_no(aspect, dest.raw);
   return dest;
@@ -127,16 +123,15 @@ glms_perspective_default_lh_no(float aspect) {
  *        reized with a left-hand coordinate system and a
  *        clip-space of [-1, 1].
  *
- * NOTE: if you dodn't want to create new matrix then use array api on struct.raw
- *       like glm_perspective_resize_lh_no(proj.raw, aspect) to avoid create new mat4
- *       each time
- *       
+ * NOTE: if you dodn't want to create new matrix then use array api on
+ * struct.raw like glm_perspective_resize_lh_no(proj.raw, aspect) to avoid
+ * create new mat4 each time
+ *
  * @param[in, out] proj   perspective projection matrix
  * @param[in]      aspect aspect ratio ( width / height )
  */
 CGLM_INLINE
-mat4s
-glms_perspective_resize_lh_no(mat4s proj, float aspect) {
+mat4s glms_perspective_resize_lh_no(mat4s proj, float aspect) {
   mat4s dest;
   dest = proj;
   glm_perspective_resize_lh_no(aspect, dest.raw);
@@ -157,11 +152,10 @@ glms_perspective_resize_lh_no(mat4s proj, float aspect) {
  * @param[out] right   right
  */
 CGLM_INLINE
-void
-glms_persp_decomp_lh_no(mat4s proj,
-                        float * __restrict nearZ, float * __restrict farZ,
-                        float * __restrict top,   float * __restrict bottom,
-                        float * __restrict left,  float * __restrict right) {
+void glms_persp_decomp_lh_no(mat4s proj, float *__restrict nearZ,
+                             float *__restrict farZ, float *__restrict top,
+                             float *__restrict bottom, float *__restrict left,
+                             float *__restrict right) {
   glm_persp_decomp_lh_no(proj.raw, nearZ, farZ, top, bottom, left, right);
 }
 
@@ -175,8 +169,7 @@ glms_persp_decomp_lh_no(mat4s proj,
  * @param[out] dest   array
  */
 CGLM_INLINE
-void
-glms_persp_decompv_lh_no(mat4s proj, float dest[6]) {
+void glms_persp_decompv_lh_no(mat4s proj, float dest[6]) {
   glm_persp_decompv_lh_no(proj.raw, dest);
 }
 
@@ -191,10 +184,8 @@ glms_persp_decompv_lh_no(mat4s proj, float dest[6]) {
  * @param[out] right right
  */
 CGLM_INLINE
-void
-glms_persp_decomp_x_lh_no(mat4s proj,
-                          float * __restrict left,
-                          float * __restrict right) {
+void glms_persp_decomp_x_lh_no(mat4s proj, float *__restrict left,
+                               float *__restrict right) {
   glm_persp_decomp_x_lh_no(proj.raw, left, right);
 }
 
@@ -209,10 +200,8 @@ glms_persp_decomp_x_lh_no(mat4s proj,
  * @param[out] bottom bottom
  */
 CGLM_INLINE
-void
-glms_persp_decomp_y_lh_no(mat4s proj,
-                          float * __restrict top,
-                          float * __restrict bottom) {
+void glms_persp_decomp_y_lh_no(mat4s proj, float *__restrict top,
+                               float *__restrict bottom) {
   glm_persp_decomp_y_lh_no(proj.raw, top, bottom);
 }
 
@@ -227,10 +216,8 @@ glms_persp_decomp_y_lh_no(mat4s proj,
  * @param[out] farZ    far
  */
 CGLM_INLINE
-void
-glms_persp_decomp_z_lh_no(mat4s proj,
-                          float * __restrict nearZ,
-                          float * __restrict farZ) {
+void glms_persp_decomp_z_lh_no(mat4s proj, float *__restrict nearZ,
+                               float *__restrict farZ) {
   glm_persp_decomp_z_lh_no(proj.raw, nearZ, farZ);
 }
 
@@ -243,8 +230,7 @@ glms_persp_decomp_z_lh_no(mat4s proj,
  * @param[out] farZ   far
  */
 CGLM_INLINE
-void
-glms_persp_decomp_far_lh_no(mat4s proj, float * __restrict farZ) {
+void glms_persp_decomp_far_lh_no(mat4s proj, float *__restrict farZ) {
   glm_persp_decomp_far_lh_no(proj.raw, farZ);
 }
 
@@ -257,8 +243,7 @@ glms_persp_decomp_far_lh_no(mat4s proj, float * __restrict farZ) {
  * @param[out] nearZ near
  */
 CGLM_INLINE
-void
-glms_persp_decomp_near_lh_no(mat4s proj, float * __restrict nearZ) {
+void glms_persp_decomp_near_lh_no(mat4s proj, float *__restrict nearZ) {
   glm_persp_decomp_near_lh_no(proj.raw, nearZ);
 }
 
@@ -273,8 +258,7 @@ glms_persp_decomp_near_lh_no(mat4s proj, float * __restrict nearZ) {
  * @param[in] proj perspective projection matrix
  */
 CGLM_INLINE
-float
-glms_persp_fovy_lh_no(mat4s proj) {
+float glms_persp_fovy_lh_no(mat4s proj) {
   return glm_persp_fovy_lh_no(proj.raw);
 }
 
@@ -286,8 +270,7 @@ glms_persp_fovy_lh_no(mat4s proj) {
  * @param[in] proj perspective projection matrix
  */
 CGLM_INLINE
-float
-glms_persp_aspect_lh_no(mat4s proj) {
+float glms_persp_aspect_lh_no(mat4s proj) {
   return glm_persp_aspect_lh_no(proj.raw);
 }
 
@@ -301,8 +284,7 @@ glms_persp_aspect_lh_no(mat4s proj) {
  * @returns    sizes as vector, sizes order: [Wnear, Hnear, Wfar, Hfar]
  */
 CGLM_INLINE
-vec4s
-glms_persp_sizes_lh_no(mat4s proj, float fovy) {
+vec4s glms_persp_sizes_lh_no(mat4s proj, float fovy) {
   vec4s dest;
   glm_persp_sizes_lh_no(proj.raw, fovy, dest.raw);
   return dest;

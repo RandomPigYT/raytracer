@@ -32,8 +32,8 @@
 #define cglms_euler_h
 
 #include "../common.h"
-#include "../types-struct.h"
 #include "../euler.h"
+#include "../types-struct.h"
 
 /*!
  * @brief extract euler angles (in radians) using xyz order
@@ -42,8 +42,7 @@
  * @returns angles vector [x, y, z]
  */
 CGLM_INLINE
-vec3s
-glms_euler_angles(mat4s m) {
+vec3s glms_euler_angles(mat4s m) {
   vec3s dest;
   glm_euler_angles(m.raw, dest.raw);
   return dest;
@@ -56,8 +55,7 @@ glms_euler_angles(mat4s m) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_xyz(vec3s angles) {
+mat4s glms_euler_xyz(vec3s angles) {
   mat4s dest;
   glm_euler_xyz(angles.raw, dest.raw);
   return dest;
@@ -70,13 +68,11 @@ glms_euler_xyz(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_xzy(vec3s angles) {
+mat4s glms_euler_xzy(vec3s angles) {
   mat4s dest;
   glm_euler_xzy(angles.raw, dest.raw);
   return dest;
 }
-
 
 /*!
  * @brief build rotation matrix from euler angles
@@ -85,8 +81,7 @@ glms_euler_xzy(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_yxz(vec3s angles) {
+mat4s glms_euler_yxz(vec3s angles) {
   mat4s dest;
   glm_euler_yxz(angles.raw, dest.raw);
   return dest;
@@ -99,8 +94,7 @@ glms_euler_yxz(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_yzx(vec3s angles) {
+mat4s glms_euler_yzx(vec3s angles) {
   mat4s dest;
   glm_euler_yzx(angles.raw, dest.raw);
   return dest;
@@ -113,8 +107,7 @@ glms_euler_yzx(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_zxy(vec3s angles) {
+mat4s glms_euler_zxy(vec3s angles) {
   mat4s dest;
   glm_euler_zxy(angles.raw, dest.raw);
   return dest;
@@ -127,8 +120,7 @@ glms_euler_zxy(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_zyx(vec3s angles) {
+mat4s glms_euler_zyx(vec3s angles) {
   mat4s dest;
   glm_euler_zyx(angles.raw, dest.raw);
   return dest;
@@ -142,8 +134,7 @@ glms_euler_zyx(vec3s angles) {
  * @returns rotation matrix
  */
 CGLM_INLINE
-mat4s
-glms_euler_by_order(vec3s angles, glm_euler_seq ord) {
+mat4s glms_euler_by_order(vec3s angles, glm_euler_seq ord) {
   mat4s dest;
   glm_euler_by_order(angles.raw, ord, dest.raw);
   return dest;

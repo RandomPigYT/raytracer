@@ -9,11 +9,11 @@
 #define cglms_projects_h
 
 #include "../common.h"
-#include "../types-struct.h"
 #include "../project.h"
+#include "../types-struct.h"
+#include "mat4.h"
 #include "vec3.h"
 #include "vec4.h"
-#include "mat4.h"
 
 /*!
  * @brief maps the specified viewport coordinates into specified space [1]
@@ -42,8 +42,7 @@
  * @returns             unprojected coordinates
  */
 CGLM_INLINE
-vec3s
-glms_unprojecti(vec3s pos, mat4s invMat, vec4s vp) {
+vec3s glms_unprojecti(vec3s pos, mat4s invMat, vec4s vp) {
   vec3s r;
   glm_unprojecti(pos.raw, invMat.raw, vp.raw, r.raw);
   return r;
@@ -74,8 +73,7 @@ glms_unprojecti(vec3s pos, mat4s invMat, vec4s vp) {
  * @returns             unprojected coordinates
  */
 CGLM_INLINE
-vec3s
-glms_unproject(vec3s pos, mat4s m, vec4s vp) {
+vec3s glms_unproject(vec3s pos, mat4s m, vec4s vp) {
   vec3s r;
   glm_unproject(pos.raw, m.raw, vp.raw, r.raw);
   return r;
@@ -94,8 +92,7 @@ glms_unproject(vec3s pos, mat4s m, vec4s vp) {
  * @returns projected coordinates
  */
 CGLM_INLINE
-vec3s
-glms_project(vec3s pos, mat4s m, vec4s vp) {
+vec3s glms_project(vec3s pos, mat4s m, vec4s vp) {
   vec3s r;
   glm_project(pos.raw, m.raw, vp.raw, r.raw);
   return r;
@@ -105,13 +102,13 @@ glms_project(vec3s pos, mat4s m, vec4s vp) {
  * @brief define a picking region
  *
  * @param[in]  center   center [x, y] of a picking region in window coordinates
- * @param[in]  size     size [width, height] of the picking region in window coordinates
+ * @param[in]  size     size [width, height] of the picking region in window
+ * coordinates
  * @param[in]  vp       viewport as [x, y, width, height]
  * @returns projected coordinates
  */
 CGLM_INLINE
-mat4s
-glms_pickmatrix(vec2s center, vec2s size, vec4s vp) {
+mat4s glms_pickmatrix(vec2s center, vec2s size, vec4s vp) {
   mat4s res;
   glm_pickmatrix(center.raw, size.raw, vp.raw, res.raw);
   return res;

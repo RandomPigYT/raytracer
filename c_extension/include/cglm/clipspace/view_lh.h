@@ -30,9 +30,9 @@
  * @param[out] dest   result matrix
  */
 CGLM_INLINE
-void
-glm_lookat_lh(vec3 eye, vec3 center, vec3 up, mat4 dest) {
-  CGLM_ALIGN(8) vec3 f, u, s;
+void glm_lookat_lh(vec3 eye, vec3 center, vec3 up, mat4 dest) {
+  CGLM_ALIGN(8)
+  vec3 f, u, s;
 
   glm_vec3_sub(center, eye, f);
   glm_vec3_normalize(f);
@@ -49,9 +49,9 @@ glm_lookat_lh(vec3 eye, vec3 center, vec3 up, mat4 dest) {
   dest[2][0] = s[2];
   dest[2][1] = u[2];
   dest[2][2] = f[2];
-  dest[3][0] =-glm_vec3_dot(s, eye);
-  dest[3][1] =-glm_vec3_dot(u, eye);
-  dest[3][2] =-glm_vec3_dot(f, eye);
+  dest[3][0] = -glm_vec3_dot(s, eye);
+  dest[3][1] = -glm_vec3_dot(u, eye);
+  dest[3][2] = -glm_vec3_dot(f, eye);
   dest[0][3] = dest[1][3] = dest[2][3] = 0.0f;
   dest[3][3] = 1.0f;
 }
@@ -71,9 +71,9 @@ glm_lookat_lh(vec3 eye, vec3 center, vec3 up, mat4 dest) {
  * @param[out] dest   result matrix
  */
 CGLM_INLINE
-void
-glm_look_lh(vec3 eye, vec3 dir, vec3 up, mat4 dest) {
-  CGLM_ALIGN(8) vec3 target;
+void glm_look_lh(vec3 eye, vec3 dir, vec3 up, mat4 dest) {
+  CGLM_ALIGN(8)
+  vec3 target;
   glm_vec3_add(eye, dir, target);
   glm_lookat_lh(eye, target, up, dest);
 }
@@ -89,9 +89,9 @@ glm_look_lh(vec3 eye, vec3 dir, vec3 up, mat4 dest) {
  * @param[out] dest   result matrix
  */
 CGLM_INLINE
-void
-glm_look_anyup_lh(vec3 eye, vec3 dir, mat4 dest) {
-  CGLM_ALIGN(8) vec3 up;
+void glm_look_anyup_lh(vec3 eye, vec3 dir, mat4 dest) {
+  CGLM_ALIGN(8)
+  vec3 up;
   glm_vec3_ortho(dir, up);
   glm_look_lh(eye, dir, up, dest);
 }

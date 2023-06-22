@@ -8,6 +8,7 @@ import ctypes
 from PIL import Image
 import random as rand
 
+# fmt: off
 # vertex -> x, y, z, u, v
 vertices = [
     -1, 1, 0, 0, 0,  # top-left
@@ -16,7 +17,9 @@ vertices = [
     -1, -1, 0, 0, 1,  # bottom-left
 ]
 
-indices = [0, 1, 3, 1, 2, 3]  # upper triangle  # lower triangle
+indices = [0, 1, 3, 
+           1, 2, 3]  # upper triangle  # lower triangle
+# fmt: on
 
 
 def initRenderCavas():
@@ -47,7 +50,6 @@ def initRenderCavas():
         gl.GL_STATIC_DRAW,
     )
 
-
     gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 5 * floatSize, None)
     gl.glVertexAttribPointer(
         1, 2, gl.GL_FLOAT, gl.GL_FALSE, 5 * floatSize, ctypes.c_void_p(3 * floatSize)
@@ -76,10 +78,6 @@ def initRenderCavas():
     width = viewport[2]
     height = viewport[3]
 
-    print(width, height)
-    image = Image.open("./madeline.jpg").convert("RGB")
-    data = np.array(list(image.getdata()), np.uint8)
-
     gl.glTexImage2D(
         gl.GL_TEXTURE_2D,
         0,
@@ -95,4 +93,4 @@ def initRenderCavas():
 
     gl.glBindImageTexture(0, tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F)
 
-    return tex, shaderProgram
+    return vao, vbo, ebo, tex, shaderProgram

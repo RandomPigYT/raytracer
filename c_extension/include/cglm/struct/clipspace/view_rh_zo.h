@@ -15,10 +15,10 @@
 #ifndef cglms_view_rh_zo_h
 #define cglms_view_rh_zo_h
 
-#include "../../common.h"
-#include "../../types-struct.h"
-#include "../../plane.h"
 #include "../../cam.h"
+#include "../../common.h"
+#include "../../plane.h"
+#include "../../types-struct.h"
 
 /*!
  * @brief set up view matrix
@@ -34,8 +34,7 @@
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_lookat_rh_zo(vec3s eye, vec3s center, vec3s up) {
+mat4s glms_lookat_rh_zo(vec3s eye, vec3s center, vec3s up) {
   mat4s dest;
   glm_lookat_rh_zo(eye.raw, center.raw, up.raw, dest.raw);
   return dest;
@@ -58,8 +57,7 @@ glms_lookat_rh_zo(vec3s eye, vec3s center, vec3s up) {
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_look_rh_zo(vec3s eye, vec3s dir, vec3s up) {
+mat4s glms_look_rh_zo(vec3s eye, vec3s dir, vec3s up) {
   mat4s dest;
   glm_look_rh_zo(eye.raw, dir.raw, up.raw, dest.raw);
   return dest;
@@ -78,8 +76,7 @@ glms_look_rh_zo(vec3s eye, vec3s dir, vec3s up) {
  * @returns    result matrix
  */
 CGLM_INLINE
-mat4s
-glms_look_anyup_rh_zo(vec3s eye, vec3s dir) {
+mat4s glms_look_anyup_rh_zo(vec3s eye, vec3s dir) {
   mat4s dest;
   glm_look_anyup_rh_zo(eye.raw, dir.raw, dest.raw);
   return dest;

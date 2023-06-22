@@ -1,10 +1,18 @@
-#ifndef  RAYTRACE_EXTENSION_H
+#ifndef RAYTRACE_EXTENSION_H
 #define RAYTRACE_EXTENSION_H
 
-#include "glad/glad.h"
-#include "./cglm/cglm.h"
 #include <stdint.h>
 
+#ifdef OS_WINDOWS
+
+#include "./cglm/cglm.h"
+
+#else
+
+#include <cglm/cglm.h>
+#endif
+
+#include "glad/glad.h"
 
 struct vertex {
   vec3 position;

@@ -8,12 +8,12 @@
 #ifndef cglms_boxs_h
 #define cglms_boxs_h
 
+#include "../box.h"
 #include "../common.h"
 #include "../types-struct.h"
-#include "../box.h"
+#include "mat4.h"
 #include "vec3.h"
 #include "vec4.h"
-#include "mat4.h"
 
 /*!
  * @brief apply transform to Axis-Aligned Bounding Box
@@ -23,8 +23,7 @@
  * @param[out] dest transformed bounding box
  */
 CGLM_INLINE
-void
-glms_aabb_transform(vec3s box[2], mat4s m, vec3s dest[2]) {
+void glms_aabb_transform(vec3s box[2], mat4s m, vec3s dest[2]) {
   vec3 rawBox[2];
   vec3 rawDest[2];
 
@@ -44,8 +43,7 @@ glms_aabb_transform(vec3s box[2], mat4s m, vec3s dest[2]) {
  * @param[out] dest merged bounding box
  */
 CGLM_INLINE
-void
-glms_aabb_merge(vec3s box1[2], vec3s box2[2], vec3s dest[2]) {
+void glms_aabb_merge(vec3s box1[2], vec3s box2[2], vec3s dest[2]) {
   vec3 rawBox1[2];
   vec3 rawBox2[2];
   vec3 rawDest[2];
@@ -68,8 +66,7 @@ glms_aabb_merge(vec3s box1[2], vec3s box2[2], vec3s dest[2]) {
  * @param[out] dest    cropped bounding box
  */
 CGLM_INLINE
-void
-glms_aabb_crop(vec3s box[2], vec3s cropBox[2], vec3s dest[2]) {
+void glms_aabb_crop(vec3s box[2], vec3s cropBox[2], vec3s dest[2]) {
   vec3 rawBox[2];
   vec3 rawCropBox[2];
   vec3 rawDest[2];
@@ -93,11 +90,8 @@ glms_aabb_crop(vec3s box[2], vec3s cropBox[2], vec3s dest[2]) {
  * @param[out] dest     cropped bounding box
  */
 CGLM_INLINE
-void
-glms_aabb_crop_until(vec3s box[2],
-                     vec3s cropBox[2],
-                     vec3s clampBox[2],
-                     vec3s dest[2]) {
+void glms_aabb_crop_until(vec3s box[2], vec3s cropBox[2], vec3s clampBox[2],
+                          vec3s dest[2]) {
   glms_aabb_crop(box, cropBox, dest);
   glms_aabb_merge(clampBox, dest, dest);
 }
@@ -117,8 +111,7 @@ glms_aabb_crop_until(vec3s box[2],
  * @param[in]  planes  frustum planes
  */
 CGLM_INLINE
-bool
-glms_aabb_frustum(vec3s box[2], vec4s planes[6]) {
+bool glms_aabb_frustum(vec3s box[2], vec4s planes[6]) {
   vec3 rawBox[2];
   vec4 rawPlanes[6];
 
@@ -133,8 +126,7 @@ glms_aabb_frustum(vec3s box[2], vec4s planes[6]) {
  * @param[in, out]  box bounding box
  */
 CGLM_INLINE
-void
-glms_aabb_invalidate(vec3s box[2]) {
+void glms_aabb_invalidate(vec3s box[2]) {
   box[0] = glms_vec3_broadcast(FLT_MAX);
   box[1] = glms_vec3_broadcast(-FLT_MAX);
 }
@@ -145,8 +137,7 @@ glms_aabb_invalidate(vec3s box[2]) {
  * @param[in]  box bounding box
  */
 CGLM_INLINE
-bool
-glms_aabb_isvalid(vec3s box[2]) {
+bool glms_aabb_isvalid(vec3s box[2]) {
   vec3 rawBox[2];
   glms_vec3_unpack(rawBox, box, 2);
   return glm_aabb_isvalid(rawBox);
@@ -158,8 +149,7 @@ glms_aabb_isvalid(vec3s box[2]) {
  * @param[in]  box bounding box
  */
 CGLM_INLINE
-float
-glms_aabb_size(vec3s box[2]) {
+float glms_aabb_size(vec3s box[2]) {
   return glm_vec3_distance(box[0].raw, box[1].raw);
 }
 
@@ -169,10 +159,7 @@ glms_aabb_size(vec3s box[2]) {
  * @param[in]  box bounding box
  */
 CGLM_INLINE
-float
-glms_aabb_radius(vec3s box[2]) {
-  return glms_aabb_size(box) * 0.5f;
-}
+float glms_aabb_radius(vec3s box[2]) { return glms_aabb_size(box) * 0.5f; }
 
 /*!
  * @brief computes center point of AABB
@@ -181,8 +168,7 @@ glms_aabb_radius(vec3s box[2]) {
  * @returns center of bounding box
  */
 CGLM_INLINE
-vec3s
-glms_aabb_center(vec3s box[2]) {
+vec3s glms_aabb_center(vec3s box[2]) {
   return glms_vec3_center(box[0], box[1]);
 }
 
@@ -193,8 +179,7 @@ glms_aabb_center(vec3s box[2]) {
  * @param[in]   other  other bounding box
  */
 CGLM_INLINE
-bool
-glms_aabb_aabb(vec3s box[2], vec3s other[2]) {
+bool glms_aabb_aabb(vec3s box[2], vec3s other[2]) {
   vec3 rawBox[2];
   vec3 rawOther[2];
 
@@ -213,8 +198,7 @@ glms_aabb_aabb(vec3s box[2], vec3s other[2]) {
  * @param[in]   s      solid sphere
  */
 CGLM_INLINE
-bool
-glms_aabb_sphere(vec3s box[2], vec4s s) {
+bool glms_aabb_sphere(vec3s box[2], vec4s s) {
   vec3 rawBox[2];
 
   glms_vec3_unpack(rawBox, box, 2);
@@ -228,8 +212,7 @@ glms_aabb_sphere(vec3s box[2], vec4s s) {
  * @param[in]   point  point
  */
 CGLM_INLINE
-bool
-glms_aabb_point(vec3s box[2], vec3s point) {
+bool glms_aabb_point(vec3s box[2], vec3s point) {
   vec3 rawBox[2];
 
   glms_vec3_unpack(rawBox, box, 2);
@@ -243,8 +226,7 @@ glms_aabb_point(vec3s box[2], vec3s point) {
  * @param[in]   other  other bounding box
  */
 CGLM_INLINE
-bool
-glms_aabb_contains(vec3s box[2], vec3s other[2]) {
+bool glms_aabb_contains(vec3s box[2], vec3s other[2]) {
   vec3 rawBox[2];
   vec3 rawOther[2];
 

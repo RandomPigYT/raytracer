@@ -7,17 +7,18 @@
 
 /*
  Functions:
-   CGLM_INLINE vec3s glms_unprojecti_no(vec3s pos, mat4s invMat, vec4s vp, vec3 dest)
-   CGLM_INLINE vec3s glms_project_no(vec3s pos, mat4s m, vec4s vp, vec3s dest)
+   CGLM_INLINE vec3s glms_unprojecti_no(vec3s pos, mat4s invMat, vec4s vp, vec3
+ dest) CGLM_INLINE vec3s glms_project_no(vec3s pos, mat4s m, vec4s vp, vec3s
+ dest)
  */
 
 #ifndef cglms_project_no_h
 #define cglms_project_no_h
 
-#include "../../common.h"
-#include "../../types-struct.h"
-#include "../../plane.h"
 #include "../../cam.h"
+#include "../../common.h"
+#include "../../plane.h"
+#include "../../types-struct.h"
 
 /*!
  * @brief maps the specified viewport coordinates into specified space [1]
@@ -47,8 +48,7 @@
  * @returns unprojected coordinates
  */
 CGLM_INLINE
-vec3s
-glms_unprojecti_no(vec3s pos, mat4s invMat, vec4s vp, vec3 dest) {
+vec3s glms_unprojecti_no(vec3s pos, mat4s invMat, vec4s vp, vec3 dest) {
   vec3s dest;
   glm_unprojecti_no(pos.raw, invMat.raw, vp.raw, dest.raw);
   return dest;
@@ -68,8 +68,7 @@ glms_unprojecti_no(vec3s pos, mat4s invMat, vec4s vp, vec3 dest) {
  * @returns projected coordinates
  */
 CGLM_INLINE
-vec3s
-glms_project_no(vec3s pos, mat4s m, vec4s vp, vec3s dest) {
+vec3s glms_project_no(vec3s pos, mat4s m, vec4s vp, vec3s dest) {
   vec3s dest;
   glm_project_no(pos.raw, m.raw, vp.raw, dest.raw);
   return dest;
@@ -88,8 +87,7 @@ glms_project_no(vec3s pos, mat4s m, vec4s vp, vec3s dest) {
  * @returns projected z coordinate
  */
 CGLM_INLINE
-vec3s
-glms_project_z_no(vec3s v, mat4s m) {
+vec3s glms_project_z_no(vec3s v, mat4s m) {
   return glm_project_z_no(v.raw, m.raw);
 }
 

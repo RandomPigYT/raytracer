@@ -41,8 +41,7 @@
  * @returns         dest
  */
 CGLM_INLINE
-vec2s
-glms_vec2_fill(float val) {
+vec2s glms_vec2_fill(float val) {
   vec2s r;
   glm_vec2_fill(r.raw, val);
   return r;
@@ -55,10 +54,7 @@ glms_vec2_fill(float val) {
  * @param[in] val value
  */
 CGLM_INLINE
-bool
-glms_vec2_eq(vec2s v, float val) {
-  return glm_vec2_eq(v.raw, val);
-}
+bool glms_vec2_eq(vec2s v, float val) { return glm_vec2_eq(v.raw, val); }
 
 /*!
  * @brief check if vector is equal to value (with epsilon)
@@ -67,8 +63,7 @@ glms_vec2_eq(vec2s v, float val) {
  * @param[in] val value
  */
 CGLM_INLINE
-bool
-glms_vec2_eq_eps(vec2s v, float val) {
+bool glms_vec2_eq_eps(vec2s v, float val) {
   return glm_vec2_eq_eps(v.raw, val);
 }
 
@@ -78,10 +73,7 @@ glms_vec2_eq_eps(vec2s v, float val) {
  * @param[in] v   vector
  */
 CGLM_INLINE
-bool
-glms_vec2_eq_all(vec2s v) {
-  return glm_vec2_eq_all(v.raw);
-}
+bool glms_vec2_eq_all(vec2s v) { return glm_vec2_eq_all(v.raw); }
 
 /*!
  * @brief check if vector is equal to another (without epsilon)
@@ -90,10 +82,7 @@ glms_vec2_eq_all(vec2s v) {
  * @param[in] b vector
  */
 CGLM_INLINE
-bool
-glms_vec2_eqv(vec2s a, vec2s b) {
-  return glm_vec2_eqv(a.raw, b.raw);
-}
+bool glms_vec2_eqv(vec2s a, vec2s b) { return glm_vec2_eqv(a.raw, b.raw); }
 
 /*!
  * @brief check if vector is equal to another (with epsilon)
@@ -102,8 +91,7 @@ glms_vec2_eqv(vec2s a, vec2s b) {
  * @param[in] b vector
  */
 CGLM_INLINE
-bool
-glms_vec2_eqv_eps(vec2s a, vec2s b) {
+bool glms_vec2_eqv_eps(vec2s a, vec2s b) {
   return glm_vec2_eqv_eps(a.raw, b.raw);
 }
 
@@ -113,10 +101,7 @@ glms_vec2_eqv_eps(vec2s a, vec2s b) {
  * @param[in] v vector
  */
 CGLM_INLINE
-float
-glms_vec2_max(vec2s v) {
-  return glm_vec2_max(v.raw);
-}
+float glms_vec2_max(vec2s v) { return glm_vec2_max(v.raw); }
 
 /*!
  * @brief min value of vector
@@ -124,10 +109,7 @@ glms_vec2_max(vec2s v) {
  * @param[in] v vector
  */
 CGLM_INLINE
-float
-glms_vec2_min(vec2s v) {
-  return glm_vec2_min(v.raw);
-}
+float glms_vec2_min(vec2s v) { return glm_vec2_min(v.raw); }
 
 /*!
  * @brief check if all items are NaN (not a number)
@@ -136,10 +118,7 @@ glms_vec2_min(vec2s v) {
  * @param[in] v vector
  */
 CGLM_INLINE
-bool
-glms_vec2_isnan(vec2s v) {
-  return glm_vec2_isnan(v.raw);
-}
+bool glms_vec2_isnan(vec2s v) { return glm_vec2_isnan(v.raw); }
 
 /*!
  * @brief check if all items are INFINITY
@@ -148,10 +127,7 @@ glms_vec2_isnan(vec2s v) {
  * @param[in] v vector
  */
 CGLM_INLINE
-bool
-glms_vec2_isinf(vec2s v) {
-  return glm_vec2_isinf(v.raw);
-}
+bool glms_vec2_isinf(vec2s v) { return glm_vec2_isinf(v.raw); }
 
 /*!
  * @brief check if all items are valid number
@@ -160,10 +136,7 @@ glms_vec2_isinf(vec2s v) {
  * @param[in] v vector
  */
 CGLM_INLINE
-bool
-glms_vec2_isvalid(vec2s v) {
-  return glm_vec2_isvalid(v.raw);
-}
+bool glms_vec2_isvalid(vec2s v) { return glm_vec2_isvalid(v.raw); }
 
 /*!
  * @brief get sign of 32 bit float as +1, -1, 0
@@ -174,8 +147,7 @@ glms_vec2_isvalid(vec2s v) {
  * @returns     sign vector
  */
 CGLM_INLINE
-vec2s
-glms_vec2_sign(vec2s v) {
+vec2s glms_vec2_sign(vec2s v) {
   vec2s r;
   glm_vec2_sign(v.raw, r.raw);
   return r;
@@ -188,8 +160,7 @@ glms_vec2_sign(vec2s v) {
  * @returns         destination vector
  */
 CGLM_INLINE
-vec2s
-glms_vec2_sqrt(vec2s v) {
+vec2s glms_vec2_sqrt(vec2s v) {
   vec2s r;
   glm_vec2_sqrt(v.raw, r.raw);
   return r;
@@ -203,8 +174,7 @@ glms_vec2_sqrt(vec2s v) {
  * @param[out] dest destination number
  */
 CGLM_INLINE
-vec2s
-glms_vec2_complex_mul(vec2s a, vec2s b, vec2s dest) {
+vec2s glms_vec2_complex_mul(vec2s a, vec2s b, vec2s dest) {
   glm_vec2_complex_mul(a.raw, b.raw, dest.raw);
   return dest;
 }
@@ -217,8 +187,7 @@ glms_vec2_complex_mul(vec2s a, vec2s b, vec2s dest) {
  * @param[out] dest destination number
  */
 CGLM_INLINE
-vec2s
-glms_vec2_complex_div(vec2s a, vec2s b, vec2s dest) {
+vec2s glms_vec2_complex_div(vec2s a, vec2s b, vec2s dest) {
   glm_vec2_complex_div(a.raw, b.raw, dest.raw);
   return dest;
 }
@@ -230,8 +199,7 @@ glms_vec2_complex_div(vec2s a, vec2s b, vec2s dest) {
  * @param[out] dest destination number
  */
 CGLM_INLINE
-vec2s
-glms_vec2_complex_conjugate(vec2s a, vec2s dest) {
+vec2s glms_vec2_complex_conjugate(vec2s a, vec2s dest) {
   glm_vec2_complex_conjugate(a.raw, dest.raw);
   return dest;
 }

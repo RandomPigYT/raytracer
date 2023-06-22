@@ -6,6 +6,8 @@ import graphics.computeShader as comp
 import numpy as np
 import renderer.canvas as canvas
 import renderer.raytrace as rt
+import renderer.scene as sc
+import ctypes as ct
 
 
 def main():
@@ -15,18 +17,41 @@ def main():
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
-    #window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    # window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
     window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
     height = viewport[3]
 
-    compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
+    # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
+    compShaderProgram = comp.compileComputeShader("./src/shader_code/raytracer.comp")
 
-    tex, shaderProgram = canvas.initRenderCavas()
+    vao, vbo, ebo, tex, shaderProgram = canvas.initRenderCavas()
 
-    rt.raytrace(None, 0, 0)
+    camPos = (ct.c_float * 3)(6.9, 42.0, 80.085)
+    camDir = (ct.c_float * 3)(10.1, 10.0, 11.0)
+
+    meshes = (sc.Mesh * 2)((69, 11, 420, 8), (80085, 69420, 96, 24))
+
+    skene = sc.Scene(
+        "lol",
+        camPos,
+        camDir,
+        (sc.Vertex * 0)(),
+        (sc.Material * 0)(),
+        meshes,
+        (sc.Object * 0)(),
+        None,
+        shaderProgram,
+        compShaderProgram,
+        vao,
+        vbo,
+        ebo,
+        tex,
+    )
+
+    rt.raytrace(skene, 0, 0)
 
     targetFPS = 60
     frameTime = 1 / targetFPS

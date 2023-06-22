@@ -9,24 +9,22 @@
 #define cglm_mat_simd_avx_h
 #ifdef __AVX__
 
+#include <immintrin.h>
+
 #include "../../common.h"
 #include "../intrin.h"
 
-#include <immintrin.h>
-
 CGLM_INLINE
-void
-glm_mat4_scale_avx(mat4 m, float s) {
+void glm_mat4_scale_avx(mat4 m, float s) {
   __m256 y0;
   y0 = _mm256_set1_ps(s);
-  
+
   glmm_store256(m[0], _mm256_mul_ps(y0, glmm_load256(m[0])));
   glmm_store256(m[2], _mm256_mul_ps(y0, glmm_load256(m[2])));
 }
 
 CGLM_INLINE
-void
-glm_mat4_mul_avx(mat4 m1, mat4 m2, mat4 dest) {
+void glm_mat4_mul_avx(mat4 m1, mat4 m2, mat4 dest) {
   /* D = R * L (Column-Major) */
 
   __m256 y0, y1, y2, y3, y4, y5, y6, y7, y8, y9;
@@ -50,11 +48,11 @@ glm_mat4_mul_avx(mat4 m1, mat4 m2, mat4 dest) {
   y8 = _mm256_permutevar_ps(y0, _mm256_set_epi32(0, 0, 0, 0, 1, 1, 1, 1));
   y9 = _mm256_permutevar_ps(y0, _mm256_set_epi32(2, 2, 2, 2, 3, 3, 3, 3));
 
-  glmm_store256(dest[0],
-                _mm256_add_ps(_mm256_add_ps(_mm256_mul_ps(y2, y6),
-                                            _mm256_mul_ps(y3, y7)),
-                              _mm256_add_ps(_mm256_mul_ps(y4, y8),
-                                            _mm256_mul_ps(y5, y9))));
+  glmm_store256(
+      dest[0],
+      _mm256_add_ps(
+          _mm256_add_ps(_mm256_mul_ps(y2, y6), _mm256_mul_ps(y3, y7)),
+          _mm256_add_ps(_mm256_mul_ps(y4, y8), _mm256_mul_ps(y5, y9))));
 
   /* n n n n i i i i */
   /* p p p p k k k k */
@@ -65,11 +63,11 @@ glm_mat4_mul_avx(mat4 m1, mat4 m2, mat4 dest) {
   y8 = _mm256_permutevar_ps(y1, _mm256_set_epi32(0, 0, 0, 0, 1, 1, 1, 1));
   y9 = _mm256_permutevar_ps(y1, _mm256_set_epi32(2, 2, 2, 2, 3, 3, 3, 3));
 
-  glmm_store256(dest[2],
-                _mm256_add_ps(_mm256_add_ps(_mm256_mul_ps(y2, y6),
-                                            _mm256_mul_ps(y3, y7)),
-                              _mm256_add_ps(_mm256_mul_ps(y4, y8),
-                                            _mm256_mul_ps(y5, y9))));
+  glmm_store256(
+      dest[2],
+      _mm256_add_ps(
+          _mm256_add_ps(_mm256_mul_ps(y2, y6), _mm256_mul_ps(y3, y7)),
+          _mm256_add_ps(_mm256_mul_ps(y4, y8), _mm256_mul_ps(y5, y9))));
 }
 
 #endif
