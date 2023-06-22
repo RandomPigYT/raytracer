@@ -17,8 +17,8 @@ def main():
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
-    # window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
-    window = graphics.window.createWindow(1920, 1080, "test")
+    window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    #window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
