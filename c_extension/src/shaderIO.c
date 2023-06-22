@@ -5,7 +5,7 @@
 void sendToShader(vec3 cameraPos, vec3 cameraDir, struct vertex *vertices,
                   struct material *materials, struct mesh *meshes,
                   struct object *objects, struct argData_t argData,
-									GLuint shaderProgram) {
+									uint32_t shaderProgram) {
 
   for (int i = 0; i < argData.numMeshes; i++) {
 	
