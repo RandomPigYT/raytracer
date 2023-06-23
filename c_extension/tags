@@ -2299,6 +2299,7 @@ __anonb15c29ec0103	include/KHR/khrplatform.h	/^typedef enum {$/;"	g
 __gl_h_	include/glad/glad.h	/^#define __gl_h_$/;"	d
 __glad_h_	include/glad/glad.h	/^#define __glad_h_$/;"	d
 __khrplatform_h_	include/KHR/khrplatform.h	/^#define __khrplatform_h_$/;"	d
+addOffset	src/addOffset.c	/^void* addOffset(void* ptr, uint64_t size, int8_t sign){$/;"	f	typeref:typename:void *
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
 alpha_x	include/extension.h	/^  float alpha_x;$/;"	m	struct:material	typeref:typename:float
 alpha_y	include/extension.h	/^  float alpha_y;$/;"	m	struct:material	typeref:typename:float
@@ -2307,7 +2308,11 @@ cameraDir	include/extension.h	/^  vec3 cameraDir;$/;"	m	struct:SceneData	typeref
 cameraPos	include/extension.h	/^  vec3 cameraPos;$/;"	m	struct:SceneData	typeref:typename:vec3
 clean	Makefile	/^clean:$/;"	t
 close_gl	src/glad.c	/^static void close_gl(void) {$/;"	f	typeref:typename:void	file:
+context	include/extension.h	/^	GLXContext context;$/;"	m	struct:contextHandle	typeref:typename:GLXContext
+contextHandle	include/extension.h	/^struct contextHandle {$/;"	s
 dirs	Makefile	/^dirs:$/;"	t
+display	include/extension.h	/^	Display* display;$/;"	m	struct:contextHandle	typeref:typename:Display *
+drawable	include/extension.h	/^	GLXDrawable drawable;$/;"	m	struct:contextHandle	typeref:typename:GLXDrawable
 emission	include/extension.h	/^  vec3 emission;$/;"	m	struct:material	typeref:typename:vec3
 exts	src/glad.c	/^static const char *exts = NULL;$/;"	v	typeref:typename:const char *	file:
 exts_i	src/glad.c	/^static char **exts_i = NULL;$/;"	v	typeref:typename:char **	file:
@@ -4504,8 +4509,9 @@ padding2	include/extension.h	/^  float padding2;$/;"	m	struct:vertex	typeref:typ
 pos	include/extension.h	/^  vec3 pos;$/;"	m	struct:object	typeref:typename:vec3
 position	include/extension.h	/^  vec3 position;$/;"	m	struct:vertex	typeref:typename:vec3
 run	Makefile	/^run: $(TARGET)$/;"	t
-sendToShader	src/shaderIO.c	/^void sendToShader(struct SceneData scene, struct argData args) {$/;"	f	typeref:typename:void
+sendToShader	src/shaderIO.c	/^void sendToShader(struct SceneData scene, struct argData args, struct contextHandle handle){$/;"	f	typeref:typename:void
 shaderProgram	include/extension.h	/^  uint32_t shaderProgram;$/;"	m	struct:SceneData	typeref:typename:uint32_t
+ssbo	include/extension.h	/^  uint32_t ssbo;$/;"	m	struct:SceneData	typeref:typename:uint32_t
 startingVertex	include/extension.h	/^  uint64_t startingVertex;$/;"	m	struct:mesh	typeref:typename:uint64_t
 textureCoord	include/extension.h	/^  vec3 textureCoord;$/;"	m	struct:vertex	typeref:typename:vec3
 valgrind	Makefile	/^valgrind:$/;"	t

@@ -30,6 +30,7 @@ def initRenderCavas():
     vao = gl.glGenVertexArrays(1)
     vbo = gl.glGenBuffers(1)
     ebo = gl.glGenBuffers(1)
+    ssbo = gl.glGenBuffers(1)
 
     gl.glBindVertexArray(vao)
 

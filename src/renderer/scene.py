@@ -53,11 +53,14 @@ class Scene:
         quadVBO,
         quadEBO,
         quadTexture,
+        ssbo
     ):
         self.name = name
 
         self.shaderProgram = shaderProgram
         self.computeProgram = computeProgram
+
+        self.ssbo = ssbo
 
         self.quadVAO = quadVAO
         self.quadVBO = quadVBO

@@ -8,14 +8,12 @@ import renderer.canvas as canvas
 import renderer.raytrace as rt
 import renderer.scene as sc
 import ctypes as ct
+import init
 
 
 def main():
-    glfwInit()
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5)
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
+    
+    init.init(4, 5)
 
     window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
     #window = graphics.window.createWindow(1920, 1080, "test")
@@ -33,6 +31,9 @@ def main():
     camDir = (ct.c_float * 3)(10.1, 10.0, 11.0)
 
     meshes = (sc.Mesh * 2)((69, 11, 420, 8), (80085, 69420, 96, 24))
+    
+    ssbo = gl.glGenBuffers(1)
+
 
     skene = sc.Scene(
         "lol",
@@ -49,6 +50,7 @@ def main():
         vbo,
         ebo,
         tex,
+        ssbo
     )
 
     rt.raytrace(skene, 0, 0)
