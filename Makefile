@@ -6,3 +6,6 @@ frmt:
 
 v:
 	source ./venv/bin/activate
+
+clean:
+	@rm main.build main.dist -rf

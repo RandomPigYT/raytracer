@@ -14,12 +14,14 @@ class Vertex(ct.Structure):
 
 class Material(ct.Structure):
     _fields_ = [
-        ("kd", ct.c_float * 3),
-        ("alpha_x", ct.c_float),
-        ("ks", ct.c_float * 3),
-        ("alpha_y", ct.c_float),
-        ("emission", ct.c_float * 3),
-        ("padding3", ct.c_float),
+        ("kd", ct.c_float * 3),#0   12
+        ("padding0", ct.c_float), #12   4
+        ("alpha", ct.c_float * 2),# 16  8
+        ("padding1", ct.c_float * 2), # 24  8
+        ("ks", ct.c_float * 3), # 32    12
+        ("padding1", ct.c_float), # 44  4
+        ("emission", ct.c_float * 3), # 48  12
+        ("padding3", ct.c_float)    # 60    4
     ]
 
 

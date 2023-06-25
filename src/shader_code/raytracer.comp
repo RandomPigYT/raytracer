@@ -1,10 +1,66 @@
 #version 450 core
+#extension GL_ARB_gpu_shader_int64 : enable
 
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
 layout (rgba32f, binding = 0) uniform image2D rendered;
 
 
+struct Vertex {
+	
+	vec3 position;
+	vec3 normal;
+	vec3 texelCoord;
 
+};
+
+struct Material {
+	
+	vec3 kd;
+	vec2 alpha;
+	vec3 ks;
+	vec3 emission;
+
+};
+
+struct Mesh {
+	
+	uint64_t startingVertex;
+	uint64_t numTriangles;
+	uint64_t materialID;
+	uint64_t objectID;
+
+};
+
+struct Object {
+
+	vec3 pos;
+	uint id;
+
+};
+
+layout (std140, binding = 0) buffer Verts{
+	Vertex verts[];
+};
+
+layout (std140, binding = 1) buffer Materials {
+	Material materials[];
+};
+
+layout (std140, binding = 2) buffer Meshes {
+	Mesh meshes;
+};
+
+layout (std140, binding = 3) buffer Objects {
+	Object objects;
+};
+
+layout (std140) uniform ShaderData {
+	
+	vec3 cameraPos;
+	vec3 cameraDir;
+
+};
 
 
 void main(){
