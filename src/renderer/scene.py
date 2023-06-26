@@ -7,8 +7,8 @@ class Vertex(ct.Structure):
         ("padding0", ct.c_float),
         ("normal", ct.c_float * 3),
         ("padding1", ct.c_float),
-        ("textureCoord", ct.c_float * 3),
-        ("padding2", ct.c_float),
+        ("textureCoord", ct.c_float * 2),
+        ("padding2", 2 * ct.c_float),
     ]
 
 
@@ -54,15 +54,13 @@ class Scene:
         quadVAO,
         quadVBO,
         quadEBO,
-        quadTexture,
-        ssbo
+        quadTexture
     ):
         self.name = name
 
         self.shaderProgram = shaderProgram
         self.computeProgram = computeProgram
 
-        self.ssbo = ssbo
 
         self.quadVAO = quadVAO
         self.quadVBO = quadVBO
@@ -78,3 +76,8 @@ class Scene:
         self.meshes = meshes
         self.objects = objects
         self.objectNames = objectNames
+    
+    def loadModel(objFile, MTLFile):
+        pass
+        
+

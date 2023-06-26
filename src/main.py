@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import graphics.window
 from glfw.GLFW import *
 import OpenGL.GL as gl
@@ -9,10 +11,13 @@ import renderer.raytrace as rt
 import renderer.scene as sc
 import ctypes as ct
 import init
+import renderer.model.loadModel as m
 
 
 def main():
     
+    m.loadModel("models/suzanne.obj")
+
     init.init(4, 5)
 
     window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
@@ -49,8 +54,7 @@ def main():
         vao,
         vbo,
         ebo,
-        tex,
-        ssbo
+        tex
     )
 
     rt.raytrace(skene, 0, 0)
