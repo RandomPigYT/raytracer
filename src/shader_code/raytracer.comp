@@ -1,5 +1,4 @@
 #version 450 core
-#extension GL_ARB_gpu_shader_int64 : enable
 
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
@@ -25,10 +24,10 @@ struct Material {
 
 struct Mesh {
 	
-	uint64_t startingVertex;
-	uint64_t numTriangles;
-	uint64_t materialID;
-	uint64_t objectID;
+	uint startingVertex;
+	uint numTriangles;
+	uint materialID;
+	uint objectID;
 
 };
 
