@@ -7,6 +7,7 @@ import graphics.shader as shader
 import ctypes
 from PIL import Image
 import random as rand
+import graphics.computeShader as comp
 
 # fmt: off
 # vertex -> x, y, z, u, v
@@ -22,19 +23,18 @@ indices = [0, 1, 3,
 # fmt: on
 
 
-def initRenderCavas():
+def initRenderCavas(self):
     floatSize = 4
     int32Size = 4
 
     # setup buffers
-    vao = gl.glGenVertexArrays(1)
-    vbo = gl.glGenBuffers(1)
-    ebo = gl.glGenBuffers(1)
-    ssbo = gl.glGenBuffers(1)
+    self.vao = gl.glGenVertexArrays(1)
+    self.vbo = gl.glGenBuffers(1)
+    self.ebo = gl.glGenBuffers(1)
 
-    gl.glBindVertexArray(vao)
+    gl.glBindVertexArray(self.vao)
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vbo)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vbo)
     gl.glBufferData(
         gl.GL_ARRAY_BUFFER,
         len(vertices) * floatSize,
@@ -43,7 +43,7 @@ def initRenderCavas():
     )
 
     # Does not work for some reason. Need to fix
-    gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, ebo)
+    gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ebo)
     gl.glBufferData(
         gl.GL_ELEMENT_ARRAY_BUFFER,
         len(indices) * int32Size,
@@ -58,18 +58,18 @@ def initRenderCavas():
     gl.glEnableVertexAttribArray(0)
     gl.glEnableVertexAttribArray(1)
 
-    gl.glBindVertexArray(vao)
+    gl.glBindVertexArray(self.vao)
 
     # Shader for quad
-    shaderProgram = shader.generateShaderProgram(
+    self.shaderProgram = shader.generateShaderProgram(
         "./src/shader_code/vertex.vert", "./src/shader_code/fragment.frag"
     )
 
-    shader.useShader(shaderProgram)
+    shader.useShader(self.shaderProgram)
 
-    tex = gl.glGenTextures(1)
+    self.tex = gl.glGenTextures(1)
     gl.glActiveTexture(gl.GL_TEXTURE0)
-    gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, self.tex)
     # gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "ourTex"), 0)
 
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
@@ -92,6 +92,10 @@ def initRenderCavas():
     )
     # gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, 1920, 1080, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, data)
 
-    gl.glBindImageTexture(0, tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F)
+    gl.glBindImageTexture(0, self.tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F)
 
-    return vao, vbo, ebo, tex, shaderProgram
+
+
+    # init compute shader
+    self.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
+

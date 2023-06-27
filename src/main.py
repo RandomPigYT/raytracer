@@ -16,7 +16,6 @@ import renderer.model.loadModel as m
 
 def main():
     
-    m.loadModel("models/suzanne.obj")
 
     init.init(4, 5)
 
@@ -28,36 +27,28 @@ def main():
     height = viewport[3]
 
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
-    compShaderProgram = comp.compileComputeShader("./src/shader_code/raytracer.comp")
+    #
 
-    vao, vbo, ebo, tex, shaderProgram = canvas.initRenderCavas()
+
+
+
+    
 
     camPos = (ct.c_float * 3)(6.9, 42.0, 80.085)
     camDir = (ct.c_float * 3)(10.1, 10.0, 11.0)
 
-    meshes = (sc.Mesh * 2)((69, 11, 420, 8), (80085, 69420, 96, 24))
+    scene: sc.Scene = sc.Scene("main", camPos, camDir)
+
+    scene.initCanvas()
+
+    scene.loadModel("./models/suzanne.obj")
+
     
     ssbo = gl.glGenBuffers(1)
 
 
-    skene = sc.Scene(
-        "lol",
-        camPos,
-        camDir,
-        (sc.Vertex * 0)(),
-        (sc.Material * 0)(),
-        meshes,
-        (sc.Object * 0)(),
-        None,
-        shaderProgram,
-        compShaderProgram,
-        vao,
-        vbo,
-        ebo,
-        tex
-    )
 
-    rt.raytrace(skene, 0, 0)
+    rt.raytrace(scene, 0, 0)
 
     targetFPS = 60
     frameTime = 1 / targetFPS
@@ -73,7 +64,7 @@ def main():
 
         prevTime = currentTime
 
-        shader.useShader(compShaderProgram)
+        shader.useShader(scene.compute)
         gl.glDispatchCompute(width, height, 1)
 
         gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
@@ -81,9 +72,9 @@ def main():
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        shader.useShader(shaderProgram)
+        shader.useShader(scene.shaderProgram)
         gl.glActiveTexture(gl.GL_TEXTURE0)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, tex)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, scene.tex)
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
         # gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, 4)

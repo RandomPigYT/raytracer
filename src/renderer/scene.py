@@ -1,4 +1,6 @@
 import ctypes as ct
+import renderer.canvas as canvas
+import renderer.model.loadModel as lm
 
 
 class Vertex(ct.Structure):
@@ -39,45 +41,35 @@ class Object(ct.Structure):
 
 
 class Scene:
+
+    vertices = (0 * Vertex)()
+    meshes = (0 * Mesh)()
+    materials = (0 * Material)()
+    objects = (0 * Object)()
+
+
     def __init__(
         self,
         name,
         cameraPos,
-        cameraDirection,
-        vertices,
-        materials,
-        meshes,
-        objects,
-        objectNames,
-        shaderProgram,
-        computeProgram,
-        quadVAO,
-        quadVBO,
-        quadEBO,
-        quadTexture
+        cameraDirection
     ):
         self.name = name
-
-        self.shaderProgram = shaderProgram
-        self.computeProgram = computeProgram
-
-
-        self.quadVAO = quadVAO
-        self.quadVBO = quadVBO
-        self.quadEBO = quadEBO
-
-        self.quadTexture = quadTexture
 
         self.cameraPos = cameraPos
         self.cameraDirection = cameraDirection
 
-        self.vertices = vertices
-        self.materials = materials
-        self.meshes = meshes
-        self.objects = objects
-        self.objectNames = objectNames
     
-    def loadModel(objFile, MTLFile):
-        pass
-        
+    # Methods
+    loadModel = lm.loadModel
+    initCanvas = canvas.initRenderCavas
+
+
+
+
+
+
+
+
+
 

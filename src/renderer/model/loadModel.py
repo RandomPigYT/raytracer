@@ -1,5 +1,6 @@
 import renderer.scene as sc
 import ctypes as ct
+import util
 
 
 class modelStruct:
@@ -8,7 +9,13 @@ class modelStruct:
     normals = []
     texCoords = []
 
-def parseFace(line, model: modelStruct):
+def parseFace(scene, line, model: modelStruct, index):
+
+    def replaceEmptyStrings(l):
+        for i in range(len(l)):
+            if l[i] == '':
+                l[i] = '0'
+
     toks = line.split()
 
     if toks[0] != 'f':
@@ -20,11 +27,15 @@ def parseFace(line, model: modelStruct):
     for i in toks[1:]:
         temp = i.split('/')
         
+        replaceEmptyStrings(temp)
+        
         # This is so that temp has a minimum size of 3
         temp.extend(['0', '0'])
 
+
         v, vt, vn = temp[:3]
         v = int(v); vt = int(vt); vn = int(vn)
+
         
         # generate the real vertices
         
@@ -71,10 +82,23 @@ def parseLine(line, model: modelStruct):
     
     
 
-def loadModel(filename):
+def loadModel(self, filename):
+    
+    def numFaces(lines):
+        count = 0
+        for i in lines:
+            if i.split()[0] == 'f':
+                count += 1
+
+        return count
+
+            
+
     objFile = open(filename, "r")
 
     lines = objFile.readlines()
+
+    objFile.close()
 
     model = modelStruct()
 
@@ -87,9 +111,16 @@ def loadModel(filename):
         
         if temp:
             unprocessedLines.append(temp)
+
+    print(len(self.vertices))
+    
+    self.vertices = util.realloc(self.vertices, 
+                                 len(self.vertices) + (3 * numFaces(unprocessedLines)))
+    
+    print(len(self.vertices))
         
     for i in unprocessedLines:
-        parseFace(i, model)
+        parseFace(self, i, model, numFaces(unprocessedLines))
 
 
 

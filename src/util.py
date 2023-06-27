@@ -10,5 +10,15 @@ def readFile(filePath):
 
 
 def sizeof(obj):
-   return (ct.sizeof(type(obj)()._type_))
+   return ct.sizeof((obj._type_))
+
+
+def realloc(array, n):
     
+    resized = (n * array._type_)()
+    ct.memmove(resized, array, len(array) * ct.sizeof(array._type_))
+
+    return resized
+
+
+
