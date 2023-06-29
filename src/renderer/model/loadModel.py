@@ -31,7 +31,7 @@ def loadModel(self, filename):
     self.vertices = util.realloc(self.vertices,
                                  len(self.vertices) + numFaces(shapes)) 
     
-    # I'm giving compromising on memory usage for speed
+    # I'm compromising memory usage for speed
     
     
     currentIndex = 0
