@@ -15,12 +15,10 @@ import renderer.model.loadModel as m
 
 
 def main():
-    
-
     init.init(4, 5)
 
     window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
-    #window = graphics.window.createWindow(1920, 1080, "test")
+    # window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
@@ -29,11 +27,6 @@ def main():
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
 
-
-
-
-    
-
     camPos = (ct.c_float * 3)(6.9, 42.0, 80.085)
     camDir = (ct.c_float * 3)(10.1, 10.0, 11.0)
 
@@ -41,12 +34,9 @@ def main():
 
     scene.initCanvas()
 
-    scene.loadModel("./models/suzanne.obj")
+    scene.loadModel("models/suzanne.obj")
 
-    
     ssbo = gl.glGenBuffers(1)
-
-
 
     rt.raytrace(scene, 0, 0)
 

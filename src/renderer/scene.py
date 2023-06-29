@@ -16,14 +16,14 @@ class Vertex(ct.Structure):
 
 class Material(ct.Structure):
     _fields_ = [
-        ("kd", ct.c_float * 3),#0   12
-        ("padding0", ct.c_float), #12   4
-        ("alpha", ct.c_float * 2),# 16  8
-        ("padding1", ct.c_float * 2), # 24  8
-        ("ks", ct.c_float * 3), # 32    12
-        ("padding1", ct.c_float), # 44  4
-        ("emission", ct.c_float * 3), # 48  12
-        ("padding3", ct.c_float)    # 60    4
+        ("kd", ct.c_float * 3),  # 0   12
+        ("padding0", ct.c_float),  # 12   4
+        ("alpha", ct.c_float * 2),  # 16  8
+        ("padding1", ct.c_float * 2),  # 24  8
+        ("ks", ct.c_float * 3),  # 32    12
+        ("padding1", ct.c_float),  # 44  4
+        ("emission", ct.c_float * 3),  # 48  12
+        ("padding3", ct.c_float),  # 60    4
     ]
 
 
@@ -41,35 +41,17 @@ class Object(ct.Structure):
 
 
 class Scene:
-
     vertices = (0 * Vertex)()
     meshes = (0 * Mesh)()
     materials = (0 * Material)()
     objects = (0 * Object)()
 
-
-    def __init__(
-        self,
-        name,
-        cameraPos,
-        cameraDirection
-    ):
+    def __init__(self, name, cameraPos, cameraDirection):
         self.name = name
 
         self.cameraPos = cameraPos
         self.cameraDirection = cameraDirection
 
-    
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
-
-
-
-
-
-
-
-
-
-

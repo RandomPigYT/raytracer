@@ -8,10 +8,3 @@ import util
 
 def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
     pass
-    
-    
-    
-        
-    
-
-

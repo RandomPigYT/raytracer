@@ -2,6 +2,7 @@ from glfw.GLFW import *
 import OpenGL.GL as gl
 import c_extension as cext
 
+
 def init(contextMajor, contextMinor):
     glfwInit()
 
@@ -10,5 +11,3 @@ def init(contextMajor, contextMinor):
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
 
     cext.init()
-
-

@@ -9,8 +9,9 @@ if os.name == "nt":
 else:
     ext = ct.CDLL("c_extension/lib/extension.so")
 
+
 def init():
     global ext
 
-    ext.addOffset.restype = ct.c_void_p;
+    ext.addOffset.restype = ct.c_void_p
     ext.addOffset.argtypes = [ct.c_void_p, ct.c_uint64, ct.c_int8]

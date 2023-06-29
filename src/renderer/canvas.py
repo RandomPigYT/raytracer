@@ -92,10 +92,9 @@ def initRenderCavas(self):
     )
     # gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, 1920, 1080, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, data)
 
-    gl.glBindImageTexture(0, self.tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F)
-
-
+    gl.glBindImageTexture(
+        0, self.tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F
+    )
 
     # init compute shader
     self.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
-
