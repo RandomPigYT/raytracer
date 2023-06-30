@@ -32,11 +32,10 @@ def loadModel(self, filename):
 
     attribs = reader.GetAttrib()
     shapes = reader.GetShapes()
-    
+
     v = (len(attribs.vertices) * ct.c_float)(*attribs.vertices)
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)
     vt = (len(attribs.texcoords) * ct.c_float)(*attribs.texcoords)
-    
 
     offset = len(self.vertices)
 
@@ -56,12 +55,17 @@ def loadModel(self, filename):
             ]
         )
 
-        cext.ext.generateVerts(ct.byref(ct.cast(self.vertices, ct.POINTER(sc.Vertex))), v, vn, vt,
-                               temp, len(temp), offset)
+        cext.ext.generateVerts(
+            ct.byref(ct.cast(self.vertices, ct.POINTER(sc.Vertex))),
+            v,
+            vn,
+            vt,
+            temp,
+            len(temp),
+            offset,
+        )
 
-        
         offset += len(temp)
-        
 
     #   for i in shape.mesh.indices:
 
