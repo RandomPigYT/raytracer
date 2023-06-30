@@ -56,7 +56,7 @@ def loadModel(self, filename):
             ]
         )
 
-        cext.ext.generateVerts(ct.byref(self.vertices), v, vn, vt,
+        cext.ext.generateVerts(ct.byref(ct.cast(self.vertices, ct.POINTER(sc.Vertex))), v, vn, vt,
                                temp, len(temp), offset)
 
         
