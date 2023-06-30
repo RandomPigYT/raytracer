@@ -4,7 +4,6 @@ import c_extension as cext
 import sys
 
 def cleanup():
-    print("hello")
     glfwTerminate()
 
 
