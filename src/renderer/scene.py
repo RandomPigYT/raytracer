@@ -46,6 +46,11 @@ class Scene:
     materials = (0 * Material)()
     objects = (0 * Object)()
 
+    numVerts = 0
+    numMeshes = 0
+    numMats = 0
+    numObjs = 0
+
     def __init__(self, name, cameraPos, cameraDirection):
         self.name = name
 

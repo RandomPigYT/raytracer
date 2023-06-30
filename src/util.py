@@ -21,6 +21,5 @@ def realloc(array, n):
     return resized
 
 
-
 def toCtypesArr(pyarr, arrType):
     return (len(pyarr) * arrType)(*pyarr)
