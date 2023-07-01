@@ -1,6 +1,7 @@
 import ctypes as ct
 import renderer.canvas as canvas
 import renderer.model.loadModel as lm
+import OpenGL.GL as gl
 
 
 class Vertex(ct.Structure):
@@ -41,22 +42,77 @@ class Object(ct.Structure):
 
 
 class Scene:
+
+    # All the variables defined outside methods have been placed where they have been 
+    # for arbitrary reasons. Don't read too much into it.
     vertices = (0 * Vertex)()
     meshes = (0 * Mesh)()
     materials = (0 * Material)()
     objects = (0 * Object)()
 
-    numVerts = 0
-    numMeshes = 0
-    numMats = 0
-    numObjs = 0
+    vertSSBO = None
+    meshSSBO = None
+    materialSSBO = None
+
 
     def __init__(self, name, cameraPos, cameraDirection):
         self.name = name
 
         self.cameraPos = cameraPos
         self.cameraDirection = cameraDirection
+        
+        self.initSSBO()
+
 
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
+
+    def initSSBO(self):
+        self.vertSSBO = gl.glGenBuffers(1)
+        self.meshSSBO = gl.glGenBuffers(1)
+        self.materialSSBO = gl.glGenBuffers(1)
+    
+    def allocateSSBO(self):
+
+        # Resize vertices ssbo
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
+        gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Vertex) * len(self.vertices), None, gl.GL_DYNAMIC_READ)
+        gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, self.vertSSBO)
+        
+        # Populate vertices ssbo
+        ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        ct.memmove(ptr, self.vertices, ct.sizeof(Vertex) * len(self.vertices))
+        gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+    
+        # Resize meshes ssbo
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.meshSSBO)
+        gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Mesh) * len(self.meshes), None, gl.GL_DYNAMIC_READ)
+        gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, self.meshSSBO)
+        
+        # Populate meshes ssbo
+        ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        ct.memmove(ptr, self.meshes, ct.sizeof(Mesh) * len(self.meshes))
+        gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+
+        # Resize materials ssbo
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.materialSSBO)
+        gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Material) * len(self.materials), None, gl.GL_DYNAMIC_READ)
+        gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, self.materialSSBO)
+        
+        # Populate materials ssbo
+        ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        ct.memmove(ptr, self.materials, ct.sizeof(Material) * len(self.materials))
+        gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+        
+
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
+
+        
+
+        
+
+    
+
+        
+

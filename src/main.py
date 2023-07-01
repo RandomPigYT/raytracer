@@ -35,6 +35,7 @@ def main():
     scene.initCanvas()
 
     scene.loadModel("models/suzanne.obj")
+    scene.loadModel("models/utah.obj")
 
     ssbo = gl.glGenBuffers(1)
 

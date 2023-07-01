@@ -37,12 +37,24 @@ def loadModel(self, filename):
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)
     vt = (len(attribs.texcoords) * ct.c_float)(*attribs.texcoords)
 
-    offset = len(self.vertices)
+    vertOffset = len(self.vertices)
+    meshOffset = len(self.meshes)
 
     self.vertices = util.realloc(self.vertices, len(self.vertices) + numFaces(shapes))
+    self.meshes = util.realloc(self.meshes, len(self.meshes) + len(shapes))
+    self.materials = util.realloc(self.materials, len(self.materials) + len(shapes))
 
-    # I'm compromising memory usage for speed
+    # generate mesh data
+    startingVertCount = 0
+    for i in range(len(shapes)):
+        self.meshes[i + meshOffset].startingVertex = startingVertCount + vertOffset
+        self.meshes[i + meshOffset].numTriangles = len(shapes[i].mesh.indices)
 
+        self.meshes[i + meshOffset].materialID = i + meshOffset
+
+        startingVertCount += self.meshes[i + meshOffset].numTriangles
+
+    # generate vertices
     for shape in shapes:
         temp = (len(shape.mesh.indices) * face)(
             *[
@@ -62,32 +74,17 @@ def loadModel(self, filename):
             vt,
             temp,
             len(temp),
-            offset,
+            vertOffset,
         )
 
-        offset += len(temp)
+        vertOffset += len(temp)
 
-    #   for i in shape.mesh.indices:
-
-    #       self.vertices[currentIndex + offset].position = (3 * ct.c_float)(attribs.vertices[i.vertex_index * 3],
-    #                                                               attribs.vertices[(i.vertex_index * 3) + 1],
-    #                                                               attribs.vertices[(i.vertex_index * 3) + 2])
-
-    #       if i.texcoord_index >= 0:
-    #           self.vertices[currentIndex + offset].textureCoord = (2 * ct.c_float)(attribs.texcoords[i.texcoord_index * 2],
-    #                                                                       attribs.texcoords[(i.texcoord_index * 2) + 1])
-
-    #       if i.normal_index >= 0:
-    #           self.vertices[currentIndex + offset].normal = (3 * ct.c_float)(attribs.normals[i.normal_index * 3],
-    #                                                                 attribs.normals[(i.normal_index * 3) + 1],
-    #                                                                 attribs.normals[(i.normal_index * 3) + 2])
-
-    #       currentIndex += 1
-
-    for i in range(0, len(self.vertices), 3):
-        print(*self.vertices[i].position)
-        print(*self.vertices[i + 1].position)
-        print(*self.vertices[i + 2].position)
-        print()
+    #   for i in range(0, len(self.vertices), 3):
+    #       print(*self.vertices[i].position)
+    #       print(*self.vertices[i + 1].position)
+    #       print(*self.vertices[i + 2].position)
+    #       print()
+    
+    self.allocateSSBO()
 
     return True
