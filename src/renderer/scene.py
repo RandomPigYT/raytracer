@@ -8,7 +8,8 @@ class Vertex(ct.Structure):
     _fields_ = [
         ("position", ct.c_float * 4),
         ("normal", ct.c_float * 4),
-        ("textureCoord", ct.c_float * 4)
+        ("textureCoord", ct.c_float * 2),
+        ("padding0", ct.c_float * 2)
     ]
 
 
