@@ -98,3 +98,4 @@ def initRenderCavas(self):
 
     # init compute shader
     self.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
+    #self.compute = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")

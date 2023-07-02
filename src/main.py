@@ -12,30 +12,37 @@ import renderer.scene as sc
 import ctypes as ct
 import init
 import renderer.model.loadModel as m
+import graphics.input as inp
 
+
+
+
+
+        
 
 def main():
     init.init(4, 5)
 
-    window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
-    # window = graphics.window.createWindow(1920, 1080, "test")
+    #window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
     height = viewport[3]
 
+    glfwSetKeyCallback(window, inp.keyCallback)
+
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
 
-    camPos = (ct.c_float * 3)(6.9, 42.0, 80.085)
-    camDir = (ct.c_float * 3)(10.1, 10.0, 11.0)
+    camPos = (ct.c_float * 3)(0, 0, -20)
+    camDir = (ct.c_float * 3)(0, 0, 1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, camDir)
 
     scene.initCanvas()
 
-    scene.loadModel("models/suzanne.obj")
-    scene.loadModel("models/utah.obj")
+    scene.loadModel("models/cube.obj")
 
     ssbo = gl.glGenBuffers(1)
 

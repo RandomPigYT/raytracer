@@ -6,12 +6,9 @@ import OpenGL.GL as gl
 
 class Vertex(ct.Structure):
     _fields_ = [
-        ("position", ct.c_float * 3),
-        ("padding0", ct.c_float),
-        ("normal", ct.c_float * 3),
-        ("padding1", ct.c_float),
-        ("textureCoord", ct.c_float * 2),
-        ("padding2", 2 * ct.c_float),
+        ("position", ct.c_float * 4),
+        ("normal", ct.c_float * 4),
+        ("textureCoord", ct.c_float * 4)
     ]
 
 
@@ -75,6 +72,10 @@ class Scene:
     
     def allocateSSBO(self):
 
+        for i in self.vertices:
+            print(*i.position)
+
+
         # Resize vertices ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
         gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Vertex) * len(self.vertices), None, gl.GL_DYNAMIC_READ)
@@ -108,6 +109,16 @@ class Scene:
 
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 
+        self.sendUniforms()
+    
+    def sendUniforms(self):
+        camPosLoc = gl.glGetUniformLocation(self.compute, "cameraPos")
+        camDirLoc = gl.glGetUniformLocation(self.compute, "cameraDir")
+
+        gl.glUseProgram(self.compute)
+
+        gl.glUniform3f(camPosLoc, *self.cameraPos)
+        gl.glUniform3f(camDirLoc, *self.cameraDirection)
         
 
         
