@@ -35,7 +35,7 @@ def main():
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
 
-    camPos = (ct.c_float * 3)(0, 0, -20)
+    camPos = (ct.c_float * 3)(0, 0, -5)
     camDir = (ct.c_float * 3)(0, 0, 1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, camDir)
