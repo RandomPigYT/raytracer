@@ -72,8 +72,8 @@ class Scene:
     
     def allocateSSBO(self):
 
-        for i in self.vertices:
-            print(*i.position)
+       #for i in self.vertices:
+       #    print(*i.position)
 
 
         # Resize vertices ssbo
