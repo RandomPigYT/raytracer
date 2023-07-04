@@ -17,6 +17,13 @@ import graphics.input as inp
 
 
 
+def testShader():
+    shader.useShader(scene.compute)
+    gl.glDispatchCompute(width, height, 1)
+
+    gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+
+
 
         
 
@@ -38,15 +45,15 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, -5)
     camDir = (ct.c_float * 3)(0, 0, 1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, camDir)
+    scene: sc.Scene = sc.Scene("main", camPos, camDir, (1920, 1080))
 
     scene.initCanvas()
 
     scene.loadModel("models/cube.obj")
 
-    ssbo = gl.glGenBuffers(1)
 
     rt.raytrace(scene, 0, 0)
+
 
     targetFPS = 60
     frameTime = 1 / targetFPS
@@ -64,8 +71,9 @@ def main():
 
         shader.useShader(scene.compute)
         gl.glDispatchCompute(width, height, 1)
-
-        gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+        
+        gl.glFinish()
+#       gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
 
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)

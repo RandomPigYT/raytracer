@@ -1,0 +1,4 @@
+currentScene = None
+
+
+

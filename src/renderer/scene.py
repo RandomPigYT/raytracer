@@ -2,6 +2,7 @@ import ctypes as ct
 import renderer.canvas as canvas
 import renderer.model.loadModel as lm
 import OpenGL.GL as gl
+import sceneManager as sm
 
 
 class Vertex(ct.Structure):
@@ -53,7 +54,10 @@ class Scene:
     materialSSBO = None
 
 
-    def __init__(self, name, cameraPos, cameraDirection):
+    def __init__(self, name, cameraPos, cameraDirection, resolution: tuple):
+        if sm.currentScene == None:
+            sm.currentScene = self
+
         self.name = name
 
         self.cameraPos = cameraPos
@@ -61,10 +65,16 @@ class Scene:
         
         self.initSSBO()
 
+        self.resolution = resolution
+
+
 
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
+
+    def setAsCurrent(self):
+        sm.currentScene = self
 
     def initSSBO(self):
         self.vertSSBO = gl.glGenBuffers(1)

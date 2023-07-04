@@ -12,10 +12,10 @@ import graphics.computeShader as comp
 # fmt: off
 # vertex -> x, y, z, u, v
 vertices = [
-    -1, 1, 0, 0, 0,  # top-left
-    1, 1, 0, 1, 0,  # top-right
-    1, -1, 0, 1, 1,  # bottom-right
-    -1, -1, 0, 0, 1,  # bottom-left
+    -1, 1, 0, 0, 1,  # top-left
+    1, 1, 0, 1, 1,  # top-right
+    1, -1, 0, 1, 0,  # bottom-right
+    -1, -1, 0, 0, 0,  # bottom-left
 ]
 
 indices = [0, 1, 3, 
@@ -83,8 +83,8 @@ def initRenderCavas(self):
         gl.GL_TEXTURE_2D,
         0,
         gl.GL_RGBA32F,
-        width,
-        height,
+        self.resolution[0],
+        self.resolution[1],
         0,
         gl.GL_RGBA,
         gl.GL_FLOAT,
