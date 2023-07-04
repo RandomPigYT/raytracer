@@ -105,12 +105,20 @@ vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 vec3 getRayDir(float dist, float fov, vec2 resolution){
 	
 	
+	vec3 rayDir;
+
+	return rayDir;
+}
+
+vec3 getRayDirNaive(){
+	
+	
 	vec2 texelCoord = gl_GlobalInvocationID.xy;
 
 	vec2 uv = vec2(texelCoord.x / gl_NumWorkGroups.x, texelCoord.y / gl_NumWorkGroups.y);
 	uv = normalize(uv * 2.0f - 1.0f);
 
-	vec3 rayDir = vec3(uv, -1.0f);
+	vec3 rayDir = vec3(uv, 1.0f);
 
 
 	return rayDir;
@@ -121,11 +129,20 @@ vec3 getRayDir(float dist, float fov, vec2 resolution){
 
 void main(){
 
-	vec3 rayDir = getRayDir()
+	vec4 colour = vec4(0, 0, 0, 1);
 
-	for (int i = 0; i < verts.length(), i++){
+	vec3 rayDir = getRayDirNaive();
 
+	for (int i = 0; i < verts.length() / 3; i += 3){
 		
+		Vertex temp[] = {verts[i], verts[i + 1], verts[i + 2]};
+		vec2 intersectResult = testIntersect(temp, cameraPos, rayDir);
+
+		if (intersectResult[0] == 1){
+			
+			colour = vec4(verts[i].normal.xyz, 1.0);
+			
+		}
 
 	}
 	
@@ -136,6 +153,6 @@ void main(){
 	value.x = float(texelCoord.x)/(gl_NumWorkGroups.x);
 	value.y = float(texelCoord.y)/(gl_NumWorkGroups.y);
 	
-	imageStore(rendered, texelCoord, value);
+	imageStore(rendered, texelCoord, colour);
 }
 
