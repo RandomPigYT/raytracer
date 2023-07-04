@@ -69,14 +69,11 @@ def main():
 
         prevTime = currentTime
 
-        shader.useShader(scene.compute)
-        gl.glDispatchCompute(width, height, 1)
-        
-        gl.glFinish()
-#       gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
-
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        rt.raytrace(scene, 15, 30)
+
 
         shader.useShader(scene.shaderProgram)
         gl.glActiveTexture(gl.GL_TEXTURE0)
