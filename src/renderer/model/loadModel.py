@@ -79,11 +79,11 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
-    #   for i in range(0, len(self.vertices), 3):
-    #       print(*self.vertices[i].position)
-    #       print(*self.vertices[i + 1].position)
-    #       print(*self.vertices[i + 2].position)
-    #       print()
+#       for i in range(0, len(self.vertices), 3):
+#           print(*self.vertices[i].position)
+#           print(*self.vertices[i + 1].position)
+#           print(*self.vertices[i + 2].position)
+#           print()
     
     self.allocateSSBO()
 

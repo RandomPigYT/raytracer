@@ -53,6 +53,7 @@ class Scene:
     meshSSBO = None
     materialSSBO = None
 
+    playerSpeed = 0.5
 
     def __init__(self, name, cameraPos, cameraDirection, resolution: tuple):
         if sm.currentScene == None:

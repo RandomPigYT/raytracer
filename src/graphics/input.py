@@ -1,6 +1,11 @@
 from glfw.GLFW import *
+import renderer.camera as camera
 
 
 def keyCallback(window, key, scancode, action, mods):
 
-    pass
+    camera.move(key, action)
+
+    
+
+

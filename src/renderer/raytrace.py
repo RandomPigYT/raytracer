@@ -16,7 +16,9 @@ def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
     gl.glUniform1ui(raysPerPixelLoc, raysPerPixel)
     gl.glUniform1ui(maxBouncesLoc, maxBounces)
 
-    gl.glDispatchCompute(scene.resolution[0], scene.resolution[1], 1)
-    #gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+
+
+    gl.glDispatchCompute(64, 72, 1)
+    # gl.glMemoryBarrier(gl.GL_ALL_BARRIER_BITS)
     gl.glFinish()
 
