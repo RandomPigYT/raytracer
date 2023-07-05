@@ -36,14 +36,16 @@ def main():
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
 
-    camPos = (ct.c_float * 3)(0, 0, 3)
-    camDir = (ct.c_float * 3)(0, 0, 1.0)
+    camPos = (ct.c_float * 3)(0, 1, 3)
+    camDir = (ct.c_float * 3)(0, 0, -1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, camDir, (1920, 1080))
 
     scene.initCanvas()
 
     scene.loadModel("models/cube.obj")
+    scene.loadModel("models/car.obj")
+
 
 
 

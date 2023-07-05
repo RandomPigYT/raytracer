@@ -8,6 +8,8 @@ layout (local_size_x = NUM_INVOCATIONS_PER_GROUP_X, local_size_y = NUM_INVOCATIO
 layout (rgba32f, binding = 0) uniform image2D rendered;
 
 
+
+
 struct Vertex {
 	
 	vec4 position;
@@ -63,13 +65,16 @@ uniform vec3 cameraDir;
 uniform uint raysPerPixel;
 uniform uint maxBounces;
 
+uniform vec2 resolution;
+
+
 
 
 
 vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 	float epsilon = 0.0000001;
 
-	vec3 positions[] = {v[0].position.xyz, v[1].position.xyz, v[2].position.xyz};
+	vec3 positions[] = {v[2].position.xyz, v[1].position.xyz, v[0].position.xyz};
 
 	
 	
@@ -79,6 +84,9 @@ vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 	vec3 cross_rayDir_edge2 = cross(rayDir, edge2);
 	
 	double det = dot(edge1, cross_rayDir_edge2);
+
+	if (det < epsilon)
+		return vec2(0, 0);
 
 	if (det > -epsilon && det < epsilon)
 		return vec2(0, 0);
@@ -139,8 +147,8 @@ vec3 getRayDirNaive(float fov /* in degrees */, float aspectRatio){
 
 	
 	vec2 pixelCamera;
-	pixelCamera.x = ((2 * ndc.x) - 1)  * tan(radians(fov / 2));
-	pixelCamera.y = ((2 * ndc.y) - 1) * tan(radians(fov / 2));
+	pixelCamera.x = ((2 * ndc.x) - 1) * (1920.0f / 1080.0f) * tan(radians(fov / 2));
+	pixelCamera.y = (1 - (2 * ndc.y)) * tan(radians(fov / 2));
 
 	vec3 rayDir = vec3(pixelCamera, -1.0f);
 
@@ -154,15 +162,32 @@ void main(){
 
 	vec4 colour = vec4(0, 0, 0, 1);
 
-	float aspectRatio = (gl_NumWorkGroups.x * NUM_INVOCATIONS_PER_GROUP_X) / (gl_NumWorkGroups.y * NUM_INVOCATIONS_PER_GROUP_Y);
+	vec4 colours[] = {
+vec4(0.725, 0.192, 0.831, 1),
+vec4(0.498, 0.831, 0.192, 1),
+vec4(0.192, 0.831, 0.725, 1),
+vec4(0.831, 0.192, 0.498, 1),
+vec4(0.831, 0.725, 0.192, 1),
+vec4(0.498, 0.192, 0.831, 1),
+vec4(0.192, 0.498, 0.831, 1),
+vec4(0.725, 0.831, 0.192, 1),
+vec4(0.192, 0.725, 0.831, 1),
+vec4(0.831, 0.498, 0.192, 1),
+vec4(0.498, 0.725, 0.192, 1),
+vec4(0.725, 0.498, 0.192, 1)
 
-	float minRayT[12];
+
+	};
+
+
+	float aspectRatio = (gl_NumWorkGroups.x * NUM_INVOCATIONS_PER_GROUP_X)/ (gl_NumWorkGroups.y * NUM_INVOCATIONS_PER_GROUP_Y);
+
+	float minRayT = 1 / 0;
 	int minIndex = -1;
 	// vec3 rayDir = getRayDir(0.1, 90, ivec2(1920, 2080));
 	vec3 rayDir = getRayDirNaive(90, aspectRatio);
 
 
-	bool intersected = false;
 	for (int i = 0; i < verts.length(); i += 3){
 		
 		Vertex temp[] = {verts[i], verts[i + 1], verts[i + 2]};
@@ -174,16 +199,20 @@ void main(){
 		vec3 normal = normalize(cross(edge2.xyz, edge1.xyz));
 
 		if (intersectResult[0] == 1){
-			if (intersectResult[1] < 0)
+			if (intersectResult[1] > 0)
 				continue;
 
-			colour = vec4(normal, 1);
+
+			if (intersectResult[1] < minRayT)
+				minRayT = intersectResult[1];
+				minIndex = i / 3;
+			// colour = colours[i / 3];
 			
 		}
 
 	}
 
-
+	colour = colours[minIndex % 12];
 	
 
 	// colour = vec4(1, 0, 1, 1);

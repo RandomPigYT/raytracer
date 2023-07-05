@@ -26,16 +26,16 @@ def move(key: int, action: int):
         sm.currentScene.cameraPos = (ct.c_float * 3)(*glm.add(glm.mul(direction, sm.currentScene.playerSpeed * deltaTime()), position))
         
     if key == GLFW_KEY_D and (action == GLFW_REPEAT or action == GLFW_PRESS):
-        direction = glm.cross(glm.vec3(sm.currentScene.cameraDirection[0], 0, sm.currentScene.cameraDirection[2]), glm.vec3(0, 1, 0))
+        direction = glm.cross(-glm.vec3(sm.currentScene.cameraDirection[0], 0, sm.currentScene.cameraDirection[2]), glm.vec3(0, 1, 0))
         position = glm.vec3(*sm.currentScene.cameraPos)
 
         sm.currentScene.cameraPos = (ct.c_float * 3)(*glm.add(glm.mul(direction, sm.currentScene.playerSpeed * deltaTime()), position))
 
     if key == GLFW_KEY_A and (action == GLFW_REPEAT or action == GLFW_PRESS):
-        direction = glm.cross(glm.vec3(sm.currentScene.cameraDirection[0], 0, sm.currentScene.cameraDirection[2]), glm.vec3(0, 1, 0))
+        direction = glm.cross(-glm.vec3(sm.currentScene.cameraDirection[0], 0, -sm.currentScene.cameraDirection[2]), glm.vec3(0, 1, 0))
         position = glm.vec3(*sm.currentScene.cameraPos)
 
-        sm.currentScene.cameraPos = (ct.c_float * 3)(*glm.add(glm.mul(direction, -sm.currentScene.playerSpeed * deltaTime()), position))
+        sm.currentScene.cameraPos = (ct.c_float * 3)(*glm.add(glm.mul(direction, sm.currentScene.playerSpeed * deltaTime()), position))
     sm.currentScene.sendUniforms()
 
         

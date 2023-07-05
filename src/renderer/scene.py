@@ -53,7 +53,7 @@ class Scene:
     meshSSBO = None
     materialSSBO = None
 
-    playerSpeed = 0.5
+    playerSpeed = 3
 
     def __init__(self, name, cameraPos, cameraDirection, resolution: tuple):
         if sm.currentScene == None:
@@ -127,10 +127,14 @@ class Scene:
         camPosLoc = gl.glGetUniformLocation(self.compute, "cameraPos")
         camDirLoc = gl.glGetUniformLocation(self.compute, "cameraDir")
 
+        resolutionLoc = gl.glGetUniformLocation(self.compute, "resolution")
+
         gl.glUseProgram(self.compute)
 
         gl.glUniform3f(camPosLoc, *self.cameraPos)
         gl.glUniform3f(camDirLoc, *self.cameraDirection)
+
+        gl.glUniform2f(resolutionLoc, *(ct.c_float * 2)(*self.resolution))
         
 
         
