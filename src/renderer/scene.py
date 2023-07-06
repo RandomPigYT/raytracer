@@ -3,6 +3,8 @@ import renderer.canvas as canvas
 import renderer.model.loadModel as lm
 import OpenGL.GL as gl
 import sceneManager as sm
+import util
+from glfw.GLFW import *
 
 
 class Vertex(ct.Structure):
@@ -16,14 +18,12 @@ class Vertex(ct.Structure):
 
 class Material(ct.Structure):
     _fields_ = [
-        ("kd", ct.c_float * 3),  # 0   12
-        ("padding0", ct.c_float),  # 12   4
+        ("kd", ct.c_float * 4),  # 0   12
+        ("ks", ct.c_float * 4),  # 32    12
+        ("emission", ct.c_float * 4),  # 48  12
+        ("intensity", ct.c_float * 4),
         ("alpha", ct.c_float * 2),  # 16  8
-        ("padding1", ct.c_float * 2),  # 24  8
-        ("ks", ct.c_float * 3),  # 32    12
-        ("padding1", ct.c_float),  # 44  4
-        ("emission", ct.c_float * 3),  # 48  12
-        ("padding3", ct.c_float),  # 60    4
+        ("padding1", ct.c_float * 2)  # 24  8
     ]
 
 
@@ -40,6 +40,23 @@ class Object(ct.Structure):
     _fields_ = [("pos", ct.c_float * 3), ("ID", ct.c_uint32)]
 
 
+class Sphere(ct.Structure):
+    _fields_ = [("position", ct.c_float * 4), 
+                ("radius", ct.c_float),
+                ("materialID", ct.c_uint),
+                ("padding0", ct.c_float * 3)]
+
+
+
+class Camera:
+    position = (ct.c_float * 3)(0, 0, 0)
+    direction = (ct.c_float * 3)(0, 0, 0)
+
+    pressedKeys = {GLFW_KEY_W: False, GLFW_KEY_A: False, GLFW_KEY_S: False, GLFW_KEY_D: False}
+
+    prevMousePos = (ct.c_float * 2)(0, 0)
+
+
 class Scene:
 
     # All the variables defined outside methods have been placed where they have been 
@@ -49,13 +66,17 @@ class Scene:
     materials = (0 * Material)()
     objects = (0 * Object)()
 
+    spheres = (0 * Sphere)()
+
     vertSSBO = None
     meshSSBO = None
     materialSSBO = None
+    spheresSSBO = None
 
-    playerSpeed = 3
+    playerSpeed = 1
 
-    def __init__(self, name, cameraPos, cameraDirection, resolution: tuple):
+
+    def __init__(self, name, cameraPosition, cameraDirection, resolution: tuple):
         if sm.currentScene == None:
             sm.currentScene = self
 
@@ -63,16 +84,42 @@ class Scene:
 
         self.cameraPos = cameraPos
         self.cameraDirection = cameraDirection
-        
-        self.initSSBO()
 
         self.resolution = resolution
+
+        self.camera = Camera()
+        self.camera.direction = (ct.c_float * 3)(*cameraDirection)
+        self.camera.position = (ct.c_float * 3)(*cameraPosition)
+        
+        viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
+        width = viewport[2]
+        height = viewport[3]
+
+        self.camera.prevMousePos[0] = width / 2
+        self.camera.prevMousePos[1] = height / 2
+
+        self.initSSBO()
+
 
 
 
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
+
+    
+    def createSphere(self, radius, position):
+
+        self.spheres = util.realloc(self.spheres, len(self.spheres) + 1)
+        self.materials = util.realloc(self.materials, len(self.materials) + 1)
+
+        self.spheres[len(self.spheres) - 1] = Sphere(position = position, 
+                                                        radius = radius, 
+                                                        materialID = len(self.materials) - 1)
+
+
+        self.sendSpheresToShader()
+
 
     def setAsCurrent(self):
         sm.currentScene = self
@@ -81,12 +128,9 @@ class Scene:
         self.vertSSBO = gl.glGenBuffers(1)
         self.meshSSBO = gl.glGenBuffers(1)
         self.materialSSBO = gl.glGenBuffers(1)
+        self.spheresSSBO = gl.glGenBuffers(1)
     
     def allocateSSBO(self):
-
-       #for i in self.vertices:
-       #    print(*i.position)
-
 
         # Resize vertices ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
@@ -118,6 +162,21 @@ class Scene:
         ct.memmove(ptr, self.materials, ct.sizeof(Material) * len(self.materials))
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
         
+
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
+
+        self.sendUniforms()
+
+    def sendSpheresToShader(self):
+        # Resize spheres ssbo
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.spheresSSBO)
+        gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Sphere) * len(self.spheres), None, gl.GL_DYNAMIC_READ)
+        gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, self.spheresSSBO)
+
+        # Populate spheres ssbo
+        ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        ct.memmove(ptr, self.spheres, ct.sizeof(Sphere) * len(self.spheres))
+        gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 

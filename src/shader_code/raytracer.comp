@@ -20,10 +20,11 @@ struct Vertex {
 
 struct Material {
 	
-	vec3 kd;
+	vec4 kd;
+	vec4 ks;
+	vec4 emission;
+	vec4 intensity;
 	vec2 alpha;
-	vec3 ks;
-	vec3 emission;
 
 };
 
@@ -43,8 +44,24 @@ struct Object {
 
 };
 
+struct Sphere {
+
+	vec4 position;
+	float radius;
+
+	uint materialID;
+
+};
+
+
 layout (std430, binding = 0) buffer Verts{
 	Vertex verts[];
+};
+
+layout (std430, binding = 4) buffer sphereBuf {
+
+	Sphere spheres[];
+
 };
 
 layout (std140, binding = 1) buffer Materials {
@@ -113,30 +130,23 @@ vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 }
 
 
-vec3 getRayDir(float dist, float fov, vec2 resolution){
+
+bool testSphereIntersect(vec3 rayOrigin, vec3 rayDir, float radius){
 	
+	float a = dot(rayDir, rayDir);
+	float b = dot(rayOrigin, rayDir) * 2;
+	float c = dot(rayOrigin, rayOrigin) - (radius * radius);
+
+	float descriminant = (b * b) - (4 * a * c);
+
+	if (descriminant >= 0)
+		return true;
 	
-	float l = dist * tan(radians(fov / 2));
-
-	float planeWidth = 2 * l;
-	float planeHeight = 1.125f * l;
-
-	float pixelWidth = planeWidth / resolution[0];
-	float pixelHeight = planeHeight / resolution[1];
-
-	float wCentreOffset = 0.5 * pixelWidth;
-	float hCentreOffset = 0.5 * pixelHeight;
-
-	vec3 rayPos = vec3(((gl_GlobalInvocationID.x ) * pixelWidth) + wCentreOffset,
-													((gl_GlobalInvocationID.y ) * pixelHeight) + hCentreOffset, dist);
-
-	
-	vec3 rayDir = normalize(rayPos);
-
-	return rayDir;
+	return false;
 }
 
-vec3 getRayDirNaive(float fov /* in degrees */, float aspectRatio){
+
+vec3 getRayDir(float fov /* in degrees */, float aspectRatio){
 	
 	
 	vec2 texelCoord = gl_GlobalInvocationID.xy;
@@ -185,7 +195,7 @@ vec4(0.725, 0.498, 0.192, 1)
 	float minRayT = 1 / 0;
 	int minIndex = -1;
 	// vec3 rayDir = getRayDir(0.1, 90, ivec2(1920, 2080));
-	vec3 rayDir = getRayDirNaive(90, aspectRatio);
+	vec3 rayDir = getRayDir(90, aspectRatio);
 
 
 	for (int i = 0; i < verts.length(); i += 3){
@@ -212,16 +222,22 @@ vec4(0.725, 0.498, 0.192, 1)
 
 	}
 
-	colour = colours[minIndex % 12];
+	for (int i = 0; i < spheres.length(); i++){
+
+		if (testSphereIntersect(cameraPos, rayDir, spheres[i].radius))
+			colour = vec4(1, 0, 0, 1);
+
+	}
+		
+
+	// colour = colours[minIndex % 12];
 	
 
-	// colour = vec4(1, 0, 1, 1);
 
-	// ivec2 texelCoord[NUM_INVOCATIONS_PER_GROUP_X][NUM_INVOCATIONS_PER_GROUP_Y];
+
+
 	ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
 
-	// texelCoord[gl_LocalInvocationID.x][gl_LocalInvocationID.y].x = int(gl_GlobalInvocationID.x);
-	// texelCoord[gl_LocalInvocationID.x][gl_LocalInvocationID.y].y = int(gl_GlobalInvocationID.y);
 
 	vec4 value = vec4(
 		gl_GlobalInvocationID.xy / vec2(1920, 1080),

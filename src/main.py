@@ -12,9 +12,9 @@ import renderer.scene as sc
 import ctypes as ct
 import init
 import renderer.model.loadModel as m
-import graphics.input as inp
+import input as inp
 import deltatime
-
+import renderer.camera as cam
 
 
 
@@ -36,16 +36,17 @@ def main():
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
 
-    camPos = (ct.c_float * 3)(0, 1, 3)
+    camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, camDir, (1920, 1080))
 
     scene.initCanvas()
 
-    scene.loadModel("models/cube.obj")
-    scene.loadModel("models/car.obj")
+    # scene.loadModel("models/cube.obj")
+    scene.createSphere(0.5, (ct.c_float * 4)(0, 0, 0, 0))
 
+    scene.playerSpeed = 10
 
 
 
@@ -53,6 +54,7 @@ def main():
     while not glfwWindowShouldClose(window):
 
         deltatime.startTime()
+
 
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
@@ -75,8 +77,11 @@ def main():
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
         # gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, 4)
 
+
         glfwSwapBuffers(window)
         glfwPollEvents()
+
+        cam.move()
 
     glfwTerminate()
 
