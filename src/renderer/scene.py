@@ -82,9 +82,6 @@ class Scene:
 
         self.name = name
 
-        self.cameraPos = cameraPos
-        self.cameraDirection = cameraDirection
-
         self.resolution = resolution
 
         self.camera = Camera()
@@ -190,8 +187,8 @@ class Scene:
 
         gl.glUseProgram(self.compute)
 
-        gl.glUniform3f(camPosLoc, *self.cameraPos)
-        gl.glUniform3f(camDirLoc, *self.cameraDirection)
+        gl.glUniform3f(camPosLoc, *self.camera.position)
+        gl.glUniform3f(camDirLoc, *self.camera.direction)
 
         gl.glUniform2f(resolutionLoc, *(ct.c_float * 2)(*self.resolution))
         

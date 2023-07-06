@@ -6,10 +6,10 @@ import sceneManager as sm
 def keyCallback(window, key, scancode, action, mods):
 
     if action != GLFW_RELEASE:
-        sm.currentScene.pressedKeys[key] = True
+        sm.currentScene.camera.pressedKeys[key] = True
 
     elif action == GLFW_RELEASE:
-        sm.currentScene.pressedKeys[key] = False
+        sm.currentScene.camera.pressedKeys[key] = False
     
     
 
