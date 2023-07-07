@@ -42,7 +42,6 @@ def initRenderCavas(self):
         gl.GL_STATIC_DRAW,
     )
 
-    # Does not work for some reason. Need to fix
     gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ebo)
     gl.glBufferData(
         gl.GL_ELEMENT_ARRAY_BUFFER,

@@ -1,6 +1,7 @@
 from glfw.GLFW import *
 import renderer.camera as camera
 import sceneManager as sm
+import glm
 
 
 def keyCallback(window, key, scancode, action, mods):
@@ -11,8 +12,6 @@ def keyCallback(window, key, scancode, action, mods):
     elif action == GLFW_RELEASE:
         sm.currentScene.camera.pressedKeys[key] = False
     
-    
-
     
 
 

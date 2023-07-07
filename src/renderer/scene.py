@@ -5,6 +5,8 @@ import OpenGL.GL as gl
 import sceneManager as sm
 import util
 from glfw.GLFW import *
+import glm
+import numpy as np
 
 
 class Vertex(ct.Structure):
@@ -52,9 +54,14 @@ class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
     direction = (ct.c_float * 3)(0, 0, 0)
 
-    pressedKeys = {GLFW_KEY_W: False, GLFW_KEY_A: False, GLFW_KEY_S: False, GLFW_KEY_D: False}
+    pressedKeys = {GLFW_KEY_W: False, GLFW_KEY_A: False, GLFW_KEY_S: False, GLFW_KEY_D: False,
+                   GLFW_KEY_SPACE: False, GLFW_KEY_LEFT_SHIFT: False, GLFW_KEY_J: False,
+                   GLFW_KEY_L: False, GLFW_KEY_I: False, GLFW_KEY_K: False}
 
     prevMousePos = (ct.c_float * 2)(0, 0)
+
+    playerSpeed = 3
+    sensitivity = 1.5
 
 
 class Scene:
@@ -73,7 +80,6 @@ class Scene:
     materialSSBO = None
     spheresSSBO = None
 
-    playerSpeed = 1
 
 
     def __init__(self, name, cameraPosition, cameraDirection, resolution: tuple):
@@ -116,6 +122,7 @@ class Scene:
 
 
         self.sendSpheresToShader()
+        self.sendMats()
 
 
     def setAsCurrent(self):
@@ -129,6 +136,46 @@ class Scene:
     
     def allocateSSBO(self):
 
+        # # Resize vertices ssbo
+        # gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
+        # gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Vertex) * len(self.vertices), None, gl.GL_DYNAMIC_READ)
+        # gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, self.vertSSBO)
+        
+        # # Populate vertices ssbo
+        # ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        # ct.memmove(ptr, self.vertices, ct.sizeof(Vertex) * len(self.vertices))
+        # gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+
+    
+        # # Resize meshes ssbo
+        # gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.meshSSBO)
+        # gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Mesh) * len(self.meshes), None, gl.GL_DYNAMIC_READ)
+        # gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, self.meshSSBO)
+        
+        # # Populate meshes ssbo
+        # ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        # ct.memmove(ptr, self.meshes, ct.sizeof(Mesh) * len(self.meshes))
+        # gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+
+        # # Resize materials ssbo
+        # gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.materialSSBO)
+        # gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Material) * len(self.materials), None, gl.GL_DYNAMIC_READ)
+        # gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, self.materialSSBO)
+        
+        # # Populate materials ssbo
+        # ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
+        # ct.memmove(ptr, self.materials, ct.sizeof(Material) * len(self.materials))
+        # gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+        
+        self.sendVerts()
+        self.sendMeshes()
+        self.sendMats()
+
+        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
+
+        self.sendUniforms()
+
+    def sendVerts(self):
         # Resize vertices ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
         gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Vertex) * len(self.vertices), None, gl.GL_DYNAMIC_READ)
@@ -138,7 +185,8 @@ class Scene:
         ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
         ct.memmove(ptr, self.vertices, ct.sizeof(Vertex) * len(self.vertices))
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-    
+
+    def sendMeshes(self):
         # Resize meshes ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.meshSSBO)
         gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Mesh) * len(self.meshes), None, gl.GL_DYNAMIC_READ)
@@ -149,6 +197,8 @@ class Scene:
         ct.memmove(ptr, self.meshes, ct.sizeof(Mesh) * len(self.meshes))
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
+
+    def sendMats(self):
         # Resize materials ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.materialSSBO)
         gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, ct.sizeof(Material) * len(self.materials), None, gl.GL_DYNAMIC_READ)
@@ -158,11 +208,6 @@ class Scene:
         ptr = ct.cast(gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p)
         ct.memmove(ptr, self.materials, ct.sizeof(Material) * len(self.materials))
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-        
-
-        gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
-
-        self.sendUniforms()
 
     def sendSpheresToShader(self):
         # Resize spheres ssbo
@@ -191,7 +236,12 @@ class Scene:
         gl.glUniform3f(camDirLoc, *self.camera.direction)
 
         gl.glUniform2f(resolutionLoc, *(ct.c_float * 2)(*self.resolution))
+
+        viewMat = glm.lookAt(self.camera.position, glm.vec3(self.camera.position) + glm.vec3(self.camera.direction), glm.vec3(0, 1, 0))
         
+
+        lookAtloc = gl.glGetUniformLocation(self.compute, "lookAt")
+        gl.glUniformMatrix4fv(lookAtloc, 1, gl.GL_FALSE, np.ravel(viewMat))
 
         
 

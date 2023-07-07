@@ -24,8 +24,8 @@ import renderer.camera as cam
 def main():
     init.init(4, 5)
 
-    # window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
-    window = graphics.window.createWindow(1920, 1080, "test")
+    window = graphics.window.createWindow(1920, 1080, "test", glfwGetPrimaryMonitor())
+    # window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
@@ -44,7 +44,11 @@ def main():
     scene.initCanvas()
 
     # scene.loadModel("models/cube.obj")
-    scene.createSphere(0.5, (ct.c_float * 4)(0, 0, 0, 0))
+    scene.createSphere(10, (ct.c_float * 4)(0, 0, 0, 0))
+    print(scene.spheres[0].materialID)
+    scene.materials[scene.spheres[0].materialID].kd = (ct.c_float * 4)(*(1, 0, 1, 0))
+
+    scene.sendMats()
 
     scene.playerSpeed = 10
 
@@ -65,23 +69,19 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         rt.raytrace(scene, 15, 30)
-
-        dt = deltatime.deltaTime()
+        cam.move()
 
         shader.useShader(scene.shaderProgram)
-
 
         gl.glActiveTexture(gl.GL_TEXTURE0)
         gl.glBindTexture(gl.GL_TEXTURE_2D, scene.tex)
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-        # gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, 4)
-
 
         glfwSwapBuffers(window)
         glfwPollEvents()
 
-        cam.move()
+        # print(deltatime.deltaTime())
 
     glfwTerminate()
 

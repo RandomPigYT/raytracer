@@ -4,6 +4,9 @@ run:
 frmt:
 	@python -m black $(shell find ./src -type f -name "*.py")
 
+fmtWin:
+	@python -m black $(dir /s /b ".\src\*.py")
+
 v:
 	source ./venv/bin/activate
 
