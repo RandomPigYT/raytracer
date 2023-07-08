@@ -31,7 +31,11 @@ def main():
     width = viewport[2]
     height = viewport[3]
 
+
     glfwSetKeyCallback(window, inp.keyCallback)
+    # glfwSetMouseButtonCallback(window, inp.mouseButtonCallback)
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+    glfwSetCursorPosCallback(window, inp.mousePosCallback)
 
     # compShaderProgram = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
     #
@@ -39,21 +43,27 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, camDir, (1920, 1080))
+    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080))
 
     scene.initCanvas()
 
     # scene.loadModel("models/cube.obj")
-    scene.createSphere(10, (ct.c_float * 4)(0, 0, 0, 0))
-    print(scene.spheres[0].materialID)
+    # scene.loadModel("models/CornellBox-Original.obj")
+    scene.createSphere(2, (ct.c_float * 4)(5, 2, 0, 0))
     scene.materials[scene.spheres[0].materialID].kd = (ct.c_float * 4)(*(1, 0, 1, 0))
+
+    scene.createSphere(1, (ct.c_float * 4)(3, 5, 2, 0))
+    scene.materials[scene.spheres[1].materialID].kd = (ct.c_float * 4)(*(0, 0, 1, 0))
+
+    scene.createSphere(3, (ct.c_float * 4)(2, 0, 2, 0))
+    scene.materials[scene.spheres[2].materialID].kd = (ct.c_float * 4)(*(0, 1, 0, 0))
+
 
     scene.sendMats()
 
     scene.playerSpeed = 10
 
-
-
+    
 
     while not glfwWindowShouldClose(window):
 
@@ -68,7 +78,7 @@ def main():
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        rt.raytrace(scene, 15, 30)
+        rt.raytrace(scene, 1, 30)
         cam.move()
 
         shader.useShader(scene.shaderProgram)
@@ -81,7 +91,7 @@ def main():
         glfwSwapBuffers(window)
         glfwPollEvents()
 
-        # print(deltatime.deltaTime())
+        # print(1 / deltatime.deltaTime())
 
     glfwTerminate()
 

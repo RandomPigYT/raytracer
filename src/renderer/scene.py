@@ -7,6 +7,7 @@ import util
 from glfw.GLFW import *
 import glm
 import numpy as np
+import math
 
 
 class Vertex(ct.Structure):
@@ -45,8 +46,9 @@ class Object(ct.Structure):
 class Sphere(ct.Structure):
     _fields_ = [("position", ct.c_float * 4), 
                 ("radius", ct.c_float),
-                ("materialID", ct.c_uint),
-                ("padding0", ct.c_float * 3)]
+                ("materialID", ct.c_uint32),
+                ("padding0", ct.c_float * 2)
+                ]
 
 
 
@@ -54,14 +56,19 @@ class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
     direction = (ct.c_float * 3)(0, 0, 0)
 
+    # Euler angles in radians
+    pitch = 0
+    yaw = 0
+
     pressedKeys = {GLFW_KEY_W: False, GLFW_KEY_A: False, GLFW_KEY_S: False, GLFW_KEY_D: False,
-                   GLFW_KEY_SPACE: False, GLFW_KEY_LEFT_SHIFT: False, GLFW_KEY_J: False,
-                   GLFW_KEY_L: False, GLFW_KEY_I: False, GLFW_KEY_K: False}
+                   GLFW_KEY_SPACE: False, GLFW_KEY_LEFT_SHIFT: False}
 
     prevMousePos = (ct.c_float * 2)(0, 0)
 
     playerSpeed = 3
-    sensitivity = 1.5
+    sensitivity = 0.05
+
+    lockCam = False
 
 
 class Scene:
@@ -82,7 +89,7 @@ class Scene:
 
 
 
-    def __init__(self, name, cameraPosition, cameraDirection, resolution: tuple):
+    def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple):
         if sm.currentScene == None:
             sm.currentScene = self
 
@@ -91,15 +98,21 @@ class Scene:
         self.resolution = resolution
 
         self.camera = Camera()
-        self.camera.direction = (ct.c_float * 3)(*cameraDirection)
         self.camera.position = (ct.c_float * 3)(*cameraPosition)
-        
+
+        self.camera.yaw = yaw
+        self.camera.pitch = pitch
+
+        self.camera.direction[0] = math.cos(math.radians(yaw)) * math.cos(math.radians(pitch))
+        self.camera.direction[1] = math.cos(math.radians(pitch))
+        self.camera.direction[2] = math.sin(math.radians(yaw)) * math.cos(math.radians(pitch))
+
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
         height = viewport[3]
 
-        self.camera.prevMousePos[0] = width / 2
-        self.camera.prevMousePos[1] = height / 2
+        self.camera.prevMousePos[0] = 0
+        self.camera.prevMousePos[1] = 0
 
         self.initSSBO()
 

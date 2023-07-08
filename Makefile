@@ -1,5 +1,9 @@
 run:
-	@python src/main.py
+	@python -OO src/main.py
+
+pyinst:
+	@pyi-makespec.exe .\src\main.py --paths C:\Users\HP\AppData\Local\Programs\Python\Python310\Lib\site-packages\glfw --onefile
+	@pyinstaller main.spec
 
 frmt:
 	@python -m black $(shell find ./src -type f -name "*.py")
