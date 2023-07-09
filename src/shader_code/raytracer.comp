@@ -53,6 +53,14 @@ struct Sphere {
 
 };
 
+struct HitInfo {
+
+	bool didHit;
+	vec3 normal;
+	float rayT;
+	vec3 position;
+};
+
 
 layout (std430, binding = 0) buffer Verts{
 	Vertex verts[];
@@ -105,8 +113,11 @@ float random(inout uint seed){
 }
 
 
-vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
+HitInfo testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 	float epsilon = 0.0000001;
+
+	HitInfo h;
+	h.didHit = true;
 
 	vec3 positions[] = {v[2].position.xyz, v[1].position.xyz, v[0].position.xyz};
 	
@@ -117,36 +128,56 @@ vec2 testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
 	
 	double det = dot(edge1, cross_rayDir_edge2);
 
-	if (det < epsilon)
-		return vec2(0, 0);
+	if (det < epsilon){
+		h.didHit = false;
+		return h;
+	}
+	if (det > -epsilon && det < epsilon){
 
-	if (det > -epsilon && det < epsilon)
-		return vec2(0, 0);
+		h.didHit = false;
+		return h;
+	}
 
 	double invDet = 1 / det;
 
 	vec3 origMinusPos0 =  rayOrigin - positions[0];
 
 	double baryU = dot(origMinusPos0, cross_rayDir_edge2) * invDet;
-	if (baryU < 0.0 || baryU > 1.0)
-		return vec2(0, 0);
-	
+	if (baryU < 0.0 || baryU > 1.0){
+		h.didHit = false;
+		return h;
+	}
 	
 	vec3 cross_oriMinusPos0_edge1 = cross(origMinusPos0, edge1);
 
 	double baryV = dot(rayDir, cross_oriMinusPos0_edge1) * invDet;
-	if (baryV < 0 || baryU + baryV > 1.0)
-		return vec2(0, 0);
-	
+	if (baryV < 0 || baryU + baryV > 1.0){
+		h.didHit = false;
+		return h;
+	}
 	double rayT;
 
-	rayT = dot(edge2, cross_oriMinusPos0_edge1) * invDet;
-	return vec2(1, rayT);
+	h.rayT = dot(edge2, cross_oriMinusPos0_edge1) * float(invDet);
+
+	if (h.rayT < 0){
+		h.didHit = false;
+
+		return h;
+	}
+
+	h.position = rayOrigin + rayDir * h.rayT;
+	h.normal = cross(edge1, edge2);
+
+	return h;
+
 }
 
 
 
-vec3 testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s){
+HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s){
+
+	HitInfo h;
+	h.didHit = true;
 	
 	vec3 translatedRayOrig = rayOrigin - s.position.xyz;
 
@@ -154,17 +185,28 @@ vec3 testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s){
 	float b = dot(translatedRayOrig, rayDir) * 2;
 	float c = dot(translatedRayOrig, translatedRayOrig) - (s.radius * s.radius);
 
-	float descriminant = (b * b) - (4 * a * c);
+	float discriminant = (b * b) - (4 * a * c);
 
-	float t_0 = (-b - sqrt(descriminant)) / (2 * a);
-	float t_1 = (-b + sqrt(descriminant)) / (2 * a);
+	if (discriminant < 0){
 
+		h.didHit = false;
+		return h;
+	}
 
+	float t_0 = (-b - sqrt(discriminant)) / (2 * a);
+	float t_1 = (-b + sqrt(discriminant)) / (2 * a);
 
-	if (descriminant >= 0)
-		return vec3(1, t_0, t_1);
+	if (t_0 < 0 && t_1 < 0){
+
+		h.didHit = false;
+		return h;
+	}
+
+	h.rayT = t_0 >= 0 ? t_0 : t_1;
+	h.position = rayOrigin + rayDir * h.rayT;
+	h.normal = normalize(h.position - s.position.xyz);
 	
-	return vec3(0, 0, 0);
+	return h;
 }
 
 
@@ -205,33 +247,26 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 
 	float minRayT = 1.0 / 0.0;
 	int minIndex = -1;
-	// vec3 rayDir = getRayDir(0.1, 90, ivec2(1920, 2080));
-
-	// colour = vec4(normalize(cameraDir), 1.0);
 
 	Vertex temp[3];
-	vec2 intersectResult;
+	HitInfo h;
 
 	for (int i = 0; i < verts.length(); i += 3){
 		
-		// temp = {verts[i], verts[i + 1], verts[i + 2]};
 		temp[0] = verts[i];
 		temp[1] = verts[i + 1];
 		temp[2] = verts[i + 2];
-		intersectResult = testIntersect(temp, cameraPos, rayDir);
+
+		h = testIntersect(temp, cameraPos, rayDir);
 		
 		
 
-		if (intersectResult[0] == 1){
-			if (intersectResult[1] < 0)
-				continue;
+		if (h.didHit){
 
 
-
-			if (intersectResult[1] < minRayT)
-				minRayT = intersectResult[1];
+			if (h.rayT < minRayT)
+				minRayT = h.rayT;
 				minIndex = i / 3;
-			// colour = colours[i / 3];
 			
 		}
 
@@ -244,40 +279,21 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 	int minSphereInd = -1;
 	vec3 minSphereNormal = vec3(0, 0, 0);
 
+
 	for (int i = 0; i < spheres.length(); i++){
 		
-		vec3 sphereIntersectResult = testSphereIntersect(cameraPos, rayDir, spheres[i]);
+		h = testSphereIntersect(cameraPos, rayDir, spheres[i]);
 
-		if (sphereIntersectResult[0] == 0)
+		if (!h.didHit)
 			continue;
 
-
-		if (sphereIntersectResult[1] < 0 && sphereIntersectResult[2] < 0) 
-			continue;
-		
-
-		float t = sphereIntersectResult[1];
-
-		if (sphereIntersectResult[1] < 0)
-			t = sphereIntersectResult[2];
-
-
-
-		if (t <= minRayT) {
-			minRayT = t;
+		if (h.rayT <= minRayT) {
+			minRayT = h.rayT;
 			minSphereInd = i;
 
-			vec3 intersectionPoint = cameraPos + (rayDir * t);
-			minSphereNormal = normalize(intersectionPoint - spheres[i].position.xyz * 1);
-			// colour = vec4(1, 0, 1, 1);
+			minSphereNormal = normalize(h.position - spheres[i].position.xyz * 1);
 
 		}
-
-		
-		// colour = vec4(normalize(intersectionPoint - spheres[i].position.xyz), 1);
-		// colour = vec4(normalize(intersectionPoint), 1);
-		
-		// colour = vec4(materials[spheres[i].materialID].kd.xyz, 1.0);
 
 	}
 
