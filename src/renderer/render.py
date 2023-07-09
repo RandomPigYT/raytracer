@@ -1,4 +1,3 @@
-
 import graphics.window
 from glfw.GLFW import *
 import OpenGL.GL as gl
@@ -8,18 +7,14 @@ import renderer.model.loadModel as m
 import deltatime
 import renderer.camera as cam
 
+
 def render(window, scene):
-
     while not glfwWindowShouldClose(window):
-
         deltatime.startTime()
-
-        
 
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
         height = viewport[3]
-
 
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)

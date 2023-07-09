@@ -18,18 +18,17 @@ import imgui
 import renderer.render as render
 
 
-        
-
 def main():
     init.init(4, 5)
 
-    window = graphics.window.createWindow(1920, 1080, "raytracer", glfwGetPrimaryMonitor())
-    # window = graphics.window.createWindow(1920, 1080, "test")
+    # window = graphics.window.createWindow(
+    #     1920, 1080, "raytracer", glfwGetPrimaryMonitor()
+    # )
+    window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
     height = viewport[3]
-
 
     glfwSetKeyCallback(window, inp.keyCallback)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
@@ -57,10 +56,7 @@ def main():
 
     scene.sendMats()
 
-
-    
     render.render(window, scene)
-
 
     glfwTerminate()
 
