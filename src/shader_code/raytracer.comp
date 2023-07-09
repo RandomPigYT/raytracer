@@ -209,10 +209,16 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 
 	// colour = vec4(normalize(cameraDir), 1.0);
 
+	Vertex temp[3];
+	vec2 intersectResult;
+
 	for (int i = 0; i < verts.length(); i += 3){
 		
-		Vertex temp[] = {verts[i], verts[i + 1], verts[i + 2]};
-		vec2 intersectResult = testIntersect(temp, cameraPos, rayDir);
+		// temp = {verts[i], verts[i + 1], verts[i + 2]};
+		temp[0] = verts[i];
+		temp[1] = verts[i + 1];
+		temp[2] = verts[i + 2];
+		intersectResult = testIntersect(temp, cameraPos, rayDir);
 		
 		
 
@@ -236,6 +242,7 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 
 	float minSphT = 1.0 / 0.0;
 	int minSphereInd = -1;
+	vec3 minSphereNormal = vec3(0, 0, 0);
 
 	for (int i = 0; i < spheres.length(); i++){
 		
@@ -255,15 +262,17 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 			t = sphereIntersectResult[2];
 
 
+
 		if (t <= minRayT) {
 			minRayT = t;
 			minSphereInd = i;
 
-			colour = vec4(1, 0, 1, 1);
+			vec3 intersectionPoint = cameraPos + (rayDir * t);
+			minSphereNormal = normalize(intersectionPoint - spheres[i].position.xyz * 1);
+			// colour = vec4(1, 0, 1, 1);
 
 		}
 
-		vec3 intersectionPoint = cameraPos + (rayDir * t);
 		
 		// colour = vec4(normalize(intersectionPoint - spheres[i].position.xyz), 1);
 		// colour = vec4(normalize(intersectionPoint), 1);
@@ -272,8 +281,10 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 
 	}
 
-	if (minSphereInd != -1)
+	if (minSphereInd != -1){
 		colour = vec4(materials[spheres[minSphereInd].materialID].kd.xyz, 1.0);
+		// colour = vec4(minSphereNormal, 1.0);
+	}
 
 	return colour;
 
