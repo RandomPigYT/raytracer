@@ -3,86 +3,62 @@
 #define NUM_INVOCATIONS_PER_GROUP_X 40
 #define NUM_INVOCATIONS_PER_GROUP_Y 24
 
-layout (local_size_x = NUM_INVOCATIONS_PER_GROUP_X, local_size_y = NUM_INVOCATIONS_PER_GROUP_Y, local_size_z = 1) in;
+layout(local_size_x = NUM_INVOCATIONS_PER_GROUP_X,
+       local_size_y = NUM_INVOCATIONS_PER_GROUP_Y, local_size_z = 1) in;
 
-layout (rgba32f, binding = 0) uniform image2D rendered;
+layout(rgba32f, binding = 0) uniform image2D rendered;
 
 #define RAND_MAX 0xffffffffu
 
-
 struct Vertex {
-	
-	vec4 position;
-	vec4 normal;
-	vec2 texelCoord;
-
+  vec4 position;
+  vec4 normal;
+  vec2 texelCoord;
 };
 
 struct Material {
-	
-	vec4 kd;
-	vec4 ks;
-	vec4 emission;
-	vec4 intensity;
-	vec2 alpha;
-
+  vec4 kd;
+  vec4 ks;
+  vec4 emission;
+  vec4 intensity;
+  vec2 alpha;
 };
 
 struct Mesh {
-	
-	uint startingVertex;
-	uint numTriangles;
-	uint materialID;
-	uint objectID;
-
+  uint startingVertex;
+  uint numTriangles;
+  uint materialID;
+  uint objectID;
 };
 
 struct Object {
-
-	vec3 pos;
-	uint id;
-
+  vec3 pos;
+  uint id;
 };
 
 struct Sphere {
+  vec4 position;
+  float radius;
 
-	vec4 position;
-	float radius;
-
-	uint materialID;
-
+  uint materialID;
 };
 
 struct HitInfo {
-
-	bool didHit;
-	vec3 normal;
-	float rayT;
-	vec3 position;
+  bool didHit;
+  vec3 normal;
+  float rayT;
+  vec3 position;
 };
 
+layout(std430, binding = 0) buffer Verts { Vertex verts[]; };
 
-layout (std430, binding = 0) buffer Verts{
-	Vertex verts[];
-};
+layout(std430, binding = 4) buffer sphereBuf { Sphere spheres[]; };
 
-layout (std430, binding = 4) buffer sphereBuf {
+layout(std140, binding = 1) buffer Materials { Material materials[]; };
 
-	Sphere spheres[];
+layout(std140, binding = 2) buffer Meshes { Mesh meshes; };
 
-};
-
-layout (std140, binding = 1) buffer Materials {
-	Material materials[];
-};
-
-layout (std140, binding = 2) buffer Meshes {
-	Mesh meshes;
-};
-
-layout (std140, binding = 3) buffer Objects {
-	Object objects;
-};
+layout(std140, binding = 3) buffer Objects { Object objects; };
 
 uniform vec3 cameraPos;
 uniform vec3 cameraDir;
@@ -94,236 +70,190 @@ uniform vec2 resolution;
 
 uniform uint time;
 
-
 uniform mat4 lookAt;
 
-uint pcg_hash(uint inp){
-
-	uint state = inp * 747796405u + 2891336453u;
-    uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-    return (word >> 22u) ^ word;
+uint pcg_hash(uint inp) {
+  uint state = inp * 747796405u + 2891336453u;
+  uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+  return (word >> 22u) ^ word;
 }
 
+float random(inout uint seed) {
+  seed = pcg_hash(seed);
 
-float random(inout uint seed){
-
-	seed = pcg_hash(seed);
-
-	return seed / float(RAND_MAX);
+  return seed / float(RAND_MAX);
 }
 
+HitInfo testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir) {
+  float epsilon = 0.0000001;
 
-HitInfo testIntersect(Vertex v[3], vec3 rayOrigin, vec3 rayDir ){
-	float epsilon = 0.0000001;
+  HitInfo h;
+  h.didHit = true;
 
-	HitInfo h;
-	h.didHit = true;
+  vec3 positions[] = {v[2].position.xyz, v[1].position.xyz, v[0].position.xyz};
 
-	vec3 positions[] = {v[2].position.xyz, v[1].position.xyz, v[0].position.xyz};
-	
-	vec3 edge1 = positions[2] - positions[0];
-	vec3 edge2 = positions[1] - positions[0];
+  vec3 edge1 = positions[2] - positions[0];
+  vec3 edge2 = positions[1] - positions[0];
 
-	vec3 cross_rayDir_edge2 = cross(rayDir, edge2);
-	
-	double det = dot(edge1, cross_rayDir_edge2);
+  vec3 cross_rayDir_edge2 = cross(rayDir, edge2);
 
-	if (det < epsilon){
-		h.didHit = false;
-		return h;
-	}
-	if (det > -epsilon && det < epsilon){
+  double det = dot(edge1, cross_rayDir_edge2);
 
-		h.didHit = false;
-		return h;
-	}
+  if (det < epsilon) {
+    h.didHit = false;
+    return h;
+  }
+  if (det > -epsilon && det < epsilon) {
+    h.didHit = false;
+    return h;
+  }
 
-	double invDet = 1 / det;
+  double invDet = 1 / det;
 
-	vec3 origMinusPos0 =  rayOrigin - positions[0];
+  vec3 origMinusPos0 = rayOrigin - positions[0];
 
-	double baryU = dot(origMinusPos0, cross_rayDir_edge2) * invDet;
-	if (baryU < 0.0 || baryU > 1.0){
-		h.didHit = false;
-		return h;
-	}
-	
-	vec3 cross_oriMinusPos0_edge1 = cross(origMinusPos0, edge1);
+  double baryU = dot(origMinusPos0, cross_rayDir_edge2) * invDet;
+  if (baryU < 0.0 || baryU > 1.0) {
+    h.didHit = false;
+    return h;
+  }
 
-	double baryV = dot(rayDir, cross_oriMinusPos0_edge1) * invDet;
-	if (baryV < 0 || baryU + baryV > 1.0){
-		h.didHit = false;
-		return h;
-	}
-	double rayT;
+  vec3 cross_oriMinusPos0_edge1 = cross(origMinusPos0, edge1);
 
-	h.rayT = dot(edge2, cross_oriMinusPos0_edge1) * float(invDet);
+  double baryV = dot(rayDir, cross_oriMinusPos0_edge1) * invDet;
+  if (baryV < 0 || baryU + baryV > 1.0) {
+    h.didHit = false;
+    return h;
+  }
+  double rayT;
 
-	if (h.rayT < 0){
-		h.didHit = false;
+  h.rayT = dot(edge2, cross_oriMinusPos0_edge1) * float(invDet);
 
-		return h;
-	}
+  if (h.rayT < 0) {
+    h.didHit = false;
 
-	h.position = rayOrigin + rayDir * h.rayT;
-	h.normal = cross(edge1, edge2);
+    return h;
+  }
 
-	return h;
+  h.position = rayOrigin + rayDir * h.rayT;
+  h.normal = cross(edge1, edge2);
 
+  return h;
 }
 
+HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s) {
+  HitInfo h;
+  h.didHit = true;
 
+  vec3 translatedRayOrig = rayOrigin - s.position.xyz;
 
-HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s){
+  float a = dot(rayDir, rayDir);
+  float b = dot(translatedRayOrig, rayDir) * 2;
+  float c = dot(translatedRayOrig, translatedRayOrig) - (s.radius * s.radius);
 
-	HitInfo h;
-	h.didHit = true;
-	
-	vec3 translatedRayOrig = rayOrigin - s.position.xyz;
+  float discriminant = (b * b) - (4 * a * c);
 
-	float a = dot(rayDir, rayDir);
-	float b = dot(translatedRayOrig, rayDir) * 2;
-	float c = dot(translatedRayOrig, translatedRayOrig) - (s.radius * s.radius);
+  if (discriminant < 0) {
+    h.didHit = false;
+    return h;
+  }
 
-	float discriminant = (b * b) - (4 * a * c);
+  float t_0 = (-b - sqrt(discriminant)) / (2 * a);
+  float t_1 = (-b + sqrt(discriminant)) / (2 * a);
 
-	if (discriminant < 0){
+  if (t_0 < 0 && t_1 < 0) {
+    h.didHit = false;
+    return h;
+  }
 
-		h.didHit = false;
-		return h;
-	}
+  h.rayT = t_0 >= 0 ? t_0 : t_1;
+  h.position = rayOrigin + rayDir * h.rayT;
+  h.normal = normalize(h.position - s.position.xyz);
 
-	float t_0 = (-b - sqrt(discriminant)) / (2 * a);
-	float t_1 = (-b + sqrt(discriminant)) / (2 * a);
-
-	if (t_0 < 0 && t_1 < 0){
-
-		h.didHit = false;
-		return h;
-	}
-
-	h.rayT = t_0 >= 0 ? t_0 : t_1;
-	h.position = rayOrigin + rayDir * h.rayT;
-	h.normal = normalize(h.position - s.position.xyz);
-	
-	return h;
+  return h;
 }
 
+vec3 getRayDir(float fov /* in degrees */, float aspectRatio) {
+  vec2 texelCoord = gl_GlobalInvocationID.xy;
+  vec2 ndc = vec2((texelCoord.x + 0.5) / (resolution[0]),
+                  (texelCoord.y + 0.5) / (resolution[1]));
 
-vec3 getRayDir(float fov /* in degrees */, float aspectRatio){
-	vec2 texelCoord = gl_GlobalInvocationID.xy;
-	vec2 ndc = vec2((texelCoord.x + 0.5) / (resolution[0]), (texelCoord.y + 0.5) / (resolution[1]));
+  vec2 pixelCamera;
+  pixelCamera.x = ((2 * ndc.x) - 1) * aspectRatio * tan(radians(fov / 2));
+  pixelCamera.y = ((2 * ndc.y) - 1) * tan(radians(fov / 2));
 
-	vec2 pixelCamera;
-	pixelCamera.x = ((2 * ndc.x) - 1) * aspectRatio * tan(radians(fov / 2));
-	pixelCamera.y = ((2 * ndc.y) - 1) * tan(radians(fov / 2));
+  // vec3 rayDir = normalize((lookAt * vec4(pixelCamera, -1.0f, 0)).xyz);
+  vec3 rayDir = (lookAt * vec4(pixelCamera, -1.0f, 0)).xyz;
 
-	// vec3 rayDir = normalize((lookAt * vec4(pixelCamera, -1.0f, 0)).xyz);
-	vec3 rayDir = (lookAt * vec4(pixelCamera, -1.0f, 0)).xyz;
-
-	
-
-	return rayDir;
+  return rayDir;
 }
 
 vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
+  vec4 colours[] = {vec4(0.725, 0.192, 0.831, 1), vec4(0.498, 0.831, 0.192, 1),
+                    vec4(0.192, 0.831, 0.725, 1), vec4(0.831, 0.192, 0.498, 1),
+                    vec4(0.831, 0.725, 0.192, 1), vec4(0.498, 0.192, 0.831, 1),
+                    vec4(0.192, 0.498, 0.831, 1), vec4(0.725, 0.831, 0.192, 1),
+                    vec4(0.192, 0.725, 0.831, 1), vec4(0.831, 0.498, 0.192, 1),
+                    vec4(0.498, 0.725, 0.192, 1), vec4(0.725, 0.498, 0.192, 1)};
 
-	vec4 colours[] = {
-		vec4(0.725, 0.192, 0.831, 1),
-		vec4(0.498, 0.831, 0.192, 1),
-		vec4(0.192, 0.831, 0.725, 1),
-		vec4(0.831, 0.192, 0.498, 1),
-		vec4(0.831, 0.725, 0.192, 1),
-		vec4(0.498, 0.192, 0.831, 1),
-		vec4(0.192, 0.498, 0.831, 1),
-		vec4(0.725, 0.831, 0.192, 1),
-		vec4(0.192, 0.725, 0.831, 1),
-		vec4(0.831, 0.498, 0.192, 1),
-		vec4(0.498, 0.725, 0.192, 1),
-		vec4(0.725, 0.498, 0.192, 1)
-	};
+  vec4 colour = bgCol;
 
-	vec4 colour = bgCol;
+  float minRayT = 1.0 / 0.0;
+  int minIndex = -1;
 
-	float minRayT = 1.0 / 0.0;
-	int minIndex = -1;
+  Vertex temp[3];
+  HitInfo h;
 
-	Vertex temp[3];
-	HitInfo h;
+  for (int i = 0; i < verts.length(); i += 3) {
+    temp[0] = verts[i];
+    temp[1] = verts[i + 1];
+    temp[2] = verts[i + 2];
 
-	for (int i = 0; i < verts.length(); i += 3){
-		
-		temp[0] = verts[i];
-		temp[1] = verts[i + 1];
-		temp[2] = verts[i + 2];
+    h = testIntersect(temp, cameraPos, rayDir);
 
-		h = testIntersect(temp, cameraPos, rayDir);
-		
-		
+    if (h.didHit) {
+      if (h.rayT < minRayT) minRayT = h.rayT;
+      minIndex = i / 3;
+    }
+  }
 
-		if (h.didHit){
+  if (minIndex >= 0) colour = colours[minIndex % 12];
 
+  float minSphT = 1.0 / 0.0;
+  int minSphereInd = -1;
+  vec3 minSphereNormal = vec3(0, 0, 0);
 
-			if (h.rayT < minRayT)
-				minRayT = h.rayT;
-				minIndex = i / 3;
-			
-		}
+  for (int i = 0; i < spheres.length(); i++) {
+    h = testSphereIntersect(cameraPos, rayDir, spheres[i]);
 
-	}
+    if (!h.didHit) continue;
 
-	if (minIndex >= 0)
-		colour = colours[minIndex % 12];
+    if (h.rayT <= minRayT) {
+      minRayT = h.rayT;
+      minSphereInd = i;
 
-	float minSphT = 1.0 / 0.0;
-	int minSphereInd = -1;
-	vec3 minSphereNormal = vec3(0, 0, 0);
+      minSphereNormal = normalize(h.position - spheres[i].position.xyz * 1);
+    }
+  }
 
+  if (minSphereInd != -1) {
+    colour = vec4(materials[spheres[minSphereInd].materialID].kd.xyz, 1.0);
+    // colour = vec4(minSphereNormal, 1.0);
+  }
 
-	for (int i = 0; i < spheres.length(); i++){
-		
-		h = testSphereIntersect(cameraPos, rayDir, spheres[i]);
-
-		if (!h.didHit)
-			continue;
-
-		if (h.rayT <= minRayT) {
-			minRayT = h.rayT;
-			minSphereInd = i;
-
-			minSphereNormal = normalize(h.position - spheres[i].position.xyz * 1);
-
-		}
-
-	}
-
-	if (minSphereInd != -1){
-		colour = vec4(materials[spheres[minSphereInd].materialID].kd.xyz, 1.0);
-		// colour = vec4(minSphereNormal, 1.0);
-	}
-
-	return colour;
-
+  return colour;
 }
 
+void main() {
+  vec4 colour = vec4(0, 0, 0, 1);
 
-void main(){
+  float aspectRatio = (resolution[0]) / (resolution[1]);
+  vec3 rayDir = getRayDir(70, aspectRatio);
 
-	vec4 colour = vec4(0, 0, 0, 1);
+  for (int i = 0; i < maxBounces; i++) {
+    colour += rayTrace(rayDir, vec4(0, 0, 0, 1)) / maxBounces;
+  }
 
-
-	
-	float aspectRatio = (resolution[0]) / (resolution[1]);
-	vec3 rayDir = getRayDir(70, aspectRatio);
-
-	for (int i = 0; i < maxBounces; i++){
-
-		colour += rayTrace(rayDir, vec4(0, 0, 0, 1)) / maxBounces;
-	}
-
-
-	ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
-	imageStore(rendered, texelCoord, colour);
-
+  ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
+  imageStore(rendered, texelCoord, colour);
 }
-
