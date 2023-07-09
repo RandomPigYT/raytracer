@@ -5,13 +5,11 @@
 #include <stdint.h>
 
 struct vertex_t {
-  vec3 position;
+  vec4 position;
 
-  float padding0;
 
-  vec3 normal;
+  vec4 normal;
 
-  float padding1;
 
   vec2 textureCoord;
 
