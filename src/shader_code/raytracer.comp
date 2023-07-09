@@ -245,6 +245,8 @@ vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
 }
 
 void main() {
+
+  
   vec4 colour = vec4(0, 0, 0, 1);
 
   float aspectRatio = (resolution[0]) / (resolution[1]);
@@ -255,5 +257,9 @@ void main() {
   }
 
   ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
-  imageStore(rendered, texelCoord, colour);
+
+
+  if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1]))
+    imageStore(rendered, texelCoord, colour);
+
 }

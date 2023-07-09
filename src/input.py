@@ -3,6 +3,7 @@ import renderer.camera as camera
 import sceneManager as sm
 import glm
 import ctypes as ct
+import imgui
 
 
 def keyCallback(window, key, scancode, action, mods):
@@ -14,6 +15,9 @@ def keyCallback(window, key, scancode, action, mods):
 
     if key == GLFW_KEY_ESCAPE and action == GLFW_PRESS:
         sm.currentScene.camera.lockCam ^= True
+        io = imgui.get_io()
+        io.config_flags ^= imgui.CONFIG_NO_MOUSE
+
 
         if sm.currentScene.camera.lockCam:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL)

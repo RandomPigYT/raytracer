@@ -6,15 +6,23 @@ import renderer.raytrace as rt
 import renderer.model.loadModel as m
 import deltatime
 import renderer.camera as cam
+import imgui
+from imgui.integrations.glfw import GlfwRenderer
 
 
-def render(window, scene):
+
+def render(window, scene, impl: GlfwRenderer):
+
     while not glfwWindowShouldClose(window):
         deltatime.startTime()
+
+        imgui.new_frame()
+
 
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
         height = viewport[3]
+
 
         # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
@@ -29,7 +37,17 @@ def render(window, scene):
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
 
-        glfwSwapBuffers(window)
+
+
+        imgui.begin("FPS")
+        imgui.text(str(1 / deltatime.deltaTime()))
+        imgui.end()
+
+        imgui.render()
+        impl.render(imgui.get_draw_data())
+
         glfwPollEvents()
+        impl.process_inputs()
+        glfwSwapBuffers(window)
 
         # print(1 / deltatime.deltaTime())

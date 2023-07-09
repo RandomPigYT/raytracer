@@ -126,6 +126,7 @@ class Scene:
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
+    resizeTexture = canvas.resizeTexture
 
     def createSphere(self, radius, position):
         self.spheres = util.realloc(self.spheres, len(self.spheres) + 1)

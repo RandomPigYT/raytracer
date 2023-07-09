@@ -10,6 +10,7 @@ def framebufferSizeCallback(window, width, height):
     sm.currentScene.resolution = (width , height)
 
     sm.currentScene.sendUniforms()
+    sm.currentScene.resizeTexture()
 
 
 def createWindow(width, height, title, monitor=None):

@@ -21,21 +21,29 @@ import renderer.render as render
 def main():
     init.init(4, 5)
 
-    # window = graphics.window.createWindow(
-    #     1920, 1080, "raytracer", glfwGetPrimaryMonitor()
-    # )
-    window = graphics.window.createWindow(1920, 1080, "test")
+    window = graphics.window.createWindow(
+        1920, 1080, "raytracer", glfwGetPrimaryMonitor()
+    )
+    # window = graphics.window.createWindow(1920, 1080, "test")
 
     viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
     width = viewport[2]
     height = viewport[3]
 
+    impl = initImgui.init(window)
+
+    io = imgui.get_io()
+    io.config_flags |= imgui.CONFIG_NO_MOUSE
+    # io.config_flags |= imgui.CONFIG_NAV_NO_CAPTURE_KEYBOARD
+
     glfwSetKeyCallback(window, inp.keyCallback)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
     glfwSetCursorPosCallback(window, inp.mousePosCallback)
 
-    initImgui.init(window)
 
+    
+
+    # impl = None
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
@@ -56,8 +64,8 @@ def main():
 
     scene.sendMats()
 
-    render.render(window, scene)
-
+    render.render(window, scene, impl)
+    
     glfwTerminate()
 
 
