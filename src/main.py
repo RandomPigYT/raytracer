@@ -41,7 +41,7 @@ def main():
     glfwSetCursorPosCallback(window, inp.mousePosCallback)
 
 
-    
+    glfwSwapInterval(1)
 
     # impl = None
     camPos = (ct.c_float * 3)(0, 0, 3)

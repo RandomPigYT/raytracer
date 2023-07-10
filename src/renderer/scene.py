@@ -26,7 +26,8 @@ class Material(ct.Structure):
         ("emission", ct.c_float * 4),  # 48  12
         ("intensity", ct.c_float * 4),
         ("alpha", ct.c_float * 2),  # 16  8
-        ("padding1", ct.c_float * 2),  # 24  8
+        ("metallicity", ct.c_float),
+        ("padding1", ct.c_float),  # 24  8
     ]
 
 
@@ -232,6 +233,7 @@ class Scene:
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 
         self.sendUniforms()
+        self.sendMats()
 
     def sendUniforms(self):
         camPosLoc = gl.glGetUniformLocation(self.compute, "cameraPos")

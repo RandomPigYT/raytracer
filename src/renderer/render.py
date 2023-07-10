@@ -8,6 +8,8 @@ import deltatime
 import renderer.camera as cam
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
+import renderer.GUI.guiElements as gElem
+import sceneManager as sm
 
 
 
@@ -16,8 +18,8 @@ def render(window, scene, impl: GlfwRenderer):
     while not glfwWindowShouldClose(window):
         deltatime.startTime()
 
-        imgui.new_frame()
 
+        imgui.new_frame()
 
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
@@ -37,11 +39,8 @@ def render(window, scene, impl: GlfwRenderer):
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
 
-
-
-        imgui.begin("FPS")
-        imgui.text(str(1 / deltatime.deltaTime()))
-        imgui.end()
+        if sm.currentScene.camera.lockCam:
+            gElem.elements(window)
 
         imgui.render()
         impl.render(imgui.get_draw_data())

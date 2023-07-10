@@ -7,10 +7,10 @@ import imgui
 
 
 def keyCallback(window, key, scancode, action, mods):
-    if action != GLFW_RELEASE:
+    if action != GLFW_RELEASE and not sm.currentScene.camera.lockCam:
         sm.currentScene.camera.pressedKeys[key] = True
 
-    elif action == GLFW_RELEASE:
+    elif action == GLFW_RELEASE and not sm.currentScene.camera.lockCam:
         sm.currentScene.camera.pressedKeys[key] = False
 
     if key == GLFW_KEY_ESCAPE and action == GLFW_PRESS:
