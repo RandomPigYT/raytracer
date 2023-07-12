@@ -21,6 +21,7 @@ struct Material {
   vec4 ks;
   vec4 emission;
   vec4 intensity;
+  vec4 refractiveIndex;
   vec2 alpha;
   float metallicity;
 };
@@ -70,8 +71,9 @@ uniform uint maxBounces;
 uniform vec2 resolution;
 
 uniform uint time;
+uniform uint frameNum;
 
-uniform mat4 lookAt;
+uniform mat4 camToWorld;
 
 uint pcg_hash(uint inp) {
   uint state = inp * 747796405u + 2891336453u;
@@ -174,6 +176,24 @@ HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s) {
   return h;
 }
 
+mat4 lookat(vec3 eye, vec3 at, vec3 up){
+
+  vec3 zAxis = normalize(at - eye);
+  vec3 xAxis = normalize(cross(zAxis, up));
+  vec3 yAxis = normalize(cross(xAxis, zAxis));
+
+  zAxis = -zAxis;
+
+  mat4 mat = {
+    vec4(xAxis, 0),
+    vec4(yAxis, 0),
+    vec4(zAxis, 0),
+    vec4(0, 0, 0, 1)
+  };
+
+  return mat;
+}
+
 vec3 getRayDir(float fov /* in degrees */, float aspectRatio) {
   vec2 texelCoord = gl_GlobalInvocationID.xy;
   vec2 ndc = vec2((texelCoord.x + 0.5) / (resolution[0]),
@@ -183,67 +203,95 @@ vec3 getRayDir(float fov /* in degrees */, float aspectRatio) {
   pixelCamera.x = ((2 * ndc.x) - 1) * aspectRatio * tan(radians(fov / 2));
   pixelCamera.y = ((2 * ndc.y) - 1) * tan(radians(fov / 2));
 
-  // vec3 rayDir = normalize((lookAt * vec4(pixelCamera, -1.0f, 0)).xyz);
-  vec3 rayDir = (lookAt * vec4(pixelCamera, -1.0f, 0)).xyz;
+  vec3 rayDir = normalize((camToWorld * vec4(pixelCamera, -1.0f, 0)).xyz);
+  // vec3 rayDir = normalize((lookat(vec3(0, 0, 0), cameraDir, vec3(0, 1, 0))) * vec4(pixelCamera, -1.0f, 0)).xyz;
 
   return rayDir;
 }
 
-vec4 rayTrace(vec3 rayDir, vec4 bgCol) {
-  vec4 colours[] = {vec4(0.725, 0.192, 0.831, 1), vec4(0.498, 0.831, 0.192, 1),
-                    vec4(0.192, 0.831, 0.725, 1), vec4(0.831, 0.192, 0.498, 1),
-                    vec4(0.831, 0.725, 0.192, 1), vec4(0.498, 0.192, 0.831, 1),
-                    vec4(0.192, 0.498, 0.831, 1), vec4(0.725, 0.831, 0.192, 1),
-                    vec4(0.192, 0.725, 0.831, 1), vec4(0.831, 0.498, 0.192, 1),
-                    vec4(0.498, 0.725, 0.192, 1), vec4(0.725, 0.498, 0.192, 1)};
 
-  vec4 colour = bgCol;
+HitInfo closestSphereHIt(out uint index, vec3 rayDir, vec3 rayOrigin){
 
-  float minRayT = 1.0 / 0.0;
-  int minIndex = -1;
+  HitInfo minHit;
+  minHit.rayT = 1.0 / 0.0;
+  minHit.didHit = false;
 
-  Vertex temp[3];
-  HitInfo h;
+  uint minIndex = -1;
+  
+  for (int i = 0; i < spheres.length(); i++){
 
-  for (int i = 0; i < verts.length(); i += 3) {
-    temp[0] = verts[i];
-    temp[1] = verts[i + 1];
-    temp[2] = verts[i + 2];
+    HitInfo h = testSphereIntersect(rayOrigin, rayDir, spheres[i]);
+    if (!h.didHit)
+      continue;
 
-    h = testIntersect(temp, cameraPos, rayDir);
+    
 
-    if (h.didHit) {
-      if (h.rayT < minRayT) minRayT = h.rayT;
-      minIndex = i / 3;
+    if (h.rayT < minHit.rayT){
+      minHit = h;
+      minIndex = i;
+      minHit.didHit = true;
     }
   }
-
-  if (minIndex >= 0) colour = colours[minIndex % 12];
-
-  float minSphT = 1.0 / 0.0;
-  int minSphereInd = -1;
-  vec3 minSphereNormal = vec3(0, 0, 0);
-
-  for (int i = 0; i < spheres.length(); i++) {
-    h = testSphereIntersect(cameraPos, rayDir, spheres[i]);
-
-    if (!h.didHit) continue;
-
-    if (h.rayT <= minRayT) {
-      minRayT = h.rayT;
-      minSphereInd = i;
-
-      minSphereNormal = normalize(h.position - spheres[i].position.xyz * 1);
-    }
-  }
-
-  if (minSphereInd != -1) {
-    colour = vec4(materials[spheres[minSphereInd].materialID].kd.xyz, 1.0);
-    // colour = vec4(minSphereNormal, 1.0);
-  }
-
-  return colour;
+  
+  index = minIndex;
+  return minHit;
 }
+
+
+vec4 trace(vec3 rayDir, vec4 bgColour){
+
+  vec3 rayOrigin = cameraPos;
+
+  vec3 colour = vec3(0, 0, 0);
+  vec3 throughput = vec3(1.0, 1.0, 1.0);
+
+  HitInfo hit;
+  uint sphereIndex;
+
+  Material mat;
+  float mult = 1.0f;
+
+  uint seed = frameNum * gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * time;
+  uint prevSeed = seed;
+
+  for (int i = 0; i <= maxBounces; i++){
+    
+    hit = closestSphereHIt(sphereIndex, rayDir, rayOrigin);
+    if (!hit.didHit){
+      
+      colour +=  bgColour.xyz * throughput;
+      break;
+    }
+
+    vec3 lightDir = normalize(vec3(-1, -1, -1));
+    float intensity = max(dot(hit.normal, -lightDir), 0);
+
+    mat = materials[spheres[sphereIndex].materialID];
+
+    vec3 sphereCol = mat.kd.xyz;
+    sphereCol *= intensity;
+
+    colour += throughput * mat.emission.xyz * mat.intensity.x;
+
+    throughput *= mat.kd.xyz;
+    
+    float theta = acos(sqrt(random(seed)));
+    float phi = 2 * radians(180) * random(seed);
+
+    rayDir = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+
+    rayDir = (lookat(vec3(0, 0, 0), -hit.normal, vec3(0, 1, 0)) * vec4(rayDir, 0)).xyz;
+
+    // rayDir = normalize(reflect(rayDir, hit.normal));
+    vec3 offset = rayDir * 0.001;
+    rayOrigin = hit.position + offset;
+
+    mult *= 0.7f;
+  }
+
+  return vec4(colour, 1);
+}
+
 
 void main() {
 
@@ -253,14 +301,29 @@ void main() {
   float aspectRatio = (resolution[0]) / (resolution[1]);
   vec3 rayDir = getRayDir(70, aspectRatio);
 
-  for (int i = 0; i < maxBounces; i++) {
-    colour += rayTrace(rayDir, vec4(0, 0, 0, 1)) / maxBounces;
+
+  for (int i = 0; i < raysPerPixel; i++){
+
+    // colour += trace(rayDir, vec4(0.51, 0.71, 1, 1)) / raysPerPixel;
+    colour += trace(rayDir, vec4(0, 0, 0, 1)) / raysPerPixel; 
   }
+
+  // colour = rayTrace(rayDir, vec4(0, 0, 0, 1));
 
   ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
 
 
-  if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1]))
+
+
+  if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1]) && frameNum == 0)
     imageStore(rendered, texelCoord, colour);
+
+  else{
+
+    vec4 prevColour = imageLoad(rendered, texelCoord);
+    colour = ((frameNum - 1) * prevColour + colour) / frameNum;
+    imageStore(rendered, texelCoord, colour);
+
+  }
 
 }

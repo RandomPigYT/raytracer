@@ -17,32 +17,41 @@ def move():
         )
     )
 
+    moved = False
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_W]:
+        moved = True
         sm.currentScene.camera.position += (
             sm.currentScene.camera.playerSpeed * front * dt
         )
 
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_S]:
+        moved = True
         sm.currentScene.camera.position -= (
             sm.currentScene.camera.playerSpeed * front * dt
         )
 
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_D]:
+        moved = True
         sm.currentScene.camera.position += (
             sm.currentScene.camera.playerSpeed * right * dt
         )
 
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_A]:
+        moved = True
         sm.currentScene.camera.position -= (
             sm.currentScene.camera.playerSpeed * right * dt
         )
 
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_SPACE]:
+        moved = True
         sm.currentScene.camera.position += sm.currentScene.camera.playerSpeed * up * dt
 
     if sm.currentScene.camera.pressedKeys[GLFW_KEY_LEFT_SHIFT]:
+        moved = True
         sm.currentScene.camera.position -= sm.currentScene.camera.playerSpeed * up * dt
 
+    if moved:
+        sm.currentScene.resetFrame()
     sm.currentScene.sendUniforms()
 
 
@@ -65,3 +74,5 @@ def lookAround(dx, dy):
     sm.currentScene.camera.direction[2] = math.sin(
         math.radians(sm.currentScene.camera.yaw)
     ) * math.cos(math.radians(sm.currentScene.camera.pitch))
+
+    sm.currentScene.camera.direction = glm.normalize(sm.currentScene.camera.direction)

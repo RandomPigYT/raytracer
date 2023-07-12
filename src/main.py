@@ -14,6 +14,8 @@ import deltatime
 import renderer.camera as cam
 import renderer.GUI.initImgui as initImgui
 import imgui
+import random
+
 
 import renderer.render as render
 
@@ -49,18 +51,22 @@ def main():
 
     scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080))
 
+    # print(*(scene.camera.direction))
+
     scene.initCanvas()
 
     scene.loadModel("models/cube.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(2, (ct.c_float * 4)(5, 2, 0, 0))
-    scene.materials[scene.spheres[0].materialID].kd = (ct.c_float * 4)(*(1, 0, 1, 0))
+    scene.materials[scene.spheres[0].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
 
-    scene.createSphere(1, (ct.c_float * 4)(3, 5, 2, 0))
-    scene.materials[scene.spheres[1].materialID].kd = (ct.c_float * 4)(*(0, 0, 1, 0))
+    scene.createSphere(0.5, (ct.c_float * 4)(2, 0, 2, 0))
+    scene.materials[scene.spheres[1].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[1].materialID].emission = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[1].materialID].intensity = (ct.c_float * 4)(*(12, 12, 12, 0))
 
     scene.createSphere(3, (ct.c_float * 4)(2, 0, 2, 0))
-    scene.materials[scene.spheres[2].materialID].kd = (ct.c_float * 4)(*(0, 1, 0, 0))
+    scene.materials[scene.spheres[2].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
 
     scene.sendMats()
 

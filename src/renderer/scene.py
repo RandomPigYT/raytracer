@@ -25,6 +25,7 @@ class Material(ct.Structure):
         ("ks", ct.c_float * 4),  # 32    12
         ("emission", ct.c_float * 4),  # 48  12
         ("intensity", ct.c_float * 4),
+        ("refractiveIndex", ct.c_float * 4),
         ("alpha", ct.c_float * 2),  # 16  8
         ("metallicity", ct.c_float),
         ("padding1", ct.c_float),  # 24  8
@@ -92,6 +93,8 @@ class Scene:
     meshSSBO = None
     materialSSBO = None
     spheresSSBO = None
+    
+    frameNum = 0
 
     def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple):
         if sm.currentScene == None:
@@ -115,6 +118,8 @@ class Scene:
             math.radians(pitch)
         )
 
+        self.camera.direction = glm.normalize(self.camera.direction)
+
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
         height = viewport[3]
@@ -128,6 +133,9 @@ class Scene:
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
     resizeTexture = canvas.resizeTexture
+
+    def resetFrame(self):
+        self.frameNum = 0
 
     def createSphere(self, radius, position):
         self.spheres = util.realloc(self.spheres, len(self.spheres) + 1)
@@ -159,6 +167,9 @@ class Scene:
         self.sendUniforms()
 
     def sendVerts(self):
+
+        if not len(self.vertices):
+            return
         # Resize vertices ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
         gl.glBufferData(
@@ -177,6 +188,9 @@ class Scene:
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
     def sendMeshes(self):
+
+        if not len(self.meshes):
+            return
         # Resize meshes ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.meshSSBO)
         gl.glBufferData(
@@ -195,6 +209,9 @@ class Scene:
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
     def sendMats(self):
+        if not len(self.materials):
+            return
+
         # Resize materials ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.materialSSBO)
         gl.glBufferData(
@@ -213,6 +230,10 @@ class Scene:
         gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
     def sendSpheresToShader(self):
+        
+        if not len(self.spheres):
+            return
+
         # Resize spheres ssbo
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.spheresSSBO)
         gl.glBufferData(
@@ -248,14 +269,20 @@ class Scene:
 
         gl.glUniform2f(resolutionLoc, *(ct.c_float * 2)(*self.resolution))
 
+        # viewMat = glm.lookAt(
+        #     self.camera.position,
+        #     glm.vec3(self.camera.position) + glm.vec3(self.camera.direction),
+        #     glm.vec3(0, 1, 0),
+        # )
+
         viewMat = glm.lookAt(
-            self.camera.position,
-            glm.vec3(self.camera.position) + glm.vec3(self.camera.direction),
-            glm.vec3(0, 1, 0),
+            glm.vec3(0, 0, 0),
+            glm.vec3(self.camera.direction),
+            glm.vec3(0, 1, 0)
         )
 
-        lookAtloc = gl.glGetUniformLocation(self.compute, "lookAt")
-        gl.glUniformMatrix4fv(lookAtloc, 1, gl.GL_FALSE, np.ravel(viewMat))
+        camToWorld = gl.glGetUniformLocation(self.compute, "camToWorld")
+        gl.glUniformMatrix4fv(camToWorld, 1, gl.GL_FALSE, np.ravel(viewMat))
 
         gl.glUseProgram(self.compute)
         resolutionLoc = gl.glGetUniformLocation(self.compute, "resolution")

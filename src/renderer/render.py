@@ -15,6 +15,8 @@ import sceneManager as sm
 
 def render(window, scene, impl: GlfwRenderer):
 
+
+
     while not glfwWindowShouldClose(window):
         deltatime.startTime()
 
@@ -26,10 +28,10 @@ def render(window, scene, impl: GlfwRenderer):
         height = viewport[3]
 
 
-        # gl.glClearColor(0.2, 0.3, 0.3, 1.0)
+        
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        rt.raytrace(scene, 1, 30)
+        rt.raytrace(scene, 10, 1)
         cam.move()
 
         shader.useShader(scene.shaderProgram)
@@ -39,8 +41,7 @@ def render(window, scene, impl: GlfwRenderer):
 
         gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
 
-        if sm.currentScene.camera.lockCam:
-            gElem.elements(window)
+        gElem.elements(window)
 
         imgui.render()
         impl.render(imgui.get_draw_data())

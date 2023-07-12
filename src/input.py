@@ -45,3 +45,5 @@ def mousePosCallback(window, xpos, ypos):
         dy = ypos - prevPos[1]
 
         camera.lookAround(dx, dy)
+
+        sm.currentScene.resetFrame()
