@@ -21,14 +21,15 @@ class Vertex(ct.Structure):
 
 class Material(ct.Structure):
     _fields_ = [
-        ("kd", ct.c_float * 4),  # 0   12
-        ("ks", ct.c_float * 4),  # 32    12
+        # ("kd", ct.c_float * 4),  # 0   12
+        # ("ks", ct.c_float * 4),  # 32    12
+        ("albedo", ct.c_float * 4),
         ("emission", ct.c_float * 4),  # 48  12
         ("intensity", ct.c_float * 4),
         ("refractiveIndex", ct.c_float * 4),
-        ("alpha", ct.c_float * 2),  # 16  8
-        ("metallicity", ct.c_float),
-        ("padding1", ct.c_float),  # 24  8
+        ("roughness", ct.c_float * 2),  # 16  8
+        ("metallic", ct.c_float),
+        ("reflectance", ct.c_float),  # 24  8
     ]
 
 
@@ -77,6 +78,8 @@ class Camera:
     sensitivity = 0.05
 
     lockCam = False
+
+    blur = 1
 
 
 class Scene:
@@ -287,5 +290,8 @@ class Scene:
         gl.glUseProgram(self.compute)
         resolutionLoc = gl.glGetUniformLocation(self.compute, "resolution")
         gl.glUniform2f(resolutionLoc, *self.resolution)
+
+        blurStrengthLoc = gl.glGetUniformLocation(self.compute, "blurStrength")
+        gl.glUniform1f(blurStrengthLoc, self.camera.blur)
 
 

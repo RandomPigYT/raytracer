@@ -58,15 +58,15 @@ def main():
     scene.loadModel("models/cube.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(2, (ct.c_float * 4)(5, 2, 0, 0))
-    scene.materials[scene.spheres[0].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[0].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
 
     scene.createSphere(0.5, (ct.c_float * 4)(2, 0, 2, 0))
-    scene.materials[scene.spheres[1].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
-    scene.materials[scene.spheres[1].materialID].emission = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[1].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[1].materialID].emission = (ct.c_float * 4)(0xf6 / 255, 0xcd / 255, 0x8b / 255, 0)
     scene.materials[scene.spheres[1].materialID].intensity = (ct.c_float * 4)(*(12, 12, 12, 0))
 
     scene.createSphere(3, (ct.c_float * 4)(2, 0, 2, 0))
-    scene.materials[scene.spheres[2].materialID].kd = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
 
     scene.sendMats()
 

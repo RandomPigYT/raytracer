@@ -26,11 +26,18 @@ def elements(window):
     imgui.text(str("Avg FPS: " + str(avgFPS)))
     imgui.text("Frame: " + str(sm.currentScene.frameNum))
     imgui.text("Res: " + str(width) + " " + str(height))
-
-    imgui.text("Colour " + str(sm.currentScene.materials[0].kd[0]) +" "+ str(sm.currentScene.materials[0].kd[1])+ " " +str(sm.currentScene.materials[0].kd[2]))
     imgui.end()
 
     if sm.currentScene.camera.lockCam:
         modelDebugUI.drawSphereUI(window)
 
+    imgui.begin("Blur")
+    
+    status, blur = imgui.drag_float("blur strength", sm.currentScene.camera.blur, 0.01, format="%0.2f",
+                                    min_value=0)
+    
+    if status:
+        sm.currentScene.camera.blur = blur
+        sm.currentScene.sendUniforms()
+    imgui.end()
 

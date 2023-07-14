@@ -24,13 +24,10 @@ def position(sphere, sphereNum, window):
 def material(materialID, sphereNum):
     
 
-    status, kd = imgui.color_edit3("kd " + str(sphereNum), *sm.currentScene.materials[materialID].kd)
+    status, albedo = imgui.color_edit3("albedo " + str(sphereNum), *sm.currentScene.materials[materialID].albedo)
     if status:
-        sm.currentScene.materials[materialID].kd = (*kd, 1)
+        sm.currentScene.materials[materialID].albedo = (*albedo, 1)
 
-    status, ks = imgui.color_edit3("ks " + str(sphereNum), *sm.currentScene.materials[materialID].ks)
-    if status:
-        sm.currentScene.materials[materialID].ks = (*ks, 1)
 
     status, emission = imgui.color_edit3("emission " + str(sphereNum), *sm.currentScene.materials[materialID].emission)
     if status:
@@ -51,21 +48,26 @@ def material(materialID, sphereNum):
         sm.currentScene.materials[materialID].refractiveIndex = ref
 
 
-    status, alpha = imgui.drag_float2("alpha " + str(sphereNum), 
-                                      *sm.currentScene.materials[materialID].alpha,
+    status, roughness = imgui.drag_float2("roughness " + str(sphereNum), 
+                                      *sm.currentScene.materials[materialID].roughness,
                                       0.001, format="%0.3f",
                                       min_value=0, max_value=1)
     if status:
-        sm.currentScene.materials[materialID].alpha = alpha
+        sm.currentScene.materials[materialID].roughness = roughness
 
-    status, metallicity = imgui.drag_float("metallicity " + str(sphereNum),
-                                           sm.currentScene.materials[materialID].metallicity,
+    status, metallic = imgui.drag_float("metallic " + str(sphereNum),
+                                           sm.currentScene.materials[materialID].metallic,
                                            0.001, format="%0.3f",
                                            min_value=0, max_value=1)
-
     if status:
-        sm.currentScene.materials[materialID].metallicity = metallicity
+        sm.currentScene.materials[materialID].metallic = metallic
 
+    status, reflectance = imgui.drag_float("reflectance " + str(sphereNum),
+                                           sm.currentScene.materials[materialID].reflectance,
+                                           0.001, format="%0.3f",
+                                           min_value=0, max_value=1)
+    if status:
+        sm.currentScene.materials[materialID].reflectance = reflectance
     sm.currentScene.resetFrame()
 
 
@@ -84,16 +86,6 @@ def drawSphereUI(window):
         
         sphereIndex += 1
 
-
-    imgui.end()
-
-    meshIndex = 0
-    imgui.begin("Meshes")
-    for i in sm.currentScene.meshes:
-        
-        imgui.text("Mesh " + str(meshIndex + 1))
-        material(i.materialID, meshIndex + 1)
-        meshIndex += 1
-    
-    imgui.end()
     sm.currentScene.sendSpheresToShader()
+
+    imgui.end()
