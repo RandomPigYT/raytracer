@@ -31,13 +31,22 @@ def elements(window):
     if sm.currentScene.camera.lockCam:
         modelDebugUI.drawSphereUI(window)
 
-    imgui.begin("Blur")
-    
-    status, blur = imgui.drag_float("blur strength", sm.currentScene.camera.blur, 0.01, format="%0.2f",
-                                    min_value=0)
-    
-    if status:
-        sm.currentScene.camera.blur = blur
-        sm.currentScene.sendUniforms()
-    imgui.end()
+        imgui.begin("Camera")
+        
+        status, blur = imgui.drag_float("blur strength", sm.currentScene.camera.blur, 0.01, format="%0.2f",
+                                        min_value=0)
+        
+        if status:
+            sm.currentScene.camera.blur = blur
+            sm.currentScene.sendUniforms()
+
+
+        status, fov = imgui.drag_float("FOV", sm.currentScene.camera.fov, 0.1, format="%0.1f")
+
+        if status:
+            sm.currentScene.camera.fov = fov
+        imgui.end()
+
+        
+        
 

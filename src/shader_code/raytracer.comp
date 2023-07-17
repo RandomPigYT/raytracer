@@ -75,6 +75,8 @@ uniform uint time;
 uniform uint frameNum;
 
 uniform mat4 camToWorld;
+
+uniform float fov;
 uniform float blurStrength;
 
 uint pcg_hash(uint inp) {
@@ -183,13 +185,14 @@ HitInfo closestSphereHIt(out uint index, vec3 rayDir, vec3 rayOrigin){
   return minHit;
 }
 
-vec3 getSpecularMicrofacetNormal(float roughness, vec3 surfaceNormal, inout uint seed, out float theta, out float phi){
+vec3 getSpecularReflectedRay(float roughness, vec3 surfaceNormal, vec3 rayDir, 
+                                inout uint seed, out float theta, out float phi, out vec3 microfacetN){
 
-  vec3 normal;
 
 
 
   float alpha = roughness * roughness;
+  float alpha2 = alpha * alpha;
 
   uint temp = seed;
   
@@ -200,19 +203,21 @@ vec3 getSpecularMicrofacetNormal(float roughness, vec3 surfaceNormal, inout uint
   seed = temp;
 
   theta = atan(alpha * sqrt(xi_1 / (1 - xi_1)));
+  // theta = atan(sqrt(-alpha2 * log(1 - xi_1)));
   phi = 2 * PI * xi_2;
 
-  normal = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+  microfacetN = vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
   // normal = vec3(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
-  normal = (lookat(vec3(0, 0, 0), -surfaceNormal, vec3(0, 1, 0)) * vec4(normal, 0)).xyz;
-  normal = normalize(normal);
+  microfacetN = (lookat(vec3(0, 0, 0), -surfaceNormal, vec3(0, 1, 0)) * vec4(microfacetN, 0)).xyz;
+  microfacetN = normalize(microfacetN);
 
+  vec3 reflected = reflect(rayDir, microfacetN);
 
-  return normal;
+  return reflected;
 }
 
 
-vec3 getDiffuseNormal(vec3 surfaceNormal, inout uint seed, out float theta, out float phi){
+vec3 getDiffuseReflectedRay(vec3 surfaceNormal, inout uint seed, out float theta, out float phi){
 
   vec3 normal;
 
@@ -236,73 +241,112 @@ vec3 lambertianBRDF(vec3 view, vec3 normal, vec3 albedo){
   return (albedo * dot(view, normal)) / PI;
 }
 
-float GGXIsotropicMicrofacetPDF(float roughness, float theta){
-  float pdf;
 
-  float alpha = roughness * roughness;
-  float alpha2 = alpha * alpha;
-  
-  pdf = (alpha2 * cos(theta) * sin(theta)) / (PI * ((alpha2 - 1) * cos(theta) * cos(theta) + 1) *
-                                               ((alpha2 - 1) * cos(theta) * cos(theta) + 1));
+vec3 calculateFresnel(float VdotH, vec3 f0){
 
-  return pdf;
+  return f0 + ((1.0 - f0) * pow(1.0 - VdotH, 5.0));
 }
 
-vec3 fresnelSchlick(float VoH, vec3 f0){
-  return f0 + (1.0 - f0) * pow(1.0 - VoH, 5.0);
-}
-
-
-float GGXDistribution(float NoH, float alpha){
-  float D;
+float GGXDistribution(float alpha, float NdotH){
 
   float alpha2 = alpha * alpha;
-  float NoH2 = NoH * NoH;
 
-  D = alpha2 / (PI * (NoH2 * (alpha2 - 1.0) + 1) * (NoH2 * (alpha2 - 1.0) + 1));
+  float b = ((alpha2 - 1.0) * NdotH * NdotH) + 1;
 
-  return D;
+  if (alpha == 0)
+    return 1;
+
+  if (!(NdotH > 0))
+    return 0;
+
+  return (alpha2 / (PI * b * b));
+}
+
+float beckmannDist(float alpha, float NdotH){
+
+  float alpha2 = alpha * alpha;
+
+  float theta = acos(NdotH);
+
+  float den = PI * alpha2 * pow(NdotH, 4.0);
+  float num = exp(-(tan(theta) * tan(theta)) / alpha2);
+
+  return num / den;
+}
+
+float schlickG1(float NdotX, float alpha){
+  float k = max(alpha / 2, 0.001);
+
+  // if (NdotX <= 0.001 && alpha <= 0.001)
+  //   return 1;
+
+  return NdotX / (NdotX * (1 - k) + k);
+}
+
+float smithG2(float NdotV, float NdotL, float alpha){
+  return schlickG1(NdotV, alpha) * schlickG1(NdotL, alpha);
 }
 
 
-// U is an arbitrary vector
-float SchlickG1(float NoU, float alpha){
-  float G1;
-
-  float k = alpha / 2.0;
-
-  G1 = max(NoU, 0.001) / (NoU * (1.0 - k) + k);
-
-  return G1;
-}
-
-vec3 GGXSpecularBRDF(vec3 H, vec3 L, vec3 V, vec3 N, 
-                    float metallic, float roughness, vec3 baseColour, float reflectance){
-
-  
-  float NoV = dot(N, V);
-  float NoL = dot(N, L);
-  float NoH = dot(N, H);
-  float VoH = dot(V, H);
-
-  float alpha = roughness * roughness;
-
-  vec3 f0 = vec3(0.16 * reflectance * reflectance);
-  f0 = mix(f0, baseColour, metallic);
+vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
 
 
-  vec3 F = fresnelSchlick(VoH, f0);
-  float D = GGXDistribution(NoH, alpha);
-  float G = SchlickG1(NoL, alpha) * SchlickG1(NoV, alpha);
+  vec3 H = normalize(V + L);
 
-  vec3 brdf = (F * D * G) / (4 * max(NoL, 0.001) * max(NoV, 0.001));
+  float NdotV = clamp(dot(N, V), 0.0, 1.0);
+  float NdotL = clamp(dot(N, L), 0.0, 1.0);
+  float NdotH = clamp(dot(N, H), 0.0, 1.0);
+  float VdotH = clamp(dot(V, H), 0.0, 1.0);
+  float LdotH = clamp(dot(L, H), 0.0, 1.0);
+
+  float alpha = mat.roughness.x * mat.roughness.x;
+
+  vec3 f0 = vec3(0.16 * mat.reflectance);
+  f0 = mix(f0, mat.albedo.xyz, mat.metallic);
+
+  vec3 F = calculateFresnel(VdotH, f0);
+  float D = GGXDistribution(alpha, NdotH);
+  // float D = 0.4;
+  // float D = beckmannDist(alpha, NdotH);
+  float G = smithG2(NdotV, NdotL, alpha);
+
+  // vec3 brdf = (F * D * G) / (4 * NdotL * NdotV + 0.0001) ;
+  vec3 brdf = (F * D * G) / (4 * max(NdotL, 0.001) * max(NdotV, 0.001));
+  // vec3 brdf = (F * D * G);
 
   return brdf;
 }
 
 
+float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
 
-vec4 trace(vec3 rayDir, vec4 bgColour){
+
+  float alpha = roughness * roughness;
+
+  // if (roughness == 0)
+  //   return 1;
+
+  float t = reflectance * reflectance;
+  
+  float alpha2 = alpha * alpha;
+
+
+  float NdotH = clamp(dot(N, H), 0.0, 1.0);
+  float LdotH = clamp(dot(L, H), 0.0, 1.0);
+  float NdotL = clamp(dot(N, L), 0.0, 1.0);
+
+
+  float term1 = (1 - t) * NdotL / PI;
+
+  float num = max(GGXDistribution(alpha, NdotH), 0.001) * max(NdotH, 0.001);
+
+  float term2 = (t * num) / (4 * LdotH);
+
+  return term1 + term2;
+}
+
+
+vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
   vec3 rayOrigin = cameraPos;
 
@@ -315,17 +359,28 @@ vec4 trace(vec3 rayDir, vec4 bgColour){
   Material mat;
   float mult = 1.0f;
 
-  uint seed = frameNum * gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * time;
+  // uint seed = frameNum * (gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * uint(resolution.y)) * time;
   uint prevSeed = seed;
+
+  float bgIntensity = 1.0;
 
   for (int i = 0; i <= maxBounces; i++){
 
 
     
     hit = closestSphereHIt(sphereIndex, rayDir, rayOrigin);
+    
+
     if (!hit.didHit){
       
-      colour +=  bgColour.xyz * throughput;
+      if (i != 0){
+        colour += bgColour.xyz * throughput * bgIntensity;
+      }
+
+      else
+        colour +=  bgColour.xyz * throughput;
+
+
       break;
     }
 
@@ -342,30 +397,50 @@ vec4 trace(vec3 rayDir, vec4 bgColour){
     float xi = random(seed);
     bool isSpecular = false;
 
-    if (xi < mat.reflectance){
+    if (xi < mat.reflectance * mat.reflectance){
       isSpecular = true;
       probability *= mat.reflectance;
     }
     
     else {
-      probability = 1.0 - mat.reflectance;
+      probability *= 1.0 - mat.reflectance * mat.reflectance;
     }
 
 
-    vec3 microfacetN = isSpecular ? getSpecularMicrofacetNormal(mat.roughness.x, hit.normal, seed, theta, phi) : 
-                                    getDiffuseNormal(hit.normal, seed, theta, phi);
-    vec3 reflectedRay = reflect(rayDir, microfacetN);
-
-    float pdf = isSpecular ?  GGXIsotropicMicrofacetPDF(mat.roughness.x, dot(hit.normal, microfacetN)) : lambertianPDF(rayDir, hit.normal);
+    vec3 microfacetN;
+    vec3 reflectedRay = isSpecular ? getSpecularReflectedRay(mat.roughness.x, hit.normal, rayDir, seed, theta, phi, microfacetN) : 
+                                    getDiffuseReflectedRay(hit.normal, seed, theta, phi);
 
 
-    vec3 brdf = isSpecular ? GGXSpecularBRDF(microfacetN, reflectedRay, rayDir, hit.normal,
-                                             mat.metallic, mat.roughness.x, mat.albedo.xyz,
-                                             mat.reflectance) : lambertianBRDF(rayDir, hit.normal, mat.albedo.xyz);
+    if (dot(reflectedRay, hit.normal) < 0){
+      
+      colour += throughput * mat.emission.xyz * mat.intensity.x;
+      break;
+    }
+    
+
+  
+
+    vec3 brdf = isSpecular ? GGXbrdf(-rayDir, reflectedRay, hit.normal, mat) : lambertianBRDF(-rayDir, hit.normal, mat.albedo.xyz);
 
 
+    vec3 H = normalize(-rayDir + reflectedRay);
+    float pdf = isSpecular ?  GGXpdf(mat.roughness.x, H, hit.normal, reflectedRay, mat.reflectance) : 1 / PI;
+
+    // pdf = isSpecular ? 1.0 : pdf;
+    // if (isSpecular){
+    //   brdf = vec3(1);
+    //   pdf = 1.0;
+    // }
     colour += throughput * mat.emission.xyz * mat.intensity.x;
-    throughput *= brdf / ((pdf) * probability);
+    throughput *= brdf / (pdf * probability);
+
+    if (isnan(colour.x) || isnan(colour.y) || isnan(colour.z) || isnan(pdf))
+      return vec4(1, 0, 1, 1);
+    
+    // if (pdf == 0)
+    //   return vec4(1, 0, 0, 1);
+
 
     // throughput *= mat.albedo.xyz;
 
@@ -384,13 +459,12 @@ void main() {
   
   vec4 colour = vec4(0, 0, 0, 1);
 
-  float fov = 70;
 
   float aspectRatio = (resolution[0]) / (resolution[1]);
   vec3 rayDir = getRayDir(fov, aspectRatio);
 
   float pixelLength = (2 * tan(radians(fov / 2)) * aspectRatio * blurStrength) / resolution[0];
-  float pixelHeight = (2 * tan(radians(fov / 2)) * blurStrength) / resolution[0];
+  float pixelHeight = (2 * tan(radians(fov / 2)) * blurStrength) / resolution[1];
 
 
   uint seed = frameNum * gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * time;
@@ -400,8 +474,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    colour += trace(rayDir + offset, vec4(0.51, 0.71, 1, 1)) / raysPerPixel;
-    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1)) / raysPerPixel; 
+    // colour += trace(rayDir + offset, vec4(0.196, 0.427, 0.78, 1)) / raysPerPixel;
+    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
   // colour = rayTrace(rayDir, vec4(0, 0, 0, 1));

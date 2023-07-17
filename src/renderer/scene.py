@@ -79,6 +79,7 @@ class Camera:
 
     lockCam = False
 
+    fov = 70
     blur = 1
 
 
@@ -293,5 +294,8 @@ class Scene:
 
         blurStrengthLoc = gl.glGetUniformLocation(self.compute, "blurStrength")
         gl.glUniform1f(blurStrengthLoc, self.camera.blur)
+
+        fovLoc = gl.glGetUniformLocation(self.compute, "fov")
+        gl.glUniform1f(fovLoc, self.camera.fov)
 
 
