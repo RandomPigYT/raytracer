@@ -305,10 +305,14 @@ vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
   f0 = mix(f0, mat.albedo.xyz, mat.metallic);
 
   vec3 F = calculateFresnel(VdotH, f0);
+
+
   float D = GGXDistribution(alpha, NdotH);
+
   // float D = 0.4;
   // float D = beckmannDist(alpha, NdotH);
   float G = smithG2(NdotV, NdotL, alpha);
+
 
   // vec3 brdf = (F * D * G) / (4 * NdotL * NdotV + 0.0001) ;
   vec3 brdf = (F * D * G) / (4 * max(NdotL, 0.001) * max(NdotV, 0.001));
@@ -319,7 +323,6 @@ vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
 
 
 float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
-
 
   float alpha = roughness * roughness;
 
@@ -348,6 +351,7 @@ float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
 
 vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
+  
   vec3 rayOrigin = cameraPos;
 
   vec3 colour = vec3(0, 0, 0);
@@ -412,7 +416,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
                                     getDiffuseReflectedRay(hit.normal, seed, theta, phi);
 
 
-    if (dot(reflectedRay, hit.normal) < 0){
+    if (dot(reflectedRay, hit.normal) <= 0.001){
       
       colour += throughput * mat.emission.xyz * mat.intensity.x;
       break;
@@ -433,10 +437,10 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     //   pdf = 1.0;
     // }
     colour += throughput * mat.emission.xyz * mat.intensity.x;
-    throughput *= brdf / (pdf * probability);
+    throughput *= brdf / (pdf);
 
-    if (isnan(colour.x) || isnan(colour.y) || isnan(colour.z) || isnan(pdf))
-      return vec4(1, 0, 1, 1);
+    // if (isnan(colour.x) || isnan(colour.y) || isnan(colour.z) || isnan(pdf))
+    //   return vec4(1, 0, 1, 1);
     
     // if (pdf == 0)
     //   return vec4(1, 0, 0, 1);
@@ -478,7 +482,6 @@ void main() {
     colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
-  // colour = rayTrace(rayDir, vec4(0, 0, 0, 1));
 
   ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
 
