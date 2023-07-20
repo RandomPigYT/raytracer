@@ -39,6 +39,7 @@ class Mesh(ct.Structure):
         ("numTriangles", ct.c_uint32),
         ("materialID", ct.c_uint32),
         ("objectID", ct.c_uint32),
+        ("position", 4 * ct.c_float)
     ]
 
 
@@ -99,6 +100,9 @@ class Scene:
     spheresSSBO = None
     
     frameNum = 0
+
+    numBounces = 10
+    raysPerPixel = 1
 
     def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple):
         if sm.currentScene == None:
@@ -297,5 +301,6 @@ class Scene:
 
         fovLoc = gl.glGetUniformLocation(self.compute, "fov")
         gl.glUniform1f(fovLoc, self.camera.fov)
+
 
 

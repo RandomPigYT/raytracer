@@ -29,7 +29,7 @@ def elements(window):
     imgui.end()
 
     if sm.currentScene.camera.lockCam:
-        modelDebugUI.drawSphereUI(window)
+        modelDebugUI.drawModel(window)
 
         imgui.begin("Camera")
         
@@ -45,6 +45,16 @@ def elements(window):
 
         if status:
             sm.currentScene.camera.fov = fov
+
+
+        status, numBounces = imgui.drag_int("bounce limit", sm.currentScene.numBounces, min_value=1)
+        if status:
+            sm.currentScene.numBounces = numBounces
+        
+        status, raysPerPixel = imgui.drag_int("rays per pixel", sm.currentScene.raysPerPixel, min_value=1) 
+
+        if status:
+            sm.currentScene.raysPerPixel = raysPerPixel
         imgui.end()
 
         

@@ -68,8 +68,8 @@ def main():
     scene.createSphere(27.5, (ct.c_float * 4)(2, -28.05, 2, 0))
     scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
 
-    # scene.createSphere(0.25, (ct.c_float * 4)(2, -0.32, 2, 0))
-    # scene.materials[scene.spheres[3].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.createSphere(0.25, (ct.c_float * 4)(2, -0.32, 2, 0))
+    scene.materials[scene.spheres[3].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
     scene.sendMats()
 
     render.render(window, scene, impl)

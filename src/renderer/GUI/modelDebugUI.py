@@ -21,48 +21,48 @@ def position(sphere, sphereNum, window):
         sphere.position = (*pos, 0)
     sm.currentScene.resetFrame()
 
-def material(materialID, sphereNum):
+def material(materialID, num):
     
 
-    status, albedo = imgui.color_edit3("albedo " + str(sphereNum), *sm.currentScene.materials[materialID].albedo)
+    status, albedo = imgui.color_edit3("albedo " + str(num), *sm.currentScene.materials[materialID].albedo)
     if status:
         sm.currentScene.materials[materialID].albedo = (*albedo, 1)
 
 
-    status, emission = imgui.color_edit3("emission " + str(sphereNum), *sm.currentScene.materials[materialID].emission)
+    status, emission = imgui.color_edit3("emission " + str(num), *sm.currentScene.materials[materialID].emission)
     if status:
         sm.currentScene.materials[materialID].emission = (*emission, 1)
 
 
-    status, intensity = imgui.drag_float3("intensity " + str(sphereNum),
+    status, intensity = imgui.drag_float3("intensity " + str(num),
                                           *(sm.currentScene.materials[materialID].intensity[:-1]),
                                           0.01, format="%0.2f")
     if status:
         sm.currentScene.materials[materialID].intensity = (*intensity, 1)
     
 
-    status, ref = imgui.drag_float3("refractive index " + str(sphereNum), 
+    status, ref = imgui.drag_float3("refractive index " + str(num), 
                                       *(sm.currentScene.materials[materialID].refractiveIndex[:-1]),
                                       0.001, format="%0.3f")
     if status:
         sm.currentScene.materials[materialID].refractiveIndex = ref
 
 
-    status, roughness = imgui.drag_float2("roughness " + str(sphereNum), 
+    status, roughness = imgui.drag_float2("roughness " + str(num), 
                                       *sm.currentScene.materials[materialID].roughness,
                                       0.001, format="%0.3f",
                                       min_value=0, max_value=1)
     if status:
         sm.currentScene.materials[materialID].roughness = roughness
 
-    status, metallic = imgui.drag_float("metallic " + str(sphereNum),
+    status, metallic = imgui.drag_float("metallic " + str(num),
                                            sm.currentScene.materials[materialID].metallic,
                                            0.001, format="%0.3f",
                                            min_value=0, max_value=1)
     if status:
         sm.currentScene.materials[materialID].metallic = metallic
 
-    status, reflectance = imgui.drag_float("reflectance " + str(sphereNum),
+    status, reflectance = imgui.drag_float("reflectance " + str(num),
                                            sm.currentScene.materials[materialID].reflectance,
                                            0.001, format="%0.3f",
                                            min_value=0, max_value=1)
@@ -71,8 +71,17 @@ def material(materialID, sphereNum):
     sm.currentScene.resetFrame()
 
 
+def meshPosition(mesh, meshNum):
+    status, pos = imgui.drag_float3("Position" + str(meshNum),
+                                                mesh.position[0], mesh.position[1], mesh.position[2], 
+                                                0.01, format="%.2f")
+    if status:
+        mesh.position = (*pos, 0)
+    sm.currentScene.resetFrame()
 
-def drawSphereUI(window):
+
+
+def drawModel(window):
 
     
     imgui.begin("Spheres")
@@ -87,5 +96,22 @@ def drawSphereUI(window):
         sphereIndex += 1
 
     sm.currentScene.sendSpheresToShader()
+
+    imgui.end()
+
+    imgui.begin("Mesh")
+
+    meshIndex = 0
+    for i in sm.currentScene.meshes:
+        imgui.text("Mesh " + str(meshIndex + 1))
+        meshPosition(i, meshIndex + 1)
+        material(i.materialID, meshIndex + 1)
+        meshIndex += 1
+    
+    sm.currentScene.sendMeshes()
+    sm.currentScene.sendMats()
+
+        
+
 
     imgui.end()

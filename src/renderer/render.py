@@ -31,7 +31,7 @@ def render(window, scene, impl: GlfwRenderer):
         
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        rt.raytrace(scene, 10, 5)
+        rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
         cam.move()
 
         shader.useShader(scene.shaderProgram)
