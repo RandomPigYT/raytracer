@@ -129,6 +129,7 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, vec3 po
   HitInfo h;
   h.didHit = true;
   
+  vec3 untransformedRayOrig = rayOrigin;
   rayOrigin -= pos;
 
   float epsilon = 0.000001;
@@ -171,7 +172,7 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, vec3 po
   }
 
   h.normal = normalize(cross(edge2, edge1));
-  h.position = rayOrigin + rayDir * h.rayT;
+  h.position = untransformedRayOrig + rayDir * h.rayT;
 
   return h;
 }
@@ -206,6 +207,7 @@ vec3 getRayDir(float fov /* in degrees */, float aspectRatio) {
 
   vec3 rayDir = normalize((camToWorld * vec4(pixelCamera, -1.0f, 0)).xyz);
   // vec3 rayDir = normalize((lookat(vec3(0, 0, 0), cameraDir, vec3(0, 1, 0))) * vec4(pixelCamera, -1.0f, 0)).xyz;
+  // vec3 rayDir = normalize((lookat(vec3(0, 0, 0), vec3(0, 1, 0), vec3(0, 1, 0))) * vec4(pixelCamera, -1.0f, 0)).xyz;
 
   return rayDir;
 }
@@ -248,7 +250,7 @@ HitInfo closestTriangleHit(out uint meshIndex, out uint triIndex, vec3 rayDir, v
 
   for (uint i = 0; i < meshes.length(); i++){
 
-    for (uint j = 0; j < meshes[i].numTriangles * 3; j += 3){
+    for (uint j = 0; j < meshes[i].numTriangles; j += 3){
       uint indexOffset = meshes[i].startingVertex;
 
       vec3 temp[] = {
@@ -473,8 +475,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
                         materials[spheres[sphereIndex].materialID];                       
     
     // Perfectly vertical normals don't work properly, so this is needed to offset it by a tiny amount
-    if (dot(hit.normal, vec3(0, 1, 0)) == 1 || dot(hit.normal, vec3(0, 1, 0)) == -1)
-      hit.normal += 0.00000001;
+    hit.normal += 0.000000001;
 
     if (!hit.didHit){
       
@@ -495,9 +496,13 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     float xi = random(seed);
     bool isSpecular = false;
 
-    if (xi < mat.reflectance * mat.reflectance){
+    float probability = 1.0f;
+
+    if (xi <= mat.reflectance * mat.reflectance){
       isSpecular = true;
     }
+
+
     
 
 
@@ -564,8 +569,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    colour += trace(rayDir + offset, vec4(0.196, 0.427, 0.78, 1), seed) / raysPerPixel;
-    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    // colour += trace(rayDir + offset, vec4(0.196, 0.427, 0.78, 1), seed) / raysPerPixel;
+    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
 

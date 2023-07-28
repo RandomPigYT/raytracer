@@ -79,6 +79,7 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
+
     self.allocateSSBO()
     self.sendVerts()
     self.sendMeshes()
