@@ -34,13 +34,6 @@ def render(window, scene, impl: GlfwRenderer):
         rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
         cam.move()
 
-        shader.useShader(scene.shaderProgram)
-
-        gl.glActiveTexture(gl.GL_TEXTURE0)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, scene.tex)
-
-        gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
-
         gElem.elements(window)
 
         imgui.render()

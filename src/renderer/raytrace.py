@@ -6,7 +6,7 @@ from c_extension import ext
 import util
 import time
 import sceneManager as sm
-
+import graphics.shader as shader
 
 
 
@@ -30,4 +30,11 @@ def raytrace(scene: sc.Scene, maxBounces, raysPerPixel):
 
     gl.glDispatchCompute(48, 45, 1)
     gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+
+    shader.useShader(scene.shaderProgram)
+
+    gl.glActiveTexture(gl.GL_TEXTURE0)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, scene.tex)
+
+    gl.glDrawElements(gl.GL_TRIANGLES, 6, gl.GL_UNSIGNED_INT, None)
     # gl.glFinish()
