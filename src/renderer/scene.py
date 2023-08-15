@@ -83,6 +83,25 @@ class Camera:
     fov = 70
     blur = 1
 
+    def __init__(self, pos, yaw, pitch) -> None:
+        self.position = (ct.c_float * 3)(*pos)
+
+        self.yaw = yaw
+        self.pitch = pitch
+
+        self.direction[0] = math.cos(math.radians(yaw)) * math.cos(
+            math.radians(pitch)
+        )
+        self.direction[1] = math.cos(math.radians(pitch))
+        self.direction[2] = math.sin(math.radians(yaw)) * math.cos(
+            math.radians(pitch)
+        )
+
+        self.direction = glm.normalize(self.direction)
+
+
+        
+
 
 class Scene:
     # All the variables defined outside methods have been placed where they have been
@@ -112,21 +131,7 @@ class Scene:
 
         self.resolution = resolution
 
-        self.camera = Camera()
-        self.camera.position = (ct.c_float * 3)(*cameraPosition)
-
-        self.camera.yaw = yaw
-        self.camera.pitch = pitch
-
-        self.camera.direction[0] = math.cos(math.radians(yaw)) * math.cos(
-            math.radians(pitch)
-        )
-        self.camera.direction[1] = math.cos(math.radians(pitch))
-        self.camera.direction[2] = math.sin(math.radians(yaw)) * math.cos(
-            math.radians(pitch)
-        )
-
-        self.camera.direction = glm.normalize(self.camera.direction)
+        self.camera = Camera(cameraPosition, yaw, pitch)
 
         viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         width = viewport[2]
