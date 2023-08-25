@@ -17,7 +17,7 @@ import imgui
 import random
 
 
-import renderer.render as render
+import renderer.drawScene as drawScene
 
 
 def main():
@@ -43,15 +43,12 @@ def main():
     glfwSetCursorPosCallback(window, inp.mousePosCallback)
 
 
-    # glfwSwapInterval(1)
 
-    # impl = None
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080))
 
-    # print(*(scene.camera.direction))
 
     scene.initCanvas()
 
@@ -59,7 +56,7 @@ def main():
 
     scene.materials[scene.meshes[0].materialID].albedo  = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
 
-    scene.loadModel("models/cube.obj")
+    scene.loadModel("models/car.obj")
     # scene.loadModel("models/myCornellBox.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
@@ -77,7 +74,7 @@ def main():
     scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
     scene.sendMats()
 
-    render.render(window, scene, impl)
+    drawScene.render(window, scene, impl)
     
     glfwTerminate()
 
