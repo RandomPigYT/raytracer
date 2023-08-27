@@ -1,6 +1,6 @@
 import ctypes as ct
-import renderer.canvas as canvas
-import renderer.model.loadModel as lm
+import core.canvas as canvas
+import core.model.loadModel as lm
 import OpenGL.GL as gl
 import sceneManager as sm
 import util
@@ -8,7 +8,7 @@ from glfw.GLFW import *
 import glm
 import numpy as np
 import math
-import renderer.sendToShader as sendToShader
+import core.sendToShader as sendToShader
 
 class Vertex(ct.Structure):
     _fields_ = [

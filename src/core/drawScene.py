@@ -2,13 +2,13 @@ import graphics.window
 from glfw.GLFW import *
 import OpenGL.GL as gl
 import graphics.shader as shader
-import renderer.raytrace as rt
-import renderer.model.loadModel as m
+import core.raytrace as rt
+import core.model.loadModel as m
 import deltatime
-import renderer.camera as cam
+import core.camera as cam
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
-import renderer.GUI.guiElements as gElem
+import core.GUI.guiElements as gElem
 import sceneManager as sm
 
 

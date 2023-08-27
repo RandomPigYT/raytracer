@@ -4,20 +4,20 @@ import graphics.window
 from glfw.GLFW import *
 import OpenGL.GL as gl
 import graphics.shader as shader
-import renderer.raytrace as rt
-import renderer.scene as sc
+import core.raytrace as rt
+import core.scene as sc
 import ctypes as ct
 import init
-import renderer.model.loadModel as m
+import core.model.loadModel as m
 import input as inp
 import deltatime
-import renderer.camera as cam
-import renderer.GUI.initImgui as initImgui
+import core.camera as cam
+import core.GUI.initImgui as initImgui
 import imgui
 import random
 
 
-import renderer.drawScene as drawScene
+import core.drawScene as drawScene
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
 
     scene.materials[scene.meshes[0].materialID].albedo  = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
 
-    scene.loadModel("models/car.obj")
+    scene.loadModel("models/cube.obj")
     # scene.loadModel("models/myCornellBox.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))

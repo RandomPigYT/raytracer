@@ -1,7 +1,7 @@
 import os
 import ctypes as ct
-import renderer.model.loadModel as lm
-import renderer.scene as sc
+import core.model.loadModel as lm
+import core.scene as sc
 
 ext = None
 

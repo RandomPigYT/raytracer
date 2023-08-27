@@ -1,5 +1,5 @@
 from glfw.GLFW import *
-import renderer.camera as camera
+import core.camera as camera
 import sceneManager as sm
 import glm
 import ctypes as ct

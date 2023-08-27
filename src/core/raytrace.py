@@ -1,4 +1,4 @@
-import renderer.scene as sc
+import core.scene as sc
 import ctypes as ct
 import os
 import OpenGL.GL as gl
