@@ -24,7 +24,7 @@ def elements(window):
     imgui.begin("FPS")
     imgui.text(str("FPS: " + str(fps)))
     imgui.text(str("Avg FPS: " + str(avgFPS)))
-    imgui.text("Frame: " + str(sm.currentScene.frameNum))
+    imgui.text("Frame: " + str(sm.currentScene.sceneRenderer.frameNum))
     imgui.text("Res: " + str(width) + " " + str(height))
     imgui.end()
 
@@ -47,14 +47,17 @@ def elements(window):
             sm.currentScene.camera.fov = fov
 
 
-        status, numBounces = imgui.drag_int("bounce limit", sm.currentScene.numBounces, min_value=1)
-        if status:
-            sm.currentScene.numBounces = numBounces
+        status, numBounces = imgui.drag_int("bounce limit", sm.currentScene.sceneRenderer.numBounces, min_value=1)
+        numBounces = max(numBounces, 1)
         
-        status, raysPerPixel = imgui.drag_int("rays per pixel", sm.currentScene.raysPerPixel, min_value=1) 
+        if status:
+            sm.currentScene.sceneRenderer.numBounces = numBounces
+        
+        status, raysPerPixel = imgui.drag_int("rays per pixel", sm.currentScene.sceneRenderer.raysPerPixel, min_value=1) 
+        raysPerPixel = max(raysPerPixel, 1)
 
         if status:
-            sm.currentScene.raysPerPixel = raysPerPixel
+            sm.currentScene.sceneRenderer.raysPerPixel = raysPerPixel
         imgui.end()
 
         

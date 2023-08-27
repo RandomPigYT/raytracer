@@ -9,95 +9,96 @@ import glm
 import numpy as np
 import math
 import core.scene as sc
+import core.renderer as renderer
 
 
 def sendVerts(self):
 
-    if not len(self.vertices):
+    if not len(self.sceneRenderer.vertices):
         return
     # Resize vertices ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.vertSSBO)
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.vertSSBO)
     gl.glBufferData(
         gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(sc.Vertex) * len(self.vertices),
+        ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices),
         None,
         gl.GL_DYNAMIC_READ,
     )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, self.vertSSBO)
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, self.sceneRenderer.vertSSBO)
 
     # Populate vertices ssbo
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.vertices, ct.sizeof(sc.Vertex) * len(self.vertices))
+    ct.memmove(ptr, self.sceneRenderer.vertices, ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices))
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
 
 def sendMeshes(self):
 
-    if not len(self.meshes):
+    if not len(self.sceneRenderer.meshes):
         return
     # Resize meshes ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.meshSSBO)
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.meshSSBO)
     gl.glBufferData(
         gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(sc.Mesh) * len(self.meshes),
+        ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes),
         None,
         gl.GL_DYNAMIC_READ,
     )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, self.meshSSBO)
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, self.sceneRenderer.meshSSBO)
 
     # Populate meshes ssbo
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.meshes, ct.sizeof(sc.Mesh) * len(self.meshes))
+    ct.memmove(ptr, self.sceneRenderer.meshes, ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes))
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
 def sendMats(self):
-    if not len(self.materials):
+    if not len(self.sceneRenderer.materials):
         return
 
     # Resize materials ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.materialSSBO)
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.materialSSBO)
     gl.glBufferData(
         gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(sc.Material) * len(self.materials),
+        ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials),
         None,
         gl.GL_DYNAMIC_READ,
     )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, self.materialSSBO)
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, self.sceneRenderer.materialSSBO)
 
     # Populate materials ssbo
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.materials, ct.sizeof(sc.Material) * len(self.materials))
+    ct.memmove(ptr, self.sceneRenderer.materials, ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials))
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
 def sendSpheresToShader(self):
     
-    if not len(self.spheres):
+    if not len(self.sceneRenderer.spheres):
         return
 
     # Resize spheres ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.spheresSSBO)
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.spheresSSBO)
     gl.glBufferData(
         gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(sc.Sphere) * len(self.spheres),
+        ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres),
         None,
         gl.GL_DYNAMIC_READ,
     )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, self.spheresSSBO)
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, self.sceneRenderer.spheresSSBO)
 
     # Populate spheres ssbo
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.spheres, ct.sizeof(sc.Sphere) * len(self.spheres))
+    ct.memmove(ptr, self.sceneRenderer.spheres, ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres))
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
     gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
@@ -107,12 +108,12 @@ def sendSpheresToShader(self):
 
 
 def sendUniforms(self):
-    camPosLoc = gl.glGetUniformLocation(self.compute, "cameraPos")
-    camDirLoc = gl.glGetUniformLocation(self.compute, "cameraDir")
+    camPosLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "cameraPos")
+    camDirLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "cameraDir")
 
-    resolutionLoc = gl.glGetUniformLocation(self.compute, "resolution")
+    resolutionLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "resolution")
 
-    gl.glUseProgram(self.compute)
+    gl.glUseProgram(self.sceneRenderer.compute)
 
     gl.glUniform3f(camPosLoc, *self.camera.position)
     gl.glUniform3f(camDirLoc, *self.camera.direction)
@@ -131,15 +132,15 @@ def sendUniforms(self):
         glm.vec3(0, 1, 0)
     )
 
-    camToWorld = gl.glGetUniformLocation(self.compute, "camToWorld")
+    camToWorld = gl.glGetUniformLocation(self.sceneRenderer.compute, "camToWorld")
     gl.glUniformMatrix4fv(camToWorld, 1, gl.GL_FALSE, np.ravel(viewMat))
 
-    gl.glUseProgram(self.compute)
-    resolutionLoc = gl.glGetUniformLocation(self.compute, "resolution")
+    gl.glUseProgram(self.sceneRenderer.compute)
+    resolutionLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "resolution")
     gl.glUniform2f(resolutionLoc, *self.resolution)
 
-    blurStrengthLoc = gl.glGetUniformLocation(self.compute, "blurStrength")
+    blurStrengthLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "blurStrength")
     gl.glUniform1f(blurStrengthLoc, self.camera.blur)
 
-    fovLoc = gl.glGetUniformLocation(self.compute, "fov")
+    fovLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "fov")
     gl.glUniform1f(fovLoc, self.camera.fov)

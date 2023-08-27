@@ -28,13 +28,13 @@ def initRenderCavas(self):
     int32Size = 4
 
     # setup buffers
-    self.vao = gl.glGenVertexArrays(1)
-    self.vbo = gl.glGenBuffers(1)
-    self.ebo = gl.glGenBuffers(1)
+    self.sceneRenderer.vao = gl.glGenVertexArrays(1)
+    self.sceneRenderer.vbo = gl.glGenBuffers(1)
+    self.sceneRenderer.ebo = gl.glGenBuffers(1)
 
-    gl.glBindVertexArray(self.vao)
+    gl.glBindVertexArray(self.sceneRenderer.vao)
 
-    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vbo)
+    gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.sceneRenderer.vbo)
     gl.glBufferData(
         gl.GL_ARRAY_BUFFER,
         len(vertices) * floatSize,
@@ -42,7 +42,7 @@ def initRenderCavas(self):
         gl.GL_STATIC_DRAW,
     )
 
-    gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ebo)
+    gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.sceneRenderer.ebo)
     gl.glBufferData(
         gl.GL_ELEMENT_ARRAY_BUFFER,
         len(indices) * int32Size,
@@ -57,18 +57,18 @@ def initRenderCavas(self):
     gl.glEnableVertexAttribArray(0)
     gl.glEnableVertexAttribArray(1)
 
-    gl.glBindVertexArray(self.vao)
+    gl.glBindVertexArray(self.sceneRenderer.vao)
 
     # Shader for quad
-    self.shaderProgram = shader.generateShaderProgram(
+    self.sceneRenderer.shaderProgram = shader.generateShaderProgram(
         "./src/shader_code/vertex.vert", "./src/shader_code/fragment.frag"
     )
 
-    shader.useShader(self.shaderProgram)
+    shader.useShader(self.sceneRenderer.shaderProgram)
 
-    self.tex = gl.glGenTextures(1)
+    self.sceneRenderer.tex = gl.glGenTextures(1)
     gl.glActiveTexture(gl.GL_TEXTURE0)
-    gl.glBindTexture(gl.GL_TEXTURE_2D, self.tex)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, self.sceneRenderer.tex)
     # gl.glUniform1i(gl.glGetUniformLocation(shaderProgram, "ourTex"), 0)
 
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
@@ -92,18 +92,18 @@ def initRenderCavas(self):
     # gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, 1920, 1080, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, data)
 
     gl.glBindImageTexture(
-        0, self.tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F
+        0, self.sceneRenderer.tex, 0, gl.GL_FALSE, 0, gl.GL_WRITE_ONLY, gl.GL_RGBA32F
     )
 
     # init compute shader
-    self.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
+    self.sceneRenderer.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
     # self.compute = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
 
 
 def resizeTexture(self):
 
     gl.glActiveTexture(gl.GL_TEXTURE0)
-    gl.glBindTexture(gl.GL_TEXTURE_2D, self.tex)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, self.sceneRenderer.tex)
 
 
     gl.glTexImage2D(

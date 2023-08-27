@@ -9,51 +9,8 @@ import glm
 import numpy as np
 import math
 import core.sendToShader as sendToShader
+import core.renderer as renderer
 
-class Vertex(ct.Structure):
-    _fields_ = [
-        ("position", ct.c_float * 4),
-        ("normal", ct.c_float * 4),
-        ("textureCoord", ct.c_float * 2),
-        ("padding0", ct.c_float * 2),
-    ]
-
-
-class Material(ct.Structure):
-    _fields_ = [
-        # ("kd", ct.c_float * 4),  # 0   12
-        # ("ks", ct.c_float * 4),  # 32    12
-        ("albedo", ct.c_float * 4),
-        ("emission", ct.c_float * 4),  # 48  12
-        ("intensity", ct.c_float * 4),
-        ("refractiveIndex", ct.c_float * 4),
-        ("roughness", ct.c_float * 2),  # 16  8
-        ("metallic", ct.c_float),
-        ("reflectance", ct.c_float),  # 24  8
-    ]
-
-
-class Mesh(ct.Structure):
-    _fields_ = [
-        ("startingVertex", ct.c_uint32),
-        ("numTriangles", ct.c_uint32),
-        ("materialID", ct.c_uint32),
-        ("objectID", ct.c_uint32),
-        ("position", 4 * ct.c_float)
-    ]
-
-
-class Object(ct.Structure):
-    _fields_ = [("pos", ct.c_float * 3), ("ID", ct.c_uint32)]
-
-
-class Sphere(ct.Structure):
-    _fields_ = [
-        ("position", ct.c_float * 4),
-        ("radius", ct.c_float),
-        ("materialID", ct.c_uint32),
-        ("padding0", ct.c_float * 2),
-    ]
 
 
 class Camera:
@@ -104,28 +61,12 @@ class Camera:
 
 
 class Scene:
-    # All the variables defined outside methods have been placed where they have been
-    # for arbitrary reasons. Don't read too much into it.
-    vertices = (0 * Vertex)()
-    meshes = (0 * Mesh)()
-    materials = (0 * Material)()
-    objects = (0 * Object)()
 
-    spheres = (0 * Sphere)()
-
-    vertSSBO = None
-    meshSSBO = None
-    materialSSBO = None
-    spheresSSBO = None
-    
-    frameNum = 0
-
-    numBounces = 10
-    raysPerPixel = 1
-
-    def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple):
+    def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple, renderMode: int):
         if sm.currentScene == None:
             sm.currentScene = self
+
+        self.sceneRenderer = renderer.renderer(self, renderMode)
 
         self.name = name
 
@@ -140,6 +81,7 @@ class Scene:
         self.camera.prevMousePos[0] = 0
         self.camera.prevMousePos[1] = 0
 
+        self.initCanvas()
         self.initSSBO()
 
     # Methods
@@ -155,14 +97,14 @@ class Scene:
     sendUniforms = sendToShader.sendUniforms
 
     def resetFrame(self):
-        self.frameNum = 0
+        self.sceneRenderer.frameNum = 0
 
     def createSphere(self, radius, position):
-        self.spheres = util.realloc(self.spheres, len(self.spheres) + 1)
-        self.materials = util.realloc(self.materials, len(self.materials) + 1)
+        self.sceneRenderer.spheres = util.realloc(self.sceneRenderer.spheres, len(self.sceneRenderer.spheres) + 1)
+        self.sceneRenderer.materials = util.realloc(self.sceneRenderer.materials, len(self.sceneRenderer.materials) + 1)
 
-        self.spheres[len(self.spheres) - 1] = Sphere(
-            position=position, radius=radius, materialID=len(self.materials) - 1
+        self.sceneRenderer.spheres[len(self.sceneRenderer.spheres) - 1] = renderer.Sphere(
+            position=position, radius=radius, materialID=len(self.sceneRenderer.materials) - 1
         )
 
         self.sendSpheresToShader()
@@ -172,10 +114,10 @@ class Scene:
         sm.currentScene = self
 
     def initSSBO(self):
-        self.vertSSBO = gl.glGenBuffers(1)
-        self.meshSSBO = gl.glGenBuffers(1)
-        self.materialSSBO = gl.glGenBuffers(1)
-        self.spheresSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.vertSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.meshSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.materialSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.spheresSSBO = gl.glGenBuffers(1)
 
     def allocateSSBO(self):
         self.sendVerts()

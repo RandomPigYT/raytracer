@@ -11,9 +11,9 @@ from imgui.integrations.glfw import GlfwRenderer
 import core.GUI.guiElements as gElem
 import sceneManager as sm
 
+import core.scene as sc
 
-
-def render(window, scene, impl: GlfwRenderer):
+def render(window, scene: sc.Scene, impl: GlfwRenderer):
 
 
 
@@ -31,7 +31,9 @@ def render(window, scene, impl: GlfwRenderer):
         
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
-        rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
+        # rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
+        scene.sceneRenderer.render()
+        
         cam.move()
 
         gElem.elements(window)

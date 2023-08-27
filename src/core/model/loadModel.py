@@ -4,6 +4,7 @@ import util
 import tinyobjloader as tol
 from sys import stderr
 import c_extension as cext
+import core.renderer as renderer
 
 
 class face(ct.Structure):
@@ -37,22 +38,22 @@ def loadModel(self, filename):
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)
     vt = (len(attribs.texcoords) * ct.c_float)(*attribs.texcoords)
 
-    vertOffset = len(self.vertices)
-    meshOffset = len(self.meshes)
+    vertOffset = len(self.sceneRenderer.vertices)
+    meshOffset = len(self.sceneRenderer.meshes)
 
-    self.vertices = util.realloc(self.vertices, len(self.vertices) + numFaces(shapes))
-    self.meshes = util.realloc(self.meshes, len(self.meshes) + len(shapes))
-    self.materials = util.realloc(self.materials, len(self.materials) + len(shapes))
+    self.sceneRenderer.vertices = util.realloc(self.sceneRenderer.vertices, len(self.sceneRenderer.vertices) + numFaces(shapes))
+    self.sceneRenderer.meshes = util.realloc(self.sceneRenderer.meshes, len(self.sceneRenderer.meshes) + len(shapes))
+    self.sceneRenderer.materials = util.realloc(self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(shapes))
 
     # generate mesh data
     startingVertCount = 0
     for i in range(len(shapes)):
-        self.meshes[i + meshOffset].startingVertex = startingVertCount + vertOffset
-        self.meshes[i + meshOffset].numTriangles = len(shapes[i].mesh.indices)
+        self.sceneRenderer.meshes[i + meshOffset].startingVertex = startingVertCount + vertOffset
+        self.sceneRenderer.meshes[i + meshOffset].numTriangles = len(shapes[i].mesh.indices)
 
-        self.meshes[i + meshOffset].materialID = i + meshOffset
+        self.sceneRenderer.meshes[i + meshOffset].materialID = i + meshOffset
 
-        startingVertCount += self.meshes[i + meshOffset].numTriangles
+        startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
 
     # generate vertices
     for shape in shapes:
@@ -68,7 +69,7 @@ def loadModel(self, filename):
         )
 
         cext.ext.generateVerts(
-            ct.byref(ct.cast(self.vertices, ct.POINTER(sc.Vertex))),
+            ct.byref(ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex))),
             v,
             vn,
             vt,

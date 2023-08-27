@@ -2,6 +2,7 @@ import os
 import ctypes as ct
 import core.model.loadModel as lm
 import core.scene as sc
+import core.renderer as renderer
 
 ext = None
 
@@ -20,7 +21,7 @@ def init():
 
     ext.generateVerts.restype = None
     ext.generateVerts.argtypes = [
-        ct.POINTER(ct.POINTER(sc.Vertex)),
+        ct.POINTER(ct.POINTER(renderer.Vertex)),
         ct.POINTER(ct.c_float),
         ct.POINTER(ct.c_float),
         ct.POINTER(ct.c_float),
