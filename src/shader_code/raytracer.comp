@@ -92,7 +92,6 @@ float random(inout uint seed) {
   return seed / float(RAND_MAX);
 }
 
-
 HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s) {
   HitInfo h;
   h.didHit = true;
@@ -459,7 +458,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
   // uint seed = frameNum * (gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * uint(resolution.y)) * time;
   uint prevSeed = seed;
 
-  float bgIntensity = 1.0;
+  float bgIntensity = 1.0f;
 
   for (int i = 0; i <= maxBounces; i++){
 
@@ -569,8 +568,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    // colour += trace(rayDir + offset, vec4(0.196, 0.427, 0.78, 1), seed) / raysPerPixel;
-    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
 

@@ -1,4 +1,4 @@
-# import core.scene as sc
+import core.scene as sc
 import ctypes as ct
 import OpenGL.GL as gl
 import time
