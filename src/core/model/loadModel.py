@@ -80,6 +80,12 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
+    
+#   cext.ext.constructBvh(
+#           None,
+#           ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
+#           len(self.sceneRenderer.vertices)
+#   )
 
     self.allocateSSBO()
     self.sendVerts()

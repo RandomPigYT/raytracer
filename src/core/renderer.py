@@ -41,6 +41,18 @@ class Object(ct.Structure):
     _fields_ = [("pos", ct.c_float * 3), ("ID", ct.c_uint32)]
 
 
+class Bvh(ct.Structure):
+    _fields_ = [
+        ("corner1", 4 * ct.c_float),
+        ("corner2", 4 * ct.c_float),
+        ("hitIndex", ct.c_int32),
+        ("missIndex", ct.c_int32),
+        ("numTris", ct.c_uint32),
+        ("triIndices", 4 * ct.c_uint32),
+        ("padding0", ct.c_int32)
+    ]
+
+
 class Sphere(ct.Structure):
     _fields_ = [
         ("position", ct.c_float * 4),

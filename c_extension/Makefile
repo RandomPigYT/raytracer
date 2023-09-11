@@ -1,7 +1,7 @@
 CC:=gcc
 LD:=ld
 
-CFLAGS:=-Wall -Wextra -Werror -g -std=gnu17 -O2
+CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2
 LDFLAGS:=
 
 WINFLAGS:=-L/usr/x86_64-mingw32/bin/cglm.dll

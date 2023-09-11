@@ -36,6 +36,13 @@
 !_TAG_KIND_DESCRIPTION!Make	I,makefile	/makefiles/
 !_TAG_KIND_DESCRIPTION!Make	m,macro	/macros/
 !_TAG_KIND_DESCRIPTION!Make	t,target	/targets/
+!_TAG_KIND_DESCRIPTION!Markdown	S,subsection	/level 2 sections/
+!_TAG_KIND_DESCRIPTION!Markdown	T,l4subsection	/level 4 sections/
+!_TAG_KIND_DESCRIPTION!Markdown	c,chapter	/chapters/
+!_TAG_KIND_DESCRIPTION!Markdown	n,footnote	/footnotes/
+!_TAG_KIND_DESCRIPTION!Markdown	s,section	/sections/
+!_TAG_KIND_DESCRIPTION!Markdown	t,subsubsection	/level 3 sections/
+!_TAG_KIND_DESCRIPTION!Markdown	u,l5subsection	/level 5 sections/
 !_TAG_KIND_DESCRIPTION!Sh	a,alias	/aliases/
 !_TAG_KIND_DESCRIPTION!Sh	f,function	/functions/
 !_TAG_KIND_DESCRIPTION!Sh	h,heredoc	/label for here document/
@@ -47,6 +54,7 @@
 !_TAG_PARSER_VERSION!C	0.0	/current.age/
 !_TAG_PARSER_VERSION!C++	0.0	/current.age/
 !_TAG_PARSER_VERSION!Make	0.0	/current.age/
+!_TAG_PARSER_VERSION!Markdown	0.0	/current.age/
 !_TAG_PARSER_VERSION!Sh	0.0	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
 !_TAG_PROC_CWD	/home/randompigyt/raytracer/c_extension/	//
@@ -68,11 +76,14 @@ $(LIBTARGET)	Makefile	/^$(LIBTARGET): $(SRCS)$/;"	t
 $(OBJ)/%.o	Makefile	/^$(OBJ)\/%.o: $(SRC)\/%.c$/;"	t
 $(TARGET)	Makefile	/^$(TARGET): $(OBJS)$/;"	t
 BIN	Makefile	/^BIN:=bin$/;"	m
+Best Practices	src/c-vector/README.md	/^# Best Practices$/;"	c
+C Vector Library	src/c-vector/README.md	/^# C Vector Library$/;"	c
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -Werror -g -std=gnu17 -O2$/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
+How It Works	src/c-vector/README.md	/^# How It Works$/;"	c
 INCLUDE	Makefile	/^INCLUDE:=include$/;"	m
 INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
 LD	Makefile	/^LD:=ld$/;"	m
@@ -85,28 +96,77 @@ OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
 PLATFORM	Makefile	/^PLATFORM:=linux$/;"	m
 RAYTRACE_EXTENSION_H	include/extension.h	/^#define RAYTRACE_EXTENSION_H$/;"	d
+Reference Sheet	src/c-vector/README.md	/^# Reference Sheet$/;"	c
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
 TARGET	Makefile	/^TARGET:=$(BIN)\/PigEngine.out$/;"	m
+Usage	src/c-vector/README.md	/^# Usage$/;"	c
 VAL_OUT	Makefile	/^VAL_OUT:=valgrind-out.txt$/;"	m
+Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference Sheet$/;"	c
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll$/;"	m
+What About Structures?	src/c-vector/README.md	/^# What About Structures?$/;"	c
+_vector_add	src/c-vector/vec.c	/^void* _vector_add(vector* vec_addr, vec_type_t type_size) {$/;"	f	typeref:typename:void *
+_vector_copy	src/c-vector/vec.c	/^vector _vector_copy(vector vec, vec_type_t type_size) {$/;"	f	typeref:typename:vector
+_vector_erase	src/c-vector/vec.c	/^void _vector_erase(vector* vec_addr, vec_type_t type_size, vec_size_t pos,$/;"	f	typeref:typename:void
+_vector_insert	src/c-vector/vec.c	/^void* _vector_insert(vector* vec_addr, vec_type_t type_size, vec_size_t pos) {$/;"	f	typeref:typename:void *
+_vector_remove	src/c-vector/vec.c	/^void _vector_remove(vector* vec_addr, vec_type_t type_size, vec_size_t pos) {$/;"	f	typeref:typename:void
 addOffset	src/addOffset.c	/^void* addOffset(void* ptr, uint64_t n, uint64_t size, int8_t sign) {$/;"	f	typeref:typename:void *
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
+alloc	src/c-vector/vec.c	/^  vec_size_t alloc;  \/\/ stores the number of bytes allocated$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
+buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unknown type$/;"	m	struct:vector_data	typeref:typename:char[]	file:
+bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
+bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
+calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct vertex_t* verts, uint32_t numVerts) {$/;"	f	typeref:typename:vec4 *
 clean	Makefile	/^clean:$/;"	t
+constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts, uint32_t numVerts) {$/;"	f	typeref:struct:bvh_t *
+corner1	include/extension.h	/^  vec4 corner1;$/;"	m	struct:bvh_t	typeref:typename:vec4
+corner2	include/extension.h	/^  vec4 corner2;$/;"	m	struct:bvh_t	typeref:typename:vec4
 dirs	Makefile	/^dirs:$/;"	t
 face_t	include/extension.h	/^struct face_t {$/;"	s
 format	Makefile	/^format:$/;"	t
-generateVerts	src/sortVertices.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt, $/;"	f	typeref:typename:void
+generateVerts	src/generateVerts.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt,$/;"	f	typeref:typename:void
+hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
+left	src/constructBvh.c	/^  int32_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int32_t	file:
+length	src/c-vector/vec.c	/^  vec_size_t length;$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
 lib	Makefile	/^lib: $(LIBTARGET)$/;"	t
-normal	include/extension.h	/^  vec3 normal;$/;"	m	struct:vertex_t	typeref:typename:vec3
-padding0	include/extension.h	/^  float padding0;$/;"	m	struct:vertex_t	typeref:typename:float
-padding1	include/extension.h	/^  float padding1;$/;"	m	struct:vertex_t	typeref:typename:float
-padding2	include/extension.h	/^  float padding2;$/;"	m	struct:vertex_t	typeref:typename:float
-position	include/extension.h	/^  vec3 position;$/;"	m	struct:vertex_t	typeref:typename:vec3
+missIndex	include/extension.h	/^  int32_t missIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
+normal	include/extension.h	/^  vec4 normal;$/;"	m	struct:vertex_t	typeref:typename:vec4
+numTris	include/extension.h	/^  uint32_t numTris;$/;"	m	struct:bvh_t	typeref:typename:uint32_t
+padding0	include/extension.h	/^  int32_t padding0;$/;"	m	struct:bvh_t	typeref:typename:int32_t
+padding2	include/extension.h	/^  vec2 padding2;$/;"	m	struct:vertex_t	typeref:typename:vec2
+parent	src/constructBvh.c	/^  int32_t parent;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int32_t	file:
+position	include/extension.h	/^  vec4 position;$/;"	m	struct:vertex_t	typeref:typename:vec4
+right	src/constructBvh.c	/^  int32_t right;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int32_t	file:
 run	Makefile	/^run: $(TARGET)$/;"	t
 textureCoord	include/extension.h	/^  vec2 textureCoord;$/;"	m	struct:vertex_t	typeref:typename:vec2
-v_index	include/extension.h	/^	int32_t v_index;$/;"	m	struct:face_t	typeref:typename:int32_t
+triIndices	include/extension.h	/^  uint32_t triIndices[4];$/;"	m	struct:bvh_t	typeref:typename:uint32_t[4]
+v_index	include/extension.h	/^  int32_t v_index;$/;"	m	struct:face_t	typeref:typename:int32_t
 valgrind	Makefile	/^valgrind:$/;"	t
+vec_char	src/c-vector/vec.h	/^typedef char* vec_char;$/;"	t	typeref:typename:char *
+vec_h	src/c-vector/vec.h	/^#define vec_h$/;"	d
+vec_int	src/c-vector/vec.h	/^typedef int* vec_int;$/;"	t	typeref:typename:int *
+vec_size_t	src/c-vector/vec.h	/^typedef size_t vec_size_t;	  \/\/ stores the number of elements$/;"	t	typeref:typename:size_t
+vec_type_t	src/c-vector/vec.h	/^typedef unsigned char vec_type_t; \/\/ stores the number of bytes for a type$/;"	t	typeref:typename:unsigned char
+vector	src/c-vector/vec.h	/^typedef void* vector; \/\/ you can't use this to store vectors, it's just used$/;"	t	typeref:typename:void *
+vector_add	src/c-vector/vec.h	/^#define vector_add(/;"	d
+vector_add	src/c-vector/vec.h	/^#define vector_add(vec_addr, value) (*vector_add_/;"	d
+vector_add_asg	src/c-vector/vec.h	/^#define vector_add_asg(/;"	d
+vector_alloc	src/c-vector/vec.c	/^vector_data* vector_alloc(vec_size_t alloc, vec_size_t size) {$/;"	f	typeref:typename:vector_data *
+vector_copy	src/c-vector/vec.h	/^#define vector_copy(vec) (_vector_copy(/;"	d
+vector_create	src/c-vector/vec.c	/^vector vector_create(void) {$/;"	f	typeref:typename:vector
+vector_data	src/c-vector/vec.c	/^struct vector_data {$/;"	s	file:
+vector_data	src/c-vector/vec.c	/^typedef struct vector_data vector_data;$/;"	t	typeref:struct:vector_data	file:
+vector_erase	src/c-vector/vec.h	/^#define vector_erase(/;"	d
+vector_free	src/c-vector/vec.c	/^void vector_free(vector vec) { free(vector_get_data(vec)); }$/;"	f	typeref:typename:void
+vector_get_alloc	src/c-vector/vec.c	/^vec_size_t vector_get_alloc(vector vec) { return vector_get_data(vec)->alloc; }$/;"	f	typeref:typename:vec_size_t
+vector_get_data	src/c-vector/vec.c	/^vector_data* vector_get_data(vector vec) { return &((vector_data*)vec)[-1]; }$/;"	f	typeref:typename:vector_data *
+vector_has_space	src/c-vector/vec.c	/^bool vector_has_space(vector_data* v_data) {$/;"	f	typeref:typename:bool
+vector_insert	src/c-vector/vec.h	/^#define vector_insert(/;"	d
+vector_insert_asg	src/c-vector/vec.h	/^#define vector_insert_asg(/;"	d
+vector_pop	src/c-vector/vec.c	/^void vector_pop(vector vec) { --vector_get_data(vec)->length; }$/;"	f	typeref:typename:void
+vector_realloc	src/c-vector/vec.c	/^vector_data* vector_realloc(vector_data* v_data, vec_type_t type_size) {$/;"	f	typeref:typename:vector_data *
+vector_remove	src/c-vector/vec.h	/^#define vector_remove(/;"	d
+vector_size	src/c-vector/vec.c	/^vec_size_t vector_size(vector vec) { return vector_get_data(vec)->length; }$/;"	f	typeref:typename:vec_size_t
 vertex_t	include/extension.h	/^struct vertex_t {$/;"	s
-vn_index	include/extension.h	/^	int32_t vn_index;$/;"	m	struct:face_t	typeref:typename:int32_t
-vt_index	include/extension.h	/^	int32_t vt_index;$/;"	m	struct:face_t	typeref:typename:int32_t
+vn_index	include/extension.h	/^  int32_t vn_index;$/;"	m	struct:face_t	typeref:typename:int32_t
+vt_index	include/extension.h	/^  int32_t vt_index;$/;"	m	struct:face_t	typeref:typename:int32_t
