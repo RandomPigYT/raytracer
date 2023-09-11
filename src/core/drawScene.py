@@ -12,6 +12,7 @@ import core.GUI.guiElements as gElem
 import sceneManager as sm
 
 import core.scene as sc
+import os
 
 def render(window, scene: sc.Scene, impl: GlfwRenderer):
 
@@ -32,7 +33,8 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         # rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
-        scene.sceneRenderer.render()
+        if os.name == "nt":
+            scene.sceneRenderer.render()
         
         cam.move()
 
