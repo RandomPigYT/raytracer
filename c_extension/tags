@@ -92,6 +92,8 @@ LDFLAGS	Makefile	/^LDFLAGS:=$/;"	m
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
+MAX	src/constructBvh.c	/^inline float MAX(float x, float y){$/;"	f	typeref:typename:float
+MIN	src/constructBvh.c	/^inline float MIN(float x, float y){$/;"	f	typeref:typename:float
 NUM_BUCKETS	src/constructBvh.c	/^#define NUM_BUCKETS /;"	d	file:
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
@@ -106,9 +108,9 @@ VAL_OUT	Makefile	/^VAL_OUT:=valgrind-out.txt$/;"	m
 Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference Sheet$/;"	c
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll$/;"	m
 What About Structures?	src/c-vector/README.md	/^# What About Structures?$/;"	c
-X_AXIS	src/constructBvh.c	/^	X_AXIS = 0,$/;"	e	enum:axis_e	file:
-Y_AXIS	src/constructBvh.c	/^	Y_AXIS = 1,$/;"	e	enum:axis_e	file:
-Z_AXIS	src/constructBvh.c	/^	Z_AXIS = 2$/;"	e	enum:axis_e	file:
+X_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
+Y_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
+Z_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
 _vector_add	src/c-vector/vec.c	/^void* _vector_add(vector* vec_addr, vec_type_t type_size) {$/;"	f	typeref:typename:void *
 _vector_copy	src/c-vector/vec.c	/^vector _vector_copy(vector vec, vec_type_t type_size) {$/;"	f	typeref:typename:vector
 _vector_erase	src/c-vector/vec.c	/^void _vector_erase(vector* vec_addr, vec_type_t type_size, vec_size_t pos,$/;"	f	typeref:typename:void
@@ -117,23 +119,24 @@ _vector_remove	src/c-vector/vec.c	/^void _vector_remove(vector* vec_addr, vec_ty
 addOffset	src/addOffset.c	/^void* addOffset(void* ptr, uint64_t n, uint64_t size, int8_t sign) {$/;"	f	typeref:typename:void *
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
 alloc	src/c-vector/vec.c	/^  vec_size_t alloc;  \/\/ stores the number of bytes allocated$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
-axis_e	src/constructBvh.c	/^enum axis_e {$/;"	g	file:
+axis_e	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	g	file:
 buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unknown type$/;"	m	struct:vector_data	typeref:typename:char[]	file:
 bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
 bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
 calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
+calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume){$/;"	f	typeref:typename:float
 clean	Makefile	/^clean:$/;"	t
-constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts, uint32_t numVerts) {$/;"	f	typeref:struct:bvh_t *
-constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo, struct sceneInfo_t* s, $/;"	f	typeref:typename:void
-constructVolumes	src/constructBvh.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids, struct bvh_t* parentNode, $/;"	f	typeref:typename:vec4 *
+constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
+constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void
+constructVolumes	src/constructBvh.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 corner1	include/extension.h	/^  vec4 corner1;$/;"	m	struct:bvh_t	typeref:typename:vec4
 corner2	include/extension.h	/^  vec4 corner2;$/;"	m	struct:bvh_t	typeref:typename:vec4
 dirs	Makefile	/^dirs:$/;"	t
 face_t	include/extension.h	/^struct face_t {$/;"	s
-findOptimalVolumes	src/constructBvh.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids, struct bvh_t* parentNode, $/;"	f	typeref:typename:vec4 *
+findOptimalVolumes	src/constructBvh.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 format	Makefile	/^format:$/;"	t
 generateVerts	src/generateVerts.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt,$/;"	f	typeref:typename:void
-getCorners	src/constructBvh.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles){$/;"	f	typeref:typename:vec4 *
+getCorners	src/constructBvh.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {$/;"	f	typeref:typename:vec4 *
 hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 left	src/constructBvh.c	/^  int64_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 length	src/c-vector/vec.c	/^  vec_size_t length;$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
@@ -141,8 +144,8 @@ lib	Makefile	/^lib: $(LIBTARGET)$/;"	t
 missIndex	include/extension.h	/^  int32_t missIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 normal	include/extension.h	/^  vec4 normal;$/;"	m	struct:vertex_t	typeref:typename:vec4
 numTris	include/extension.h	/^  uint32_t numTris;$/;"	m	struct:bvh_t	typeref:typename:uint32_t
-numVerts	src/constructBvh.c	/^	uint32_t numVerts;$/;"	m	struct:sceneInfo_t	typeref:typename:uint32_t	file:
-optimalVolumeInAxis	src/constructBvh.c	/^vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s, vec4* centroids,/;"	f	typeref:typename:vec4 *
+numVerts	src/constructBvh.c	/^  uint32_t numVerts;$/;"	m	struct:sceneInfo_t	typeref:typename:uint32_t	file:
+optimalVolumeInAxis	src/constructBvh.c	/^vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,$/;"	f	typeref:typename:vec4 *
 padding0	include/extension.h	/^  int32_t padding0;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 padding2	include/extension.h	/^  vec2 padding2;$/;"	m	struct:vertex_t	typeref:typename:vec2
 parent	src/constructBvh.c	/^  int64_t parent;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
@@ -152,7 +155,7 @@ run	Makefile	/^run: $(TARGET)$/;"	t
 sceneInfo_t	src/constructBvh.c	/^struct sceneInfo_t {$/;"	s	file:
 textureCoord	include/extension.h	/^  vec2 textureCoord;$/;"	m	struct:vertex_t	typeref:typename:vec2
 triIndices	include/extension.h	/^  uint32_t triIndices[4];$/;"	m	struct:bvh_t	typeref:typename:uint32_t[4]
-triangles	src/constructBvh.c	/^  uint32_t* triangles; \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:
+triangles	src/constructBvh.c	/^  uint32_t* triangles;  \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:
 v_index	include/extension.h	/^  int32_t v_index;$/;"	m	struct:face_t	typeref:typename:int32_t
 valgrind	Makefile	/^valgrind:$/;"	t
 vec_char	src/c-vector/vec.h	/^typedef char* vec_char;$/;"	t	typeref:typename:char *
@@ -181,6 +184,6 @@ vector_realloc	src/c-vector/vec.c	/^vector_data* vector_realloc(vector_data* v_d
 vector_remove	src/c-vector/vec.h	/^#define vector_remove(/;"	d
 vector_size	src/c-vector/vec.c	/^vec_size_t vector_size(vector vec) { return vector_get_data(vec)->length; }$/;"	f	typeref:typename:vec_size_t
 vertex_t	include/extension.h	/^struct vertex_t {$/;"	s
-verts	src/constructBvh.c	/^	struct vertex_t* verts;$/;"	m	struct:sceneInfo_t	typeref:struct:vertex_t *	file:
+verts	src/constructBvh.c	/^  struct vertex_t* verts;$/;"	m	struct:sceneInfo_t	typeref:struct:vertex_t *	file:
 vn_index	include/extension.h	/^  int32_t vn_index;$/;"	m	struct:face_t	typeref:typename:int32_t
 vt_index	include/extension.h	/^  int32_t vt_index;$/;"	m	struct:face_t	typeref:typename:int32_t
