@@ -88,12 +88,12 @@ INCLUDE	Makefile	/^INCLUDE:=include$/;"	m
 INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
 LD	Makefile	/^LD:=ld$/;"	m
 LDFLAGS	Makefile	/^ 	LDFLAGS = $(WINFLAGS)$/;"	m
-LDFLAGS	Makefile	/^LDFLAGS:=$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS:=-lm$/;"	m
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
-MAX	src/constructBvh.c	/^inline float MAX(float x, float y){$/;"	f	typeref:typename:float
-MIN	src/constructBvh.c	/^inline float MIN(float x, float y){$/;"	f	typeref:typename:float
+MAX	src/constructBvh.c	/^inline float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
+MIN	src/constructBvh.c	/^inline float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
 NUM_BUCKETS	src/constructBvh.c	/^#define NUM_BUCKETS /;"	d	file:
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
@@ -124,7 +124,7 @@ buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unk
 bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
 bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
 calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
-calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume){$/;"	f	typeref:typename:float
+calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
 clean	Makefile	/^clean:$/;"	t
 constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
 constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void

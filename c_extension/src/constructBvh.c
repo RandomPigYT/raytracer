@@ -75,8 +75,8 @@ vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
     }
 
     // Finds the largest coordinates for each axis from the vertices of a
-    // triangle, and then sets it as the 'minCorner' if it is greater than
-    // 'minCorner'
+    // triangle, and then sets it as the 'maxCorner' if it is greater than
+    // 'maxCorner'
     for (int j = 0; j < 3; j++) {
       float temp = MAX(verts[3 * triangles[i]].position[j],
                        verts[3 * triangles[i] + 1].position[j]);
@@ -193,7 +193,29 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
 // describe the second volume.
 vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
                          struct bvh_t* parentNode,
-                         struct bvhNodeInfo_t* parentInfo) {}
+                         struct bvhNodeInfo_t* parentInfo) {
+  vec4* volumes;
+  float minCost = INFINITY;
+
+  for (int axis = 0; axis < 3; axis++) {
+    float tempCost;
+    vec4* v = optimalVolumeInAxis(&tempCost, axis, s, centroids, parentNode,
+                                  parentInfo);
+
+    if (tempCost < minCost) {
+      if (volumes != NULL) free(volumes);
+
+      minCost = tempCost;
+      volumes = v;
+    }
+
+    else {
+      free(v);
+    }
+  }
+
+  return volumes;
+}
 
 void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
                    struct sceneInfo_t* s, vec4* centroids, int64_t parent) {}
@@ -206,6 +228,26 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   struct sceneInfo_t s = {.verts = verts, .numVerts = numVerts};
 
   vec4* centroids = calcCentroids(&s);
+
+  struct bvhNodeInfo_t startNodeInfo;
+  startNodeInfo.parent = -1;
+
+  // Generates an array with indices from 0 to the number of triangles minus one
+  for (int i = 0; i < numVerts / 3; i++) {
+    vector_add(&(startNodeInfo.triangles), i);
+  }
+
+  struct bvh_t startNode;
+
+  vec4* corners = getCorners(verts, startNodeInfo.triangles);
+  memcpy(startNode.corner1, corners, sizeof(vec4));
+  memcpy(startNode.corner2, corners + 1, sizeof(vec4));
+  free(corners);
+
+  vector_add(&b, startNode);
+  vector_add(&bvhInfo, startNodeInfo);
+
+  constructTree(&b, &bvhInfo, &s, centroids, -1);
 
   free(centroids);
   vector_free(bvhInfo);
