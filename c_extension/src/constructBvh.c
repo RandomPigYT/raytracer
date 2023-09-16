@@ -97,8 +97,8 @@ vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
 vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,
                        struct bvh_t* parentNode,
                        struct bvhNodeInfo_t* parentInfo, uint32_t bucketIndex,
-                       float bucketWidth, enum axis_e axis, uint32_t* numLeft,
-                       uint32_t* numRight) {
+                       float bucketWidth, enum axis_e axis, uint32_t** leftTris,
+                       uint32_t** rightTris) {
   uint32_t* left = vector_create();
   uint32_t* right = vector_create();
 
@@ -118,33 +118,36 @@ vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,
   memcpy(volumes, leftVolume, 2 * sizeof(vec4));
   memcpy(volumes + 2, rightVolume, 2 * sizeof(vec4));
 
-  *numLeft = vector_size(left);
-  *numRight = vector_size(right);
+	*leftTris = left;
+	*rightTris = right;
 
   free(leftVolume);
   free(rightVolume);
 
-  vector_free(left);
-  vector_free(right);
+//vector_free(left);
+//vector_free(right);
 
   return volumes;
 }
 
 vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           vec4* centroids, struct bvh_t* parentNode,
-                          struct bvhNodeInfo_t* parentInfo) {
+                          struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris, uint32_t** rightTris) {
   float bucketWidth =
       fabs(parentNode->corner1[axis] - parentNode->corner2[axis]) / NUM_BUCKETS;
 
   vec4* volumes = NULL;
   float minCost = INFINITY;
 
+	*leftTris = NULL;
+	*rightTris = NULL;
+
   for (int32_t i = 0; i < NUM_BUCKETS; i++) {
-    uint32_t numLeftTris;
-    uint32_t numRightTris;
+    uint32_t* tempLeftTris;
+    uint32_t* tempRightTris;
 
     vec4* v = constructVolumes(s, centroids, parentNode, parentInfo, i,
-                               bucketWidth, axis, &numLeftTris, &numRightTris);
+                               bucketWidth, axis, &tempLeftTris, &tempRightTris);
 
     vec4 leftVolume[2];
     vec4 rightVolume[2];
@@ -167,20 +170,26 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
     float p_b = rightSurfaceArea / parentSurfaceArea;
 
     float tempCost =
-        0.125f + (numLeftTris * p_a) +
-        (numRightTris *
+        0.125f + ((float)vector_size(tempLeftTris) * p_a) +
+        ((float)vector_size(tempRightTris) *
          p_b);  // C = t_trav + p_a * n * t_isect + p_b * n * t_isect
 
     if (tempCost < minCost) {
       minCost = tempCost;
 
       if (volumes != NULL) free(volumes);
+			if (*leftTris != NULL) vector_free(*leftTris);
+			if (*rightTris != NULL) vector_free(*rightTris);
 
       volumes = v;
+			*leftTris = tempLeftTris;
+			*rightTris = tempRightTris;
     }
 
     else {
       free(v);
+			vector_free(tempLeftTris);
+			vector_free(tempRightTris);
     }
   }
 
@@ -193,32 +202,97 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
 // describe the second volume.
 vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
                          struct bvh_t* parentNode,
-                         struct bvhNodeInfo_t* parentInfo) {
+                         struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris, uint32_t** rightTris) {
   vec4* volumes;
   float minCost = INFINITY;
 
+	*leftTris = NULL;
+	*rightTris = NULL;
+
   for (int axis = 0; axis < 3; axis++) {
+
+		uint32_t* tempLeftTris;
+		uint32_t* tempRightTris;
+
+
     float tempCost;
     vec4* v = optimalVolumeInAxis(&tempCost, axis, s, centroids, parentNode,
-                                  parentInfo);
+                                  parentInfo, &tempLeftTris, &tempRightTris);
 
     if (tempCost < minCost) {
       if (volumes != NULL) free(volumes);
+			if (*leftTris != NULL) vector_free(*leftTris);
+			if (*rightTris != NULL) vector_free(*rightTris);
 
       minCost = tempCost;
       volumes = v;
+
+			*leftTris = tempLeftTris;
+			*rightTris = tempRightTris;
     }
 
     else {
       free(v);
+			vector_free(tempLeftTris);
+			vector_free(tempRightTris);
     }
   }
 
   return volumes;
 }
 
+
+
+
 void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
-                   struct sceneInfo_t* s, vec4* centroids, int64_t parent) {}
+                   struct sceneInfo_t* s, vec4* centroids, int64_t parent) {
+
+	uint32_t nodeIndex = vector_size(*b) - 1;
+	uint32_t numTris = vector_size((*bvhInfo)[nodeIndex].triangles);
+
+	if(numTris <= 4){
+		(*b)[nodeIndex].numTris = numTris;
+		memcpy((*b)[nodeIndex].triIndices, (*bvhInfo)[nodeIndex].triangles, numTris * sizeof(uint32_t));
+
+		return;
+	}
+
+	uint32_t* leftTris;
+	uint32_t* rightTris;
+
+	vec4* volumes = findOptimalVolumes(s, centroids, &(*b)[nodeIndex], &(*bvhInfo)[nodeIndex], &leftTris, &rightTris);
+
+	// Left node
+	struct bvh_t* leftNodeRef = vector_add_asg(b);
+	struct bvhNodeInfo_t* leftNodeInfoRef = vector_add_asg(bvhInfo);
+
+	leftNodeInfoRef->parent = nodeIndex;
+	leftNodeInfoRef->triangles = leftTris;
+	
+	memcpy(leftNodeRef->corner1, volumes, sizeof(vec4));
+	memcpy(leftNodeRef->corner2, volumes + 1, sizeof(vec4));
+
+	(*bvhInfo)[nodeIndex].left = vector_size(*b) - 1;
+
+	constructTree(b, bvhInfo, s, centroids, nodeIndex);
+
+	// Right node
+	struct bvh_t* rightNodeRef = vector_add_asg(b);
+	struct bvhNodeInfo_t* rightNodeInfoRef = vector_add_asg(bvhInfo);
+
+	rightNodeInfoRef->parent = nodeIndex;
+	rightNodeInfoRef->triangles = rightTris;
+
+	memcpy(rightNodeRef->corner1, volumes + 2, sizeof(vec4));
+	memcpy(rightNodeRef->corner2, volumes + 3, sizeof(vec4));
+
+	(*bvhInfo)[nodeIndex].right = vector_size(*b) - 1;
+	
+	constructTree(b, bvhInfo, s, centroids, nodeIndex);
+
+	free(volumes);
+	
+}
 
 struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
                            uint32_t numVerts) {
