@@ -127,6 +127,7 @@ bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
 calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
 calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
 clean	Makefile	/^clean:$/;"	t
+cleanBvhInfo	src/constructBvh.c	/^void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo){$/;"	f	typeref:typename:void
 constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
 constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void
 constructVolumes	src/constructBvh.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *

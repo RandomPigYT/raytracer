@@ -59,8 +59,8 @@ float calcSurfaceArea(vec4* volume) {
 }
 
 vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
-  vec4 minCorner;
-  vec4 maxCorner;
+  vec4 minCorner = {INFINITY, INFINITY, INFINITY, INFINITY};
+  vec4 maxCorner = {-INFINITY, -INFINITY, -INFINITY, -INFINITY};
 
   for (int i = 0; i < vector_size(triangles); i++) {
     // Finds the smallest coordinates for each axis from the vertices of a
@@ -274,6 +274,8 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   (*bvhInfo)[nodeIndex].left = vector_size(*b) - 1;
 
+	leftNodeRef->numTris = 0;
+
   constructTree(b, bvhInfo, s, centroids, nodeIndex);
 
   // Right node
@@ -288,10 +290,21 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   (*bvhInfo)[nodeIndex].right = vector_size(*b) - 1;
 
+	rightNodeRef->numTris = 0;
+
   constructTree(b, bvhInfo, s, centroids, nodeIndex);
 
   free(volumes);
 }
+
+void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo){
+	
+	for (int i = 0; i < vector_size(bvhInfo); i++){
+		vector_free(bvhInfo[i].triangles);
+	}
+
+}
+
 
 struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
                            uint32_t numVerts) {
@@ -317,11 +330,14 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   memcpy(startNodeRef->corner1, corners, sizeof(vec4));
   memcpy(startNodeRef->corner2, corners + 1, sizeof(vec4));
   free(corners);
-
+	
+	startNodeRef->numTris = 0;
 
   constructTree(&b, &bvhInfo, &s, centroids, -1);
 
   free(centroids);
+
+	cleanBvhInfo(bvhInfo);
   vector_free(bvhInfo);
 
 	*numBvh = vector_size(b);

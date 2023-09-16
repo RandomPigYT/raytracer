@@ -9,7 +9,7 @@ int main(void){
 	
 	typedef struct vertex_t Vert;
 
-	Vert* v = malloc(51 * sizeof(Vert));
+	Vert v[51];
 
 	srand(time(NULL));
 
@@ -19,6 +19,9 @@ int main(void){
 		v[i].position[0] = ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
 		v[i].position[1] = ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
 		v[i].position[2] = ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
+
+		printf("%f %f %f\n", v[i].position[0], v[i].position[1], v[i].position[2]);
+
 	}
 
 	unsigned int numBvh;
