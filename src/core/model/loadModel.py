@@ -88,10 +88,11 @@ def loadModel(self, filename):
             len(self.sceneRenderer.vertices)
     )
 
-    print(a)
-
-#   for i in range(int(a)):
-#       print(bvhs[i].corner1, bvhs[i].corner2, bvhs[i].numTris, bvhs[i].triIndices)
+    
+    for i in range(a.value):
+        print(*bvhs[i].corner1)
+        print(*bvhs[i].corner2)
+        print()
 
 
     self.allocateSSBO()
