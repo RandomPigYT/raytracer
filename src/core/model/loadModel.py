@@ -81,11 +81,18 @@ def loadModel(self, filename):
         vertOffset += len(temp)
 
     
-#   cext.ext.constructBvh(
-#           None,
-#           ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
-#           len(self.sceneRenderer.vertices)
-#   )
+    a = ct.c_uint32()
+    bvhs = cext.ext.constructBvh(
+            ct.byref(a),
+            ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
+            len(self.sceneRenderer.vertices)
+    )
+
+    print(a)
+
+#   for i in range(int(a)):
+#       print(bvhs[i].corner1, bvhs[i].corner2, bvhs[i].numTris, bvhs[i].triIndices)
+
 
     self.allocateSSBO()
     self.sendVerts()

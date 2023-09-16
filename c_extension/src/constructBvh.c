@@ -46,9 +46,9 @@ vec4* calcCentroids(struct sceneInfo_t* s) {
   return centroids;
 }
 
-inline float MIN(float x, float y) { return x < y ? x : y; }
+float MIN(float x, float y) { return x < y ? x : y; }
 
-inline float MAX(float x, float y) { return x > y ? x : y; }
+float MAX(float x, float y) { return x > y ? x : y; }
 
 float calcSurfaceArea(vec4* volume) {
   float l = volume[1][X_AXIS] - volume[0][X_AXIS];
@@ -206,7 +206,7 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
                          struct bvh_t* parentNode,
                          struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris,
                          uint32_t** rightTris) {
-  vec4* volumes;
+  vec4* volumes = NULL;
   float minCost = INFINITY;
 
   *leftTris = NULL;
@@ -302,27 +302,29 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   vec4* centroids = calcCentroids(&s);
 
-  struct bvhNodeInfo_t startNodeInfo;
-  startNodeInfo.parent = -1;
+  struct bvhNodeInfo_t* startNodeInfoRef = vector_add_asg(&bvhInfo);
+  startNodeInfoRef->parent = -1;
+	startNodeInfoRef->triangles = vector_create();
 
   // Generates an array with indices from 0 to the number of triangles minus one
   for (int i = 0; i < numVerts / 3; i++) {
-    vector_add(&(startNodeInfo.triangles), i);
+    vector_add(&(startNodeInfoRef->triangles), i);
   }
 
-  struct bvh_t startNode;
+  struct bvh_t* startNodeRef = vector_add_asg(&b);
 
-  vec4* corners = getCorners(verts, startNodeInfo.triangles);
-  memcpy(startNode.corner1, corners, sizeof(vec4));
-  memcpy(startNode.corner2, corners + 1, sizeof(vec4));
+  vec4* corners = getCorners(verts, startNodeInfoRef->triangles);
+  memcpy(startNodeRef->corner1, corners, sizeof(vec4));
+  memcpy(startNodeRef->corner2, corners + 1, sizeof(vec4));
   free(corners);
 
-  vector_add(&b, startNode);
-  vector_add(&bvhInfo, startNodeInfo);
 
   constructTree(&b, &bvhInfo, &s, centroids, -1);
 
   free(centroids);
   vector_free(bvhInfo);
+
+	*numBvh = vector_size(b);
+
   return b;
 }

@@ -80,7 +80,7 @@ Best Practices	src/c-vector/README.md	/^# Best Practices$/;"	c
 C Vector Library	src/c-vector/README.md	/^# C Vector Library$/;"	c
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O0$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 How It Works	src/c-vector/README.md	/^# How It Works$/;"	c
@@ -92,8 +92,8 @@ LDFLAGS	Makefile	/^LDFLAGS:=-lm$/;"	m
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
-MAX	src/constructBvh.c	/^inline float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
-MIN	src/constructBvh.c	/^inline float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
+MAX	src/constructBvh.c	/^float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
+MIN	src/constructBvh.c	/^float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
 NUM_BUCKETS	src/constructBvh.c	/^#define NUM_BUCKETS /;"	d	file:
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
@@ -105,6 +105,7 @@ SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
 TARGET	Makefile	/^TARGET:=$(BIN)\/PigEngine.out$/;"	m
 Usage	src/c-vector/README.md	/^# Usage$/;"	c
 VAL_OUT	Makefile	/^VAL_OUT:=valgrind-out.txt$/;"	m
+Vert	src/main.c	/^	typedef struct vertex_t Vert;$/;"	t	function:main	typeref:struct:vertex_t	file:
 Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference Sheet$/;"	c
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll$/;"	m
 What About Structures?	src/c-vector/README.md	/^# What About Structures?$/;"	c
@@ -141,6 +142,7 @@ hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:ty
 left	src/constructBvh.c	/^  int64_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 length	src/c-vector/vec.c	/^  vec_size_t length;$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
 lib	Makefile	/^lib: $(LIBTARGET)$/;"	t
+main	src/main.c	/^int main(void){$/;"	f	typeref:typename:int
 missIndex	include/extension.h	/^  int32_t missIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 normal	include/extension.h	/^  vec4 normal;$/;"	m	struct:vertex_t	typeref:typename:vec4
 numTris	include/extension.h	/^  uint32_t numTris;$/;"	m	struct:bvh_t	typeref:typename:uint32_t
