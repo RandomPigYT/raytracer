@@ -80,7 +80,7 @@ Best Practices	src/c-vector/README.md	/^# Best Practices$/;"	c
 C Vector Library	src/c-vector/README.md	/^# C Vector Library$/;"	c
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O0$/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 How It Works	src/c-vector/README.md	/^# How It Works$/;"	c
@@ -123,7 +123,7 @@ axis_e	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$
 buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unknown type$/;"	m	struct:vector_data	typeref:typename:char[]	file:
 bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
 bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
-calcCentroidSpan	src/constructBvh.c	/^float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis){$/;"	f	typeref:typename:float
+calcCentroidSpan	src/constructBvh.c	/^float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {$/;"	f	typeref:typename:float
 calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
 calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
 clean	Makefile	/^clean:$/;"	t
@@ -137,7 +137,7 @@ dirs	Makefile	/^dirs:$/;"	t
 face_t	include/extension.h	/^struct face_t {$/;"	s
 findOptimalVolumes	src/constructBvh.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 format	Makefile	/^format:$/;"	t
-freeBvh	src/constructBvh.c	/^int freeBvh(struct bvh_t *volumes){$/;"	f	typeref:typename:int
+freeBvh	src/constructBvh.c	/^int freeBvh(struct bvh_t* volumes) {$/;"	f	typeref:typename:int
 generateVerts	src/generateVerts.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt,$/;"	f	typeref:typename:void
 getCorners	src/constructBvh.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {$/;"	f	typeref:typename:vec4 *
 hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "c-vector/vec.h"
 #include "../include/extension.h"
+#include "c-vector/vec.h"
 
 int main(void) {
   typedef struct vertex_t Vert;
@@ -21,13 +21,8 @@ int main(void) {
         ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
     v[i].position[2] =
         ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
-
   }
 
   unsigned int numBvh;
   struct bvh_t* b = constructBvh(&numBvh, v, 24000);
-  
-	
-
-
 }

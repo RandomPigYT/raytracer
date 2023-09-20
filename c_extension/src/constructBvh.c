@@ -6,8 +6,6 @@
 #include "../include/extension.h"
 #include "c-vector/vec.h"
 
-
-
 struct bvhNodeInfo_t {
   int64_t left;
   int64_t right;
@@ -58,26 +56,25 @@ float calcSurfaceArea(vec4* volume) {
   return 2 * ((l * b) + (b * h) + (l * h));
 }
 
-float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis){
-	
-	float maxPos = -INFINITY;
-	float minPos = INFINITY;
+float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {
+  float maxPos = -INFINITY;
+  float minPos = INFINITY;
 
-	for (int i = 0; i < vector_size(triangles); i++){
-		maxPos = MAX(maxPos, centroids[triangles[i]][axis]);
-		minPos = MIN(minPos, centroids[triangles[i]][axis]);
-	}
+  for (uint32_t i = 0; i < vector_size(triangles); i++) {
+    maxPos = MAX(maxPos, centroids[triangles[i]][axis]);
+    minPos = MIN(minPos, centroids[triangles[i]][axis]);
+  }
 
-	float span = maxPos - minPos;
+  float span = maxPos - minPos;
 
-	return span;
+  return span;
 }
 
 vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
   vec4 minCorner = {INFINITY, INFINITY, INFINITY, INFINITY};
   vec4 maxCorner = {-INFINITY, -INFINITY, -INFINITY, -INFINITY};
 
-  for (int i = 0; i < vector_size(triangles); i++) {
+  for (uint32_t i = 0; i < vector_size(triangles); i++) {
     // Finds the smallest coordinates for each axis from the vertices of a
     // triangle, and then sets it as the 'minCorner' if it is lower than
     // 'minCorner'
@@ -117,7 +114,7 @@ vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,
   uint32_t* left = vector_create();
   uint32_t* right = vector_create();
 
-  for (int i = 0; i < vector_size(parentInfo->triangles); i++) {
+  for (uint32_t i = 0; i < vector_size(parentInfo->triangles); i++) {
     if (centroids[parentInfo->triangles[i]][axis] <=
         parentNode->corner1[axis] + ((bucketIndex + 1) * bucketWidth))
       vector_add(&left, parentInfo->triangles[i]);
@@ -149,10 +146,11 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           vec4* centroids, struct bvh_t* parentNode,
                           struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris,
                           uint32_t** rightTris) {
+  float centroidSpan = calcCentroidSpan(centroids, parentInfo->triangles, axis);
 
-	float centroidSpan = calcCentroidSpan(centroids, parentInfo->triangles, axis);
-
-	uint32_t numBuckets = ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / (centroidSpan / 2));
+  uint32_t numBuckets =
+      ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) /
+           (centroidSpan / 2));
 
   float bucketWidth =
       fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / numBuckets;
@@ -163,7 +161,7 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
   *leftTris = NULL;
   *rightTris = NULL;
 
-  for (int32_t i = 0; i < numBuckets; i++) {
+  for (uint32_t i = 0; i < numBuckets; i++) {
     uint32_t* tempLeftTris;
     uint32_t* tempRightTris;
 
@@ -176,8 +174,11 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
     memcpy(leftVolume, v, 2 * sizeof(vec4));
     memcpy(rightVolume, v + 2, 2 * sizeof(vec4));
 
-    float leftSurfaceArea = vector_size(tempLeftTris) > 0 ? calcSurfaceArea(leftVolume) : INFINITY;
-    float rightSurfaceArea = vector_size(tempRightTris) > 0 ? calcSurfaceArea(rightVolume) : INFINITY;
+    float leftSurfaceArea =
+        vector_size(tempLeftTris) > 0 ? calcSurfaceArea(leftVolume) : INFINITY;
+    float rightSurfaceArea = vector_size(tempRightTris) > 0
+                                 ? calcSurfaceArea(rightVolume)
+                                 : INFINITY;
 
     vec4 parentVolume[2];
     memcpy(parentVolume, parentNode->corner1, sizeof(vec4));
@@ -195,7 +196,6 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
         0.125f + ((float)vector_size(tempLeftTris) * p_a) +
         ((float)vector_size(tempRightTris) *
          p_b);  // C = t_trav + p_a * n * t_isect + p_b * n * t_isect
-		
 
     if (tempCost < minCost) {
       minCost = tempCost;
@@ -255,10 +255,8 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
 
     else {
       free(v);
-			if (tempLeftTris != NULL)
-				vector_free(tempLeftTris);
-			if (tempRightTris != NULL)
-				vector_free(tempRightTris);
+      if (tempLeftTris != NULL) vector_free(tempLeftTris);
+      if (tempRightTris != NULL) vector_free(tempRightTris);
     }
   }
 
@@ -266,7 +264,7 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
 }
 
 void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
-                   struct sceneInfo_t* s, vec4* centroids, int64_t parent) {
+                   struct sceneInfo_t* s, vec4* centroids) {
   uint32_t nodeIndex = vector_size(*b) - 1;
   uint32_t numTris = vector_size((*bvhInfo)[nodeIndex].triangles);
 
@@ -299,7 +297,7 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   leftNodeRef->numTris = 0;
 
-  constructTree(b, bvhInfo, s, centroids, nodeIndex);
+  constructTree(b, bvhInfo, s, centroids);
 
   // Right node
   struct bvh_t* rightNodeRef = vector_add_asg(b);
@@ -315,20 +313,20 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   rightNodeRef->numTris = 0;
 
-  constructTree(b, bvhInfo, s, centroids, nodeIndex);
+  constructTree(b, bvhInfo, s, centroids);
 
   free(volumes);
 }
 
 void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo) {
-  for (int i = 0; i < vector_size(bvhInfo); i++) {
+  for (uint32_t i = 0; i < vector_size(bvhInfo); i++) {
     vector_free(bvhInfo[i].triangles);
   }
 }
 
-int freeBvh(struct bvh_t *volumes){
-	vector_free(volumes);
-	return 1;
+int freeBvh(struct bvh_t* volumes) {
+  vector_free(volumes);
+  return 1;
 }
 
 struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
@@ -345,7 +343,7 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   startNodeInfoRef->triangles = vector_create();
 
   // Generates an array with indices from 0 to the number of triangles minus one
-  for (int i = 0; i < numVerts / 3; i++) {
+  for (uint32_t i = 0; i < numVerts / 3; i++) {
     vector_add(&(startNodeInfoRef->triangles), i);
   }
 
@@ -358,7 +356,7 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   startNodeRef->numTris = 0;
 
-  constructTree(&b, &bvhInfo, &s, centroids, -1);
+  constructTree(&b, &bvhInfo, &s, centroids);
 
   free(centroids);
 
@@ -369,4 +367,3 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   return b;
 }
-
