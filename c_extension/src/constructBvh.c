@@ -6,9 +6,7 @@
 #include "../include/extension.h"
 #include "c-vector/vec.h"
 
-#define NUM_BUCKETS 12
 
-#define LOG(str) (printf("%s: %d\n", str, __LINE__))
 
 struct bvhNodeInfo_t {
   int64_t left;
@@ -153,9 +151,6 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           uint32_t** rightTris) {
 
 	float centroidSpan = calcCentroidSpan(centroids, parentInfo->triangles, axis);
-
-  if (centroidSpan == 0.0f)
-  	printf("WTF\n");
 
 	uint32_t numBuckets = ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / (centroidSpan / 2));
 
@@ -364,8 +359,6 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   startNodeRef->numTris = 0;
 
   constructTree(&b, &bvhInfo, &s, centroids, -1);
-
-	printf("numNodes %ld\n", vector_size(b));
 
   free(centroids);
 

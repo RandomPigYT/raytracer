@@ -89,10 +89,10 @@ def loadModel(self, filename):
     )
 
     
-    for i in range(a.value):
-        print(*bvhs[i].corner1)
-        print(*bvhs[i].corner2)
-        print()
+#   for i in range(a.value):
+#       print(*bvhs[i].corner1)
+#       print(*bvhs[i].corner2)
+#       print()
 
     cext.ext.freeBvh(bvhs)
 
