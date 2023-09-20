@@ -37,4 +37,7 @@ def init():
         ct.c_uint32
     ]
 
+
+    ext.freeBvh.restype = ct.c_int
+    ext.freeBvh.argtypes = [ct.POINTER(renderer.Bvh)]
     

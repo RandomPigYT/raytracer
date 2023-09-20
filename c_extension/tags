@@ -92,6 +92,7 @@ LDFLAGS	Makefile	/^LDFLAGS:=-lm$/;"	m
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
+LOG	src/constructBvh.c	/^#define LOG(/;"	d	file:
 MAX	src/constructBvh.c	/^float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
 MIN	src/constructBvh.c	/^float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
 NUM_BUCKETS	src/constructBvh.c	/^#define NUM_BUCKETS /;"	d	file:
@@ -105,7 +106,7 @@ SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
 TARGET	Makefile	/^TARGET:=$(BIN)\/PigEngine.out$/;"	m
 Usage	src/c-vector/README.md	/^# Usage$/;"	c
 VAL_OUT	Makefile	/^VAL_OUT:=valgrind-out.txt$/;"	m
-Vert	src/main.c	/^	typedef struct vertex_t Vert;$/;"	t	function:main	typeref:struct:vertex_t	file:
+Vert	src/main.c	/^  typedef struct vertex_t Vert;$/;"	t	function:main	typeref:struct:vertex_t	file:
 Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference Sheet$/;"	c
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll$/;"	m
 What About Structures?	src/c-vector/README.md	/^# What About Structures?$/;"	c
@@ -124,10 +125,11 @@ axis_e	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$
 buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unknown type$/;"	m	struct:vector_data	typeref:typename:char[]	file:
 bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
 bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
+calcCentroidSpan	src/constructBvh.c	/^float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis){$/;"	f	typeref:typename:float
 calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
 calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
 clean	Makefile	/^clean:$/;"	t
-cleanBvhInfo	src/constructBvh.c	/^void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo){$/;"	f	typeref:typename:void
+cleanBvhInfo	src/constructBvh.c	/^void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo) {$/;"	f	typeref:typename:void
 constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
 constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void
 constructVolumes	src/constructBvh.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
@@ -137,13 +139,14 @@ dirs	Makefile	/^dirs:$/;"	t
 face_t	include/extension.h	/^struct face_t {$/;"	s
 findOptimalVolumes	src/constructBvh.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 format	Makefile	/^format:$/;"	t
+freeBvh	src/constructBvh.c	/^int freeBvh(struct bvh_t *volumes){$/;"	f	typeref:typename:int
 generateVerts	src/generateVerts.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt,$/;"	f	typeref:typename:void
 getCorners	src/constructBvh.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {$/;"	f	typeref:typename:vec4 *
 hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 left	src/constructBvh.c	/^  int64_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 length	src/c-vector/vec.c	/^  vec_size_t length;$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
 lib	Makefile	/^lib: $(LIBTARGET)$/;"	t
-main	src/main.c	/^int main(void){$/;"	f	typeref:typename:int
+main	src/main.c	/^int main(void) {$/;"	f	typeref:typename:int
 missIndex	include/extension.h	/^  int32_t missIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 normal	include/extension.h	/^  vec4 normal;$/;"	m	struct:vertex_t	typeref:typename:vec4
 numTris	include/extension.h	/^  uint32_t numTris;$/;"	m	struct:bvh_t	typeref:typename:uint32_t

@@ -8,6 +8,8 @@
 
 #define NUM_BUCKETS 12
 
+#define LOG(str) (printf("%s: %d\n", str, __LINE__))
+
 struct bvhNodeInfo_t {
   int64_t left;
   int64_t right;
@@ -56,6 +58,21 @@ float calcSurfaceArea(vec4* volume) {
   float h = volume[1][Y_AXIS] - volume[0][Z_AXIS];
 
   return 2 * ((l * b) + (b * h) + (l * h));
+}
+
+float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis){
+	
+	float maxPos = -INFINITY;
+	float minPos = INFINITY;
+
+	for (int i = 0; i < vector_size(triangles); i++){
+		maxPos = MAX(maxPos, centroids[triangles[i]][axis]);
+		minPos = MIN(minPos, centroids[triangles[i]][axis]);
+	}
+
+	float span = maxPos - minPos;
+
+	return span;
 }
 
 vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
@@ -134,8 +151,16 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           vec4* centroids, struct bvh_t* parentNode,
                           struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris,
                           uint32_t** rightTris) {
+
+	float centroidSpan = calcCentroidSpan(centroids, parentInfo->triangles, axis);
+
+  if (centroidSpan == 0.0f)
+  	printf("WTF\n");
+
+	uint32_t numBuckets = ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / (centroidSpan / 2));
+
   float bucketWidth =
-      fabs(parentNode->corner1[axis] - parentNode->corner2[axis]) / NUM_BUCKETS;
+      fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / numBuckets;
 
   vec4* volumes = NULL;
   float minCost = INFINITY;
@@ -143,7 +168,7 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
   *leftTris = NULL;
   *rightTris = NULL;
 
-  for (int32_t i = 0; i < NUM_BUCKETS; i++) {
+  for (int32_t i = 0; i < numBuckets; i++) {
     uint32_t* tempLeftTris;
     uint32_t* tempRightTris;
 
@@ -156,8 +181,8 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
     memcpy(leftVolume, v, 2 * sizeof(vec4));
     memcpy(rightVolume, v + 2, 2 * sizeof(vec4));
 
-    float leftSurfaceArea = calcSurfaceArea(leftVolume);
-    float rightSurfaceArea = calcSurfaceArea(rightVolume);
+    float leftSurfaceArea = vector_size(tempLeftTris) > 0 ? calcSurfaceArea(leftVolume) : INFINITY;
+    float rightSurfaceArea = vector_size(tempRightTris) > 0 ? calcSurfaceArea(rightVolume) : INFINITY;
 
     vec4 parentVolume[2];
     memcpy(parentVolume, parentNode->corner1, sizeof(vec4));
@@ -175,6 +200,7 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
         0.125f + ((float)vector_size(tempLeftTris) * p_a) +
         ((float)vector_size(tempRightTris) *
          p_b);  // C = t_trav + p_a * n * t_isect + p_b * n * t_isect
+		
 
     if (tempCost < minCost) {
       minCost = tempCost;
@@ -234,8 +260,10 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
 
     else {
       free(v);
-      vector_free(tempLeftTris);
-      vector_free(tempRightTris);
+			if (tempLeftTris != NULL)
+				vector_free(tempLeftTris);
+			if (tempRightTris != NULL)
+				vector_free(tempRightTris);
     }
   }
 
@@ -274,7 +302,7 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   (*bvhInfo)[nodeIndex].left = vector_size(*b) - 1;
 
-	leftNodeRef->numTris = 0;
+  leftNodeRef->numTris = 0;
 
   constructTree(b, bvhInfo, s, centroids, nodeIndex);
 
@@ -290,21 +318,23 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
 
   (*bvhInfo)[nodeIndex].right = vector_size(*b) - 1;
 
-	rightNodeRef->numTris = 0;
+  rightNodeRef->numTris = 0;
 
   constructTree(b, bvhInfo, s, centroids, nodeIndex);
 
   free(volumes);
 }
 
-void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo){
-	
-	for (int i = 0; i < vector_size(bvhInfo); i++){
-		vector_free(bvhInfo[i].triangles);
-	}
-
+void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo) {
+  for (int i = 0; i < vector_size(bvhInfo); i++) {
+    vector_free(bvhInfo[i].triangles);
+  }
 }
 
+int freeBvh(struct bvh_t *volumes){
+	vector_free(volumes);
+	return 1;
+}
 
 struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
                            uint32_t numVerts) {
@@ -317,7 +347,7 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   struct bvhNodeInfo_t* startNodeInfoRef = vector_add_asg(&bvhInfo);
   startNodeInfoRef->parent = -1;
-	startNodeInfoRef->triangles = vector_create();
+  startNodeInfoRef->triangles = vector_create();
 
   // Generates an array with indices from 0 to the number of triangles minus one
   for (int i = 0; i < numVerts / 3; i++) {
@@ -330,17 +360,20 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   memcpy(startNodeRef->corner1, corners, sizeof(vec4));
   memcpy(startNodeRef->corner2, corners + 1, sizeof(vec4));
   free(corners);
-	
-	startNodeRef->numTris = 0;
+
+  startNodeRef->numTris = 0;
 
   constructTree(&b, &bvhInfo, &s, centroids, -1);
 
+	printf("numNodes %ld\n", vector_size(b));
+
   free(centroids);
 
-	cleanBvhInfo(bvhInfo);
+  cleanBvhInfo(bvhInfo);
   vector_free(bvhInfo);
 
-	*numBvh = vector_size(b);
+  *numBvh = vector_size(b);
 
   return b;
 }
+

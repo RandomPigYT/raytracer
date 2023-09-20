@@ -94,6 +94,7 @@ def loadModel(self, filename):
         print(*bvhs[i].corner2)
         print()
 
+    cext.ext.freeBvh(bvhs)
 
     self.allocateSSBO()
     self.sendVerts()
