@@ -289,20 +289,19 @@ void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
   if (bvhInfo[nodeIndex].parent == -1) b[nodeIndex].missIndex = -1;
 
   // If internal left node
-  else if (side == LEFT){
+  else if (side == LEFT) {
     b[nodeIndex].missIndex =
         bvhInfo[bvhInfo[nodeIndex].parent].right;  // sibling node
-	}
+  }
 
   // If internal right node
-  else if (side == RIGHT){
+  else if (side == RIGHT) {
     b[nodeIndex].missIndex = -1;
 
     // Search until a super-node is the left sibling of another node
     int64_t parent = bvhInfo[nodeIndex].parent;
-		int64_t grandparent = bvhInfo[parent].parent;
+    int64_t grandparent = bvhInfo[parent].parent;
     while (grandparent != -1) {
-
       if (bvhInfo[grandparent].right != parent) {
         b[nodeIndex].missIndex = bvhInfo[grandparent].right;
         break;
@@ -311,7 +310,6 @@ void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
       parent = grandparent;
     }
   }
-
 
   assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].left, LEFT);
   assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].right, RIGHT);
@@ -423,11 +421,9 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   *numBvh = vector_size(b);
 
-	
-  for (int i = 0; i < vector_size(b); i++){
-  	printf("%d %d\n", b[i].hitIndex, b[i].missIndex);
+  for (int i = 0; i < vector_size(b); i++) {
+    printf("%d %d\n", b[i].hitIndex, b[i].missIndex);
   }
-	
 
   return b;
 }
