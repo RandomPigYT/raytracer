@@ -20,10 +20,7 @@ struct sceneInfo_t {
 
 enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
-enum side_e {
-	LEFT,
-	RIGHT
-};
+enum side_e { LEFT, RIGHT };
 
 vec4* calcCentroids(struct sceneInfo_t* s) {
   struct vertex_t* verts = s->verts;
@@ -268,57 +265,55 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
   return volumes;
 }
 
+void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
+                          int64_t nodeIndex, enum side_e side) {
+  // If last node in array
+  if (nodeIndex == vector_size(b) - 1) {
+    b[nodeIndex].hitIndex = -1;
+    b[nodeIndex].missIndex = -1;
 
-void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo, int64_t nodeIndex, enum side_e side){
-	
-	// If last node in array
-	if (nodeIndex == vector_size(b) - 1){
-		b[nodeIndex].hitIndex = -1;
-		b[nodeIndex].missIndex = -1;
+    return;
+  }
 
-		return;
-	}
-	
-	/* Hit index */
-	b[nodeIndex].hitIndex = nodeIndex + 1;
-	
-	/* Miss index */
-	// If leaf node
-	if (bvhInfo[nodeIndex].left == -1 && bvhInfo[nodeIndex].right == -1){
-		b[nodeIndex].missIndex = nodeIndex + 1;
-		return;
-	}
-	
-	// If root node
-	if (bvhInfo[nodeIndex].parent == -1)
-		b[nodeIndex].missIndex = -1;
-	
-	// If internal left node
-	else if (side == LEFT)
-		b[nodeIndex].missIndex = bvhInfo[bvhInfo[nodeIndex].parent].right; // sibling node
-	
-	// If internal right node
-	else {
-		b[nodeIndex].missIndex = -1;
-		
-		// Search until a super-node is the left sibling of another node
-		int64_t parent = bvhInfo[nodeIndex].parent;
-		while (parent != -1){
-			int64_t grandparent = bvhInfo[parent].parent;
+  /* Hit index */
+  b[nodeIndex].hitIndex = nodeIndex + 1;
 
-			if (bvhInfo[grandparent].right != parent){
-				b[nodeIndex].missIndex = bvhInfo[grandparent].right;
-				break;
-			}
+  /* Miss index */
+  // If leaf node
+  if (bvhInfo[nodeIndex].left == -1 && bvhInfo[nodeIndex].right == -1) {
+    b[nodeIndex].missIndex = nodeIndex + 1;
+    return;
+  }
 
-			parent = grandparent;
-		}
-	}
+  // If root node
+  if (bvhInfo[nodeIndex].parent == -1) b[nodeIndex].missIndex = -1;
 
-	assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].left, LEFT);
-	assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].right, RIGHT);
+  // If internal left node
+  else if (side == LEFT)
+    b[nodeIndex].missIndex =
+        bvhInfo[bvhInfo[nodeIndex].parent].right;  // sibling node
+
+  // If internal right node
+  else {
+    b[nodeIndex].missIndex = -1;
+
+    // Search until a super-node is the left sibling of another node
+    int64_t parent = bvhInfo[nodeIndex].parent;
+    while (parent != -1) {
+      int64_t grandparent = bvhInfo[parent].parent;
+
+      if (bvhInfo[grandparent].right != parent) {
+        b[nodeIndex].missIndex = bvhInfo[grandparent].right;
+        break;
+      }
+
+      parent = grandparent;
+    }
+  }
+
+  assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].left, LEFT);
+  assignHitMissIndices(b, bvhInfo, bvhInfo[nodeIndex].right, RIGHT);
 }
-
 
 void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
                    struct sceneInfo_t* s, vec4* centroids) {
@@ -330,8 +325,8 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
     memcpy((*b)[nodeIndex].triIndices, (*bvhInfo)[nodeIndex].triangles,
            numTris * sizeof(uint32_t));
 
-		(*bvhInfo)[nodeIndex].left = -1;
-		(*bvhInfo)[nodeIndex].right = -1;
+    (*bvhInfo)[nodeIndex].left = -1;
+    (*bvhInfo)[nodeIndex].right = -1;
 
     return;
   }
@@ -417,7 +412,7 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   startNodeRef->numTris = 0;
 
   constructTree(&b, &bvhInfo, &s, centroids);
-	assignHitMissIndices(b, bvhInfo, 0, LEFT);
+  assignHitMissIndices(b, bvhInfo, 0, LEFT);
 
   free(centroids);
 
