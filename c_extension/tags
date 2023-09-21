@@ -80,7 +80,7 @@ Best Practices	src/c-vector/README.md	/^# Best Practices$/;"	c
 C Vector Library	src/c-vector/README.md	/^# C Vector Library$/;"	c
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O0$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 How It Works	src/c-vector/README.md	/^# How It Works$/;"	c
@@ -89,7 +89,7 @@ INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
 LD	Makefile	/^LD:=ld$/;"	m
 LDFLAGS	Makefile	/^ 	LDFLAGS = $(WINFLAGS)$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS:=-lm$/;"	m
-LEFT	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	e	enum:side_e	file:
+LEFT	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
@@ -99,7 +99,7 @@ OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
 PLATFORM	Makefile	/^PLATFORM:=linux$/;"	m
 RAYTRACE_EXTENSION_H	include/extension.h	/^#define RAYTRACE_EXTENSION_H$/;"	d
-RIGHT	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	e	enum:side_e	file:
+RIGHT	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
 Reference Sheet	src/c-vector/README.md	/^# Reference Sheet$/;"	c
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
@@ -160,7 +160,7 @@ position	include/extension.h	/^  vec4 position;$/;"	m	struct:vertex_t	typeref:ty
 right	src/constructBvh.c	/^  int64_t right;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 run	Makefile	/^run: $(TARGET)$/;"	t
 sceneInfo_t	src/constructBvh.c	/^struct sceneInfo_t {$/;"	s	file:
-side_e	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	g	file:
+side_e	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	g	file:
 textureCoord	include/extension.h	/^  vec2 textureCoord;$/;"	m	struct:vertex_t	typeref:typename:vec2
 triIndices	include/extension.h	/^  uint32_t triIndices[4];$/;"	m	struct:bvh_t	typeref:typename:uint32_t[4]
 triangles	src/constructBvh.c	/^  uint32_t* triangles;  \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:

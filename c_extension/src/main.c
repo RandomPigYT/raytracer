@@ -8,13 +8,13 @@
 int main(void) {
   typedef struct vertex_t Vert;
 
-  Vert* v = malloc(24000 * sizeof(Vert));
+  Vert* v = malloc(42 * sizeof(Vert));
 
   srand(time(NULL));
 
   float maxVal = 5.0f;
   float minVal = -5.0f;
-  for (int i = 0; i < 24000; i++) {
+  for (int i = 0; i < 42; i++) {
     v[i].position[0] =
         ((float)rand() / (float)RAND_MAX) * (maxVal - minVal) + minVal;
     v[i].position[1] =
@@ -24,5 +24,5 @@ int main(void) {
   }
 
   unsigned int numBvh;
-  struct bvh_t* b = constructBvh(&numBvh, v, 24000);
+  struct bvh_t* b = constructBvh(&numBvh, v, 42);
 }
