@@ -89,7 +89,7 @@ INCLUDES	Makefile	/^INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")$/;"	m
 LD	Makefile	/^LD:=ld$/;"	m
 LDFLAGS	Makefile	/^ 	LDFLAGS = $(WINFLAGS)$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS:=-lm$/;"	m
-LEFT	src/constructBvh.c	/^	LEFT,$/;"	e	enum:side_e	file:
+LEFT	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	e	enum:side_e	file:
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
@@ -99,7 +99,7 @@ OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m
 PLATFORM	Makefile	/^PLATFORM:=linux$/;"	m
 RAYTRACE_EXTENSION_H	include/extension.h	/^#define RAYTRACE_EXTENSION_H$/;"	d
-RIGHT	src/constructBvh.c	/^	RIGHT$/;"	e	enum:side_e	file:
+RIGHT	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	e	enum:side_e	file:
 Reference Sheet	src/c-vector/README.md	/^# Reference Sheet$/;"	c
 SRC	Makefile	/^SRC:=src$/;"	m
 SRCS	Makefile	/^SRCS:=$(shell find $(SRC) -type  f -name "*.c")$/;"	m
@@ -121,7 +121,7 @@ _vector_remove	src/c-vector/vec.c	/^void _vector_remove(vector* vec_addr, vec_ty
 addOffset	src/addOffset.c	/^void* addOffset(void* ptr, uint64_t n, uint64_t size, int8_t sign) {$/;"	f	typeref:typename:void *
 all	Makefile	/^all: dirs $(TARGET)$/;"	t
 alloc	src/c-vector/vec.c	/^  vec_size_t alloc;  \/\/ stores the number of bytes allocated$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
-assignHitMissIndices	src/constructBvh.c	/^void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo, int64_t nodeIndex, enu/;"	f	typeref:typename:void
+assignHitMissIndices	src/constructBvh.c	/^void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,$/;"	f	typeref:typename:void
 axis_e	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	g	file:
 buff	src/c-vector/vec.c	/^  char buff[];  \/\/ use char to store bytes of an unknown type$/;"	m	struct:vector_data	typeref:typename:char[]	file:
 bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
@@ -160,7 +160,7 @@ position	include/extension.h	/^  vec4 position;$/;"	m	struct:vertex_t	typeref:ty
 right	src/constructBvh.c	/^  int64_t right;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 run	Makefile	/^run: $(TARGET)$/;"	t
 sceneInfo_t	src/constructBvh.c	/^struct sceneInfo_t {$/;"	s	file:
-side_e	src/constructBvh.c	/^enum side_e {$/;"	g	file:
+side_e	src/constructBvh.c	/^enum side_e { LEFT, RIGHT };$/;"	g	file:
 textureCoord	include/extension.h	/^  vec2 textureCoord;$/;"	m	struct:vertex_t	typeref:typename:vec2
 triIndices	include/extension.h	/^  uint32_t triIndices[4];$/;"	m	struct:bvh_t	typeref:typename:uint32_t[4]
 triangles	src/constructBvh.c	/^  uint32_t* triangles;  \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:
