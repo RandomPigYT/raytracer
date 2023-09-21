@@ -421,9 +421,5 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   *numBvh = vector_size(b);
 
-  for (int i = 0; i < vector_size(b); i++) {
-    printf("%d %d\n", b[i].hitIndex, b[i].missIndex);
-  }
-
   return b;
 }
