@@ -80,7 +80,7 @@ Best Practices	src/c-vector/README.md	/^# Best Practices$/;"	c
 C Vector Library	src/c-vector/README.md	/^# C Vector Library$/;"	c
 CC	Makefile	/^	CC = x86_64-w64-mingw32-gcc$/;"	m
 CC	Makefile	/^CC:=gcc$/;"	m
-CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O0$/;"	m
+CFLAGS	Makefile	/^CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2$/;"	m
 CREATE_DIR_COMMAND	Makefile	/^CREATE_DIR_COMMAND:=.\/dirs.sh$/;"	m
 DIRS	Makefile	/^DIRS:=$(patsubst $(SRC)\/%, $(OBJ)\/%, $(shell find $(SRC)\/ -mindepth 1 -type d))$/;"	m
 How It Works	src/c-vector/README.md	/^# How It Works$/;"	c

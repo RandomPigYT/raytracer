@@ -25,4 +25,9 @@ int main(void) {
 
   unsigned int numBvh;
   struct bvh_t* b = constructBvh(&numBvh, v, 42);
+
+
+	for (int i = 0; i < numBvh; i++){
+		printf("%d %d\n", b[i].hitIndex, b[i].missIndex);
+	}
 }
