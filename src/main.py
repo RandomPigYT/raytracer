@@ -37,44 +37,53 @@ def main():
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
     glfwSetCursorPosCallback(window, inp.mousePosCallback)
 
-
-
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
     scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 0)
 
-
     # scene.initCanvas()
 
     scene.loadModel("models/plane.obj")
 
-    scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo  = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
+        ct.c_float * 4
+    )(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     scene.loadModel("models/cube.obj")
-    #scene.loadModel("models/sphere.obj")
-    #scene.loadModel("models/utah.obj")
-    #scene.loadModel("models/suzanne.obj")
-    #scene.loadModel("models/car.obj")
-    #scene.loadModel("models/myCornellBox.obj")
-    #scene.loadModel("models/CornellBox-Original.obj")
+    # scene.loadModel("models/sphere.obj")
+    # scene.loadModel("models/utah.obj")
+    # scene.loadModel("models/suzanne.obj")
+    # scene.loadModel("models/car.obj")
+    # scene.loadModel("models/myCornellBox.obj")
+    # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
-    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (ct.c_float * 4)(*(84 / 255, 255 / 255, 119 / 255, 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (
+        ct.c_float * 4
+    )(*(84 / 255, 255 / 255, 119 / 255, 0))
 
     scene.createSphere(36.86, (ct.c_float * 4)(4.62, 12.19, 70.37, 0))
-    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[1].materialID].albedo = (ct.c_float * 4)(*(0, 0, 0, 0))
-    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[1].materialID].emission = (ct.c_float * 4)(0xf6 / 255, 0xcd / 255, 0x8b / 255, 0)
-    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[1].materialID].intensity = (ct.c_float * 4)(*(12, 12, 12, 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[1].materialID].albedo = (
+        ct.c_float * 4
+    )(*(0, 0, 0, 0))
+    scene.sceneRenderer.materials[
+        scene.sceneRenderer.spheres[1].materialID
+    ].emission = (ct.c_float * 4)(0xF6 / 255, 0xCD / 255, 0x8B / 255, 0)
+    scene.sceneRenderer.materials[
+        scene.sceneRenderer.spheres[1].materialID
+    ].intensity = (ct.c_float * 4)(*(12, 12, 12, 0))
 
     # scene.createSphere(27.5, (ct.c_float * 4)(2, -28.05, 2, 0))
     # scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     scene.createSphere(0.25, (ct.c_float * 4)(2, -0.32, 2, 0))
-    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[2].materialID].albedo = (ct.c_float * 4)(*(random.random(), random.random(), random.random(), 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.spheres[2].materialID].albedo = (
+        ct.c_float * 4
+    )(*(random.random(), random.random(), random.random(), 0))
     scene.sendMats()
 
     drawScene.render(window, scene, impl)
-    
+
     glfwTerminate()
 
 

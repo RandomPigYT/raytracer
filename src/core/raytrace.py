@@ -6,13 +6,14 @@ import sceneManager as sm
 import graphics.shader as shader
 
 
-
 def raytrace(scene, maxBounces, raysPerPixel):
     global framNum
 
     scene.sceneRenderer.frameNum += 1
 
-    raysPerPixelLoc = gl.glGetUniformLocation(scene.sceneRenderer.compute, "raysPerPixel")
+    raysPerPixelLoc = gl.glGetUniformLocation(
+        scene.sceneRenderer.compute, "raysPerPixel"
+    )
     maxBouncesLoc = gl.glGetUniformLocation(scene.sceneRenderer.compute, "maxBounces")
     timeLoc = gl.glGetUniformLocation(scene.sceneRenderer.compute, "time")
     frameNumLoc = gl.glGetUniformLocation(scene.sceneRenderer.compute, "frameNum")

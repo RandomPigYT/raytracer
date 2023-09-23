@@ -18,7 +18,6 @@ def keyCallback(window, key, scancode, action, mods):
         io = imgui.get_io()
         io.config_flags ^= imgui.CONFIG_NO_MOUSE
 
-
         if sm.currentScene.camera.lockCam:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
 

@@ -7,7 +7,7 @@ import sceneManager as sm
 def framebufferSizeCallback(window, width, height):
     gl.glViewport(0, 0, width, height)
 
-    sm.currentScene.resolution = (width , height)
+    sm.currentScene.resolution = (width, height)
 
     sm.currentScene.sendUniforms()
     sm.currentScene.resizeTexture()

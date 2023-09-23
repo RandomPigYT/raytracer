@@ -14,13 +14,10 @@ import sceneManager as sm
 import core.scene as sc
 import os
 
+
 def render(window, scene: sc.Scene, impl: GlfwRenderer):
-
-
-
     while not glfwWindowShouldClose(window):
         deltatime.startTime()
-
 
         imgui.new_frame()
 
@@ -28,14 +25,12 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
         width = viewport[2]
         height = viewport[3]
 
-
-        
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         # rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
         if os.name == "nt":
             scene.sceneRenderer.render()
-        
+
         cam.move()
 
         gElem.elements(window)

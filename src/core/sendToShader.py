@@ -11,6 +11,8 @@ import math
 import core.scene as sc
 import core.renderer as renderer
 
+# TODO: Refactor this file to only one functon that takes the pointer to the data, 
+#       and the number of bytes to send
 
 def sendVerts(self):
 
@@ -76,6 +78,27 @@ def sendMats(self):
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
     ct.memmove(ptr, self.sceneRenderer.materials, ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials))
+    gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+
+def sendBvhs(self):
+    if not self.sceneRenderer.numBvhs.value:
+        return
+
+    # Resize bvhs ssbo
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.bvhSSBO)
+    gl.glBufferData(
+        gl.GL_SHADER_STORAGE_BUFFER,
+        ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value,
+        None,
+        gl.GL_DYNAMIC_READ,
+    )
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, self.sceneRenderer.bvhSSBO)
+
+    # Populate materials ssbo
+    ptr = ct.cast(
+        gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
+    )
+    ct.memmove(ptr, self.sceneRenderer.bvhs, ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value)
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 

@@ -6,5 +6,3 @@ def init(window):
     imgui.create_context()
 
     return GlfwRenderer(window)
-
-

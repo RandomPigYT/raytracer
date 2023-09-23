@@ -4,6 +4,7 @@ import ctypes as ct
 RAYTRACE = 0
 RASTERIZE = 1
 
+
 class Vertex(ct.Structure):
     _fields_ = [
         ("position", ct.c_float * 4),
@@ -33,7 +34,7 @@ class Mesh(ct.Structure):
         ("numTriangles", ct.c_uint32),
         ("materialID", ct.c_uint32),
         ("objectID", ct.c_uint32),
-        ("position", 4 * ct.c_float)
+        ("position", 4 * ct.c_float),
     ]
 
 
@@ -49,7 +50,7 @@ class Bvh(ct.Structure):
         ("missIndex", ct.c_int32),
         ("numTris", ct.c_uint32),
         ("triIndices", 4 * ct.c_uint32),
-        ("padding0", ct.c_int32)
+        ("padding0", ct.c_int32),
     ]
 
 
@@ -62,21 +63,23 @@ class Sphere(ct.Structure):
     ]
 
 
-
 class renderer:
-
     vertices = (0 * Vertex)()
     meshes = (0 * Mesh)()
     materials = (0 * Material)()
     objects = (0 * Object)()
+
+    bvhs = None
+    numBvhs = ct.c_uint32()
 
     spheres = (0 * Sphere)()
 
     vertSSBO = None
     meshSSBO = None
     materialSSBO = None
+    bvhSSBO = None
     spheresSSBO = None
-    
+
     frameNum = 0
 
     numBounces = 10
@@ -91,7 +94,6 @@ class renderer:
     def __init__(self, scene, mode: int):
         self.mode = mode
         self.scene = scene
-    
 
     def render(self):
         if self.mode == RAYTRACE:
@@ -100,14 +102,5 @@ class renderer:
         elif self.mode == RASTERIZE:
             pass
 
-
     def switchMode(self, mode):
         self.mode = mode
-        
-
-
-
-        
-        
-
-

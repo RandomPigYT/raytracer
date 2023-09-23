@@ -8,6 +8,7 @@ import core.renderer as renderer
 
 import os
 
+
 class face(ct.Structure):
     _fields_ = [
         ("v_index", ct.c_int32),
@@ -42,15 +43,25 @@ def loadModel(self, filename):
     vertOffset = len(self.sceneRenderer.vertices)
     meshOffset = len(self.sceneRenderer.meshes)
 
-    self.sceneRenderer.vertices = util.realloc(self.sceneRenderer.vertices, len(self.sceneRenderer.vertices) + numFaces(shapes))
-    self.sceneRenderer.meshes = util.realloc(self.sceneRenderer.meshes, len(self.sceneRenderer.meshes) + len(shapes))
-    self.sceneRenderer.materials = util.realloc(self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(shapes))
+    self.sceneRenderer.vertices = util.realloc(
+        self.sceneRenderer.vertices, len(self.sceneRenderer.vertices) + numFaces(shapes)
+    )
+    self.sceneRenderer.meshes = util.realloc(
+        self.sceneRenderer.meshes, len(self.sceneRenderer.meshes) + len(shapes)
+    )
+    self.sceneRenderer.materials = util.realloc(
+        self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(shapes)
+    )
 
     # generate mesh data
     startingVertCount = 0
     for i in range(len(shapes)):
-        self.sceneRenderer.meshes[i + meshOffset].startingVertex = startingVertCount + vertOffset
-        self.sceneRenderer.meshes[i + meshOffset].numTriangles = len(shapes[i].mesh.indices)
+        self.sceneRenderer.meshes[i + meshOffset].startingVertex = (
+            startingVertCount + vertOffset
+        )
+        self.sceneRenderer.meshes[i + meshOffset].numTriangles = len(
+            shapes[i].mesh.indices
+        )
 
         self.sceneRenderer.meshes[i + meshOffset].materialID = i + meshOffset
 
@@ -81,24 +92,19 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
-    a = ct.c_uint32()
-    bvhs = cext.ext.constructBvh(
-            ct.byref(a),
-            ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
-            len(self.sceneRenderer.vertices)
+    # if self.sceneRenderer.bvhs != None:
+    #     cext.ext.freeBvh(self.sceneRenderer.bvhs)
+
+    self.sceneRenderer.bvhs = cext.ext.constructBvh(
+        ct.byref(self.sceneRenderer.numBvhs),
+        ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
+        len(self.sceneRenderer.vertices),
     )
-    os.system("cls")
-   #print(a.value)
-   #print(len(self.sceneRenderer.vertices) / 3)
-
-    for i in range(a.value):
-        print(bvhs[i].hitIndex, bvhs[i].missIndex, bvhs[i].numTris, sep=' ')
-
-    cext.ext.freeBvh(bvhs)
 
     self.allocateSSBO()
     self.sendVerts()
     self.sendMeshes()
     self.sendMats()
+    self.sendBvhs()
 
     return True

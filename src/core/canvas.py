@@ -96,15 +96,15 @@ def initRenderCavas(self):
     )
 
     # init compute shader
-    self.sceneRenderer.compute = comp.compileComputeShader("./src/shader_code/raytracer.comp")
+    self.sceneRenderer.compute = comp.compileComputeShader(
+        "./src/shader_code/raytracer.comp"
+    )
     # self.compute = comp.compileComputeShader("./src/shader_code/mandelbrot.comp")
 
 
 def resizeTexture(self):
-
     gl.glActiveTexture(gl.GL_TEXTURE0)
     gl.glBindTexture(gl.GL_TEXTURE_2D, self.sceneRenderer.tex)
-
 
     gl.glTexImage2D(
         gl.GL_TEXTURE_2D,

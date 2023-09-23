@@ -29,15 +29,13 @@ def init():
         ct.c_int32,
         ct.c_int32,
     ]
-    
+
     ext.constructBvh.restype = ct.POINTER(renderer.Bvh)
     ext.constructBvh.argtypes = [
         ct.POINTER(ct.c_uint32),
         ct.POINTER(renderer.Vertex),
-        ct.c_uint32
+        ct.c_uint32,
     ]
-
 
     ext.freeBvh.restype = ct.c_int
     ext.freeBvh.argtypes = [ct.POINTER(renderer.Bvh)]
-    

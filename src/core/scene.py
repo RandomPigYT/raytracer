@@ -12,7 +12,6 @@ import core.sendToShader as sendToShader
 import core.renderer as renderer
 
 
-
 class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
     direction = (ct.c_float * 3)(0, 0, 0)
@@ -46,23 +45,17 @@ class Camera:
         self.yaw = yaw
         self.pitch = pitch
 
-        self.direction[0] = math.cos(math.radians(yaw)) * math.cos(
-            math.radians(pitch)
-        )
+        self.direction[0] = math.cos(math.radians(yaw)) * math.cos(math.radians(pitch))
         self.direction[1] = math.cos(math.radians(pitch))
-        self.direction[2] = math.sin(math.radians(yaw)) * math.cos(
-            math.radians(pitch)
-        )
+        self.direction[2] = math.sin(math.radians(yaw)) * math.cos(math.radians(pitch))
 
         self.direction = glm.normalize(self.direction)
 
 
-        
-
-
 class Scene:
-
-    def __init__(self, name, cameraPosition, yaw, pitch, resolution: tuple, renderMode: int):
+    def __init__(
+        self, name, cameraPosition, yaw, pitch, resolution: tuple, renderMode: int
+    ):
         if sm.currentScene == None:
             sm.currentScene = self
 
@@ -92,6 +85,7 @@ class Scene:
     sendVerts = sendToShader.sendVerts
     sendMeshes = sendToShader.sendMeshes
     sendMats = sendToShader.sendMats
+    sendBvhs = sendToShader.sendBvhs
     sendSpheresToShader = sendToShader.sendSpheresToShader
 
     sendUniforms = sendToShader.sendUniforms
@@ -100,11 +94,19 @@ class Scene:
         self.sceneRenderer.frameNum = 0
 
     def createSphere(self, radius, position):
-        self.sceneRenderer.spheres = util.realloc(self.sceneRenderer.spheres, len(self.sceneRenderer.spheres) + 1)
-        self.sceneRenderer.materials = util.realloc(self.sceneRenderer.materials, len(self.sceneRenderer.materials) + 1)
+        self.sceneRenderer.spheres = util.realloc(
+            self.sceneRenderer.spheres, len(self.sceneRenderer.spheres) + 1
+        )
+        self.sceneRenderer.materials = util.realloc(
+            self.sceneRenderer.materials, len(self.sceneRenderer.materials) + 1
+        )
 
-        self.sceneRenderer.spheres[len(self.sceneRenderer.spheres) - 1] = renderer.Sphere(
-            position=position, radius=radius, materialID=len(self.sceneRenderer.materials) - 1
+        self.sceneRenderer.spheres[
+            len(self.sceneRenderer.spheres) - 1
+        ] = renderer.Sphere(
+            position=position,
+            radius=radius,
+            materialID=len(self.sceneRenderer.materials) - 1,
         )
 
         self.sendSpheresToShader()
@@ -118,20 +120,14 @@ class Scene:
         self.sceneRenderer.meshSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.materialSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.spheresSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.bvhSSBO = gl.glGenBuffers(1)
 
     def allocateSSBO(self):
         self.sendVerts()
         self.sendMeshes()
         self.sendMats()
+        self.sendBvhs()
 
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 
         self.sendUniforms()
-
-
-
-
-
-
-
-
