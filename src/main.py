@@ -52,6 +52,7 @@ def main():
     scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo  = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     scene.loadModel("models/cube.obj")
+    #scene.loadModel("models/sphere.obj")
     #scene.loadModel("models/utah.obj")
     #scene.loadModel("models/suzanne.obj")
     #scene.loadModel("models/car.obj")

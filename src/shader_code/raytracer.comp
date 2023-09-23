@@ -398,7 +398,7 @@ vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
 
   float alpha = mat.roughness.x * mat.roughness.x;
 
-  vec3 f0 = vec3(0.16 * mat.reflectance);
+  vec3 f0 = vec3(0.16 * mat.reflectance * mat.reflectance);
   f0 = mix(f0, mat.albedo.xyz, mat.metallic);
 
   vec3 F = calculateFresnel(VdotH, f0);

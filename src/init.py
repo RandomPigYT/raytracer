@@ -4,7 +4,7 @@ import c_extension as cext
 import sys
 
 
-def cleanup():
+def cleanup(type, value, tb):
     glfwTerminate()
 
 

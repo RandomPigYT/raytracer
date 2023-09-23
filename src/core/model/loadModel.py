@@ -6,6 +6,7 @@ from sys import stderr
 import c_extension as cext
 import core.renderer as renderer
 
+import os
 
 class face(ct.Structure):
     _fields_ = [
@@ -80,19 +81,18 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
-    
     a = ct.c_uint32()
     bvhs = cext.ext.constructBvh(
             ct.byref(a),
             ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
             len(self.sceneRenderer.vertices)
     )
+    os.system("cls")
+   #print(a.value)
+   #print(len(self.sceneRenderer.vertices) / 3)
 
-    
-#   for i in range(a.value):
-#       print(*bvhs[i].corner1)
-#       print(*bvhs[i].corner2)
-#       print()
+    for i in range(a.value):
+        print(bvhs[i].hitIndex, bvhs[i].missIndex, bvhs[i].numTris, sep=' ')
 
     cext.ext.freeBvh(bvhs)
 
