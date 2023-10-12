@@ -1,5 +1,6 @@
 import core.raytrace as rt
 import ctypes as ct
+import core.transformedVerts as tv
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -104,3 +105,5 @@ class renderer:
 
     def switchMode(self, mode):
         self.mode = mode
+
+    getTransformedVerts = tv.transformedVerts

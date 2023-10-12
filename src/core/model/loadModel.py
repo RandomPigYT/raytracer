@@ -95,10 +95,12 @@ def loadModel(self, filename):
     # if self.sceneRenderer.bvhs != None:
     #     cext.ext.freeBvh(self.sceneRenderer.bvhs)
 
+    transformedVerts = self.sceneRenderer.getTransformedVerts()
+
     self.sceneRenderer.bvhs = cext.ext.constructBvh(
         ct.byref(self.sceneRenderer.numBvhs),
-        ct.cast(self.sceneRenderer.vertices, ct.POINTER(renderer.Vertex)),
-        len(self.sceneRenderer.vertices),
+        ct.cast(transformedVerts, ct.POINTER(renderer.Vertex)),
+        len(transformedVerts),
     )
 
     self.allocateSSBO()

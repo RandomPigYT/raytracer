@@ -2,10 +2,12 @@ from glfw.GLFW import *
 import OpenGL.GL as gl
 import c_extension as cext
 import sys
+import traceback
 
 
-def cleanup(type, value, tb):
+def cleanup(t, value, tb):
     glfwTerminate()
+    print(*traceback.format_exception(t, value, tb), sep="\n")
 
 
 def init(contextMajor, contextMinor):

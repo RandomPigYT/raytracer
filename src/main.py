@@ -82,6 +82,7 @@ def main():
     )(*(random.random(), random.random(), random.random(), 0))
     scene.sendMats()
 
+
     drawScene.render(window, scene, impl)
 
     glfwTerminate()
