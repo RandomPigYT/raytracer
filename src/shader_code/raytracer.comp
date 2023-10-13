@@ -295,7 +295,7 @@ HitInfo closestTriangleHit(out uint meshIndex, out uint triIndex, vec3 rayDir, v
 
 
 vec3 getSpecularReflectedRay(float roughness, vec3 surfaceNormal, vec3 rayDir, 
-                                inout uint seed, out float theta, out float phi, out vec3 microfacetN){
+                                inout uint seed, out float theta, out float phi, out vec3 microfacetN, float weight){
 
 
 
@@ -323,23 +323,67 @@ vec3 getSpecularReflectedRay(float roughness, vec3 surfaceNormal, vec3 rayDir,
   vec3 reflected = reflect(rayDir, microfacetN);
 
   return reflected;
+
+  // float alpha = roughness * roughness;
+  // float alpha2 = alpha * alpha;
+
+  // float eps = clamp(random(seed), 0.001, 1.0);
+  // float cosTheta2 = (1.0f - eps) / (eps * (alpha2 - 1.0f) + 1.0f);
+  // float cosTheta = sqrt(cosTheta2);
+  // float sinTheta = sqrt(1.0f - cosTheta2);
+
+  // phi = 2.0f * PI * random(seed);
+
+  // vec3 t = normalize(cross(surfaceNormal.yzx, surfaceNormal));
+  // vec3 b = cross(surfaceNormal, t);
+
+  // microfacetN = (t * cos(phi) + b * sin(phi)) * sinTheta + surfaceNormal * cosTheta;
+
+  // vec3 l = reflect(rayDir, microfacetN);
+
+  // float den = (alpha2 - 1.0f) * cosTheta2 + 1.0f;
+  // float D = alpha2 / (PI * den * den);
+  // float pdf = D * cosTheta / (4.0f * dot(microfacetN, -rayDir));
+  // weight = (0.5f / PI) / (pdf + 1e-6);
+
+  // if (dot(l, surfaceNormal) < 0.0f)
+  //   weight = 0.0f;
+  
+  // return l;
+
 }
 
 
-vec3 getDiffuseReflectedRay(vec3 surfaceNormal, inout uint seed, out float theta, out float phi){
+vec3 getDiffuseReflectedRay(vec3 surfaceNormal, inout uint seed, out float theta, out float phi, out float weight){
 
-  vec3 normal;
+  // vec3 normal;
 
-  float xi_1 = random(seed);
-  float xi_2 = random(seed);
+  // float xi_1 = random(seed);
+  // float xi_2 = random(seed);
 
-  phi = 2 * PI * xi_2;
-  theta = acos(sqrt(xi_1));
+  // phi = 2 * PI * xi_2;
+  // theta = acos(sqrt(xi_1));
 
-  normal = normalize(vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)));
-  normal = (lookat(vec3(0, 0, 0), -surfaceNormal, vec3(0, 1, 0)) * vec4(normal, 0)).xyz;
+  // normal = normalize(vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)));
+  // normal = (lookat(vec3(0, 0, 0), -surfaceNormal, vec3(0, 1, 0)) * vec4(normal, 0)).xyz;
 
-  return normal;
+  // return normal;
+
+  float cosTheta2 = random(seed);
+  float cosTheta = sqrt(cosTheta2);
+  float sinTheta = sqrt(1.0f - cosTheta2);
+
+  phi = 2.0f * PI * random(seed);
+
+  vec3 t = normalize(cross(surfaceNormal.yzx, surfaceNormal));
+  vec3 b = cross(surfaceNormal, t);
+  
+  vec3 l = (t * cos(phi) + b * sin(phi)) * sinTheta + surfaceNormal * cosTheta;
+
+  float pdf = (1.0f / PI) * cosTheta;
+  weight = (0.5f / PI) / (pdf + 1e-6);
+
+  return l;
 }
 
 float lambertianPDF(vec3 view, vec3 normal){
@@ -347,7 +391,7 @@ float lambertianPDF(vec3 view, vec3 normal){
 }
 
 vec3 lambertianBRDF(vec3 view, vec3 normal, vec3 albedo){
-  return (albedo * dot(view, normal)) / PI;
+  return (albedo);
 }
 
 
@@ -417,7 +461,6 @@ vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
   float G = smithG2(NdotV, NdotL, alpha);
 
   vec3 brdf = (F * D * G) / (4 * max(NdotL, 0.001) * max(NdotV, 0.001));
-
   return brdf;
 }
 
@@ -513,12 +556,12 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     }
 
 
-    
+    float weight;
 
 
     vec3 microfacetN;
-    vec3 reflectedRay = isSpecular ? getSpecularReflectedRay(mat.roughness.x, hit.normal, rayDir, seed, theta, phi, microfacetN) : 
-                                    getDiffuseReflectedRay(hit.normal, seed, theta, phi);
+    vec3 reflectedRay = isSpecular ? getSpecularReflectedRay(mat.roughness.x, hit.normal, rayDir, seed, theta, phi, microfacetN, weight) : 
+                                    getDiffuseReflectedRay(hit.normal, seed, theta, phi, weight);
 
 
     if (dot(reflectedRay, hit.normal) <= 0.001){
@@ -534,14 +577,19 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
 
     vec3 H = normalize(-rayDir + reflectedRay);
-    float pdf = isSpecular ?  GGXpdf(mat.roughness.x, H, hit.normal, reflectedRay, mat.reflectance) : 1 / PI;
+    // float pdf = isSpecular ?  GGXpdf(mat.roughness.x, H, hit.normal, reflectedRay, mat.reflectance) : lambertianPDF(-rayDir, hit.normal);
+    float pdf = isSpecular ?  GGXpdf(mat.roughness.x, H, hit.normal, reflectedRay, mat.reflectance) : 1 / weight;
 
     // if (isSpecular && mat.roughness.x == 0)
     //   pdf = 1.0;
 
 
+    if (isSpecular)
+      weight = 1 / pdf;
+
     colour += throughput * mat.emission.xyz * mat.intensity.x;
-    throughput *= brdf / (pdf);
+
+    throughput *= brdf * weight * dot(hit.normal, reflectedRay);
 
     // if (isnan(colour.x) || isnan(colour.y) || isnan(colour.z) || isnan(pdf))
     //   return vec4(1, 0, 1, 1);
@@ -579,8 +627,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    // colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
-    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
 

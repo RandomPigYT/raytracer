@@ -15,7 +15,7 @@ def transformedVerts(self):
 
     for i in self.meshes:
         offset = i.startingVertex
-        for j in range(i.numTriangles - 1):
+        for j in range(i.numTriangles):
             v[offset + j].position = applyTransformation(self.vertices[offset + j], i)
 
     return v

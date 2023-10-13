@@ -1,4 +1,3 @@
-import core.scene as sc
 import ctypes as ct
 import util
 import tinyobjloader as tol
@@ -6,7 +5,6 @@ from sys import stderr
 import c_extension as cext
 import core.renderer as renderer
 
-import os
 
 
 class face(ct.Structure):
@@ -92,16 +90,7 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
-    # if self.sceneRenderer.bvhs != None:
-    #     cext.ext.freeBvh(self.sceneRenderer.bvhs)
-
-    transformedVerts = self.sceneRenderer.getTransformedVerts()
-
-    self.sceneRenderer.bvhs = cext.ext.constructBvh(
-        ct.byref(self.sceneRenderer.numBvhs),
-        ct.cast(transformedVerts, ct.POINTER(renderer.Vertex)),
-        len(transformedVerts),
-    )
+    self.sceneRenderer.updateBvh()
 
     self.allocateSSBO()
     self.sendVerts()
