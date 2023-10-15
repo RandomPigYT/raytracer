@@ -2,6 +2,7 @@ import core.raytrace as rt
 import ctypes as ct
 import core.transformedVerts as tv
 import c_extension as cext
+import core.vertMeshRelation as vmr
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -71,6 +72,8 @@ class renderer:
     materials = (0 * Material)()
     objects = (0 * Object)()
 
+    vertMeshRelations = (0 * ct.c_uint32)()
+
     bvhs = None
     numBvhs = ct.c_uint32()
 
@@ -107,8 +110,6 @@ class renderer:
     def switchMode(self, mode):
         self.mode = mode
 
-    getTransformedVerts = tv.transformedVerts
-
     def updateBvh(self):
         transformedVerts = self.getTransformedVerts()
 
@@ -118,6 +119,8 @@ class renderer:
         self.bvhs = cext.ext.constructBvh(
             ct.byref(self.numBvhs),
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
-            len(transformedVerts)
+            len(transformedVerts),
         )
 
+    getTransformedVerts = tv.transformedVerts
+    getVertMeshRelation = vmr.getVertMeshRelation

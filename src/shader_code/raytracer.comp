@@ -1,3 +1,6 @@
+/*Any piece of code wrapped in SRC(<source>){} indicates that the code has been copied from another location.
+  The <source> specifies the source.*/
+
 #version 450 core
 
 #define NUM_INVOCATIONS_PER_GROUP_X 40
@@ -173,7 +176,6 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, vec3 po
     return h;
   }
 
-
   h.rayT = dot(edge2, cross_oriMinusVert0_edge1) * invDet;
 
   if (h.rayT < 0.0){
@@ -324,51 +326,11 @@ vec3 getSpecularReflectedRay(float roughness, vec3 surfaceNormal, vec3 rayDir,
 
   return reflected;
 
-  // float alpha = roughness * roughness;
-  // float alpha2 = alpha * alpha;
-
-  // float eps = clamp(random(seed), 0.001, 1.0);
-  // float cosTheta2 = (1.0f - eps) / (eps * (alpha2 - 1.0f) + 1.0f);
-  // float cosTheta = sqrt(cosTheta2);
-  // float sinTheta = sqrt(1.0f - cosTheta2);
-
-  // phi = 2.0f * PI * random(seed);
-
-  // vec3 t = normalize(cross(surfaceNormal.yzx, surfaceNormal));
-  // vec3 b = cross(surfaceNormal, t);
-
-  // microfacetN = (t * cos(phi) + b * sin(phi)) * sinTheta + surfaceNormal * cosTheta;
-
-  // vec3 l = reflect(rayDir, microfacetN);
-
-  // float den = (alpha2 - 1.0f) * cosTheta2 + 1.0f;
-  // float D = alpha2 / (PI * den * den);
-  // float pdf = D * cosTheta / (4.0f * dot(microfacetN, -rayDir));
-  // weight = (0.5f / PI) / (pdf + 1e-6);
-
-  // if (dot(l, surfaceNormal) < 0.0f)
-  //   weight = 0.0f;
-  
-  // return l;
-
 }
 
 
 vec3 getDiffuseReflectedRay(vec3 surfaceNormal, inout uint seed, out float theta, out float phi, out float weight){
-
-  // vec3 normal;
-
-  // float xi_1 = random(seed);
-  // float xi_2 = random(seed);
-
-  // phi = 2 * PI * xi_2;
-  // theta = acos(sqrt(xi_1));
-
-  // normal = normalize(vec3(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta)));
-  // normal = (lookat(vec3(0, 0, 0), -surfaceNormal, vec3(0, 1, 0)) * vec4(normal, 0)).xyz;
-
-  // return normal;
-
+// SRC (https://www.shadertoy.com/view/3lB3DR, Buffer A, lines 219 through 235) {
   float cosTheta2 = random(seed);
   float cosTheta = sqrt(cosTheta2);
   float sinTheta = sqrt(1.0f - cosTheta2);
@@ -384,6 +346,7 @@ vec3 getDiffuseReflectedRay(vec3 surfaceNormal, inout uint seed, out float theta
   weight = (0.5f / PI) / (pdf + 1e-6);
 
   return l;
+// }
 }
 
 float lambertianPDF(vec3 view, vec3 normal){
@@ -627,8 +590,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
-    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    // colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
 

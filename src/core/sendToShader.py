@@ -11,11 +11,11 @@ import math
 import core.scene as sc
 import core.renderer as renderer
 
-# TODO: Refactor this file to only one functon that takes the pointer to the data, 
+# TODO: Refactor this file to only one functon that takes the pointer to the data,
 #       and the number of bytes to send
 
-def sendVerts(self):
 
+def sendVerts(self):
     if not len(self.sceneRenderer.vertices):
         return
     # Resize vertices ssbo
@@ -32,13 +32,15 @@ def sendVerts(self):
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.sceneRenderer.vertices, ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices))
+    ct.memmove(
+        ptr,
+        self.sceneRenderer.vertices,
+        ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices),
+    )
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
-
 def sendMeshes(self):
-
     if not len(self.sceneRenderer.meshes):
         return
     # Resize meshes ssbo
@@ -55,7 +57,11 @@ def sendMeshes(self):
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.sceneRenderer.meshes, ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes))
+    ct.memmove(
+        ptr,
+        self.sceneRenderer.meshes,
+        ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes),
+    )
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
@@ -77,8 +83,13 @@ def sendMats(self):
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.sceneRenderer.materials, ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials))
+    ct.memmove(
+        ptr,
+        self.sceneRenderer.materials,
+        ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials),
+    )
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
+
 
 def sendBvhs(self):
     if not self.sceneRenderer.numBvhs.value:
@@ -98,12 +109,15 @@ def sendBvhs(self):
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.sceneRenderer.bvhs, ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value)
+    ct.memmove(
+        ptr,
+        self.sceneRenderer.bvhs,
+        ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value,
+    )
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
 
 def sendSpheresToShader(self):
-    
     if not len(self.sceneRenderer.spheres):
         return
 
@@ -121,7 +135,11 @@ def sendSpheresToShader(self):
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(ptr, self.sceneRenderer.spheres, ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres))
+    ct.memmove(
+        ptr,
+        self.sceneRenderer.spheres,
+        ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres),
+    )
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
 
     gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
@@ -150,9 +168,7 @@ def sendUniforms(self):
     # )
 
     viewMat = glm.lookAt(
-        glm.vec3(0, 0, 0),
-        glm.vec3(self.camera.direction),
-        glm.vec3(0, 1, 0)
+        glm.vec3(0, 0, 0), glm.vec3(self.camera.direction), glm.vec3(0, 1, 0)
     )
 
     camToWorld = gl.glGetUniformLocation(self.sceneRenderer.compute, "camToWorld")
@@ -162,7 +178,9 @@ def sendUniforms(self):
     resolutionLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "resolution")
     gl.glUniform2f(resolutionLoc, *self.resolution)
 
-    blurStrengthLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "blurStrength")
+    blurStrengthLoc = gl.glGetUniformLocation(
+        self.sceneRenderer.compute, "blurStrength"
+    )
     gl.glUniform1f(blurStrengthLoc, self.camera.blur)
 
     fovLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "fov")

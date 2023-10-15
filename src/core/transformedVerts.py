@@ -1,6 +1,7 @@
 import core.renderer as renderer
 import ctypes as ct
 
+
 def applyTransformation(vert, mesh):
     temp = (4 * ct.c_float)(*vert.position)
     # For now, this only includes translation
@@ -9,6 +10,7 @@ def applyTransformation(vert, mesh):
     temp[2] += mesh.position[2]
 
     return temp
+
 
 def transformedVerts(self):
     v = (len(self.vertices) * renderer.Vertex)()
@@ -19,5 +21,3 @@ def transformedVerts(self):
             v[offset + j].position = applyTransformation(self.vertices[offset + j], i)
 
     return v
-
-    

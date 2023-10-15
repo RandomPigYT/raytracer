@@ -16,7 +16,7 @@ def sizeof(obj):
 
 def realloc(array, n):
     resized = (n * array._type_)()
-    ct.memmove(resized, array, len(array) * ct.sizeof(array._type_))
+    ct.memmove(resized, array, min(len(array), n) * ct.sizeof(array._type_))
 
     return resized
 

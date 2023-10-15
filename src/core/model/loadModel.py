@@ -6,7 +6,6 @@ import c_extension as cext
 import core.renderer as renderer
 
 
-
 class face(ct.Structure):
     _fields_ = [
         ("v_index", ct.c_int32),
@@ -24,6 +23,8 @@ def numFaces(shapes):
 
 
 def loadModel(self, filename):
+    oldLen = len(self.sceneRenderer.vertices)
+
     reader = tol.ObjReader()
     status = reader.ParseFromFile(filename)
 
@@ -91,6 +92,7 @@ def loadModel(self, filename):
         vertOffset += len(temp)
 
     self.sceneRenderer.updateBvh()
+    self.sceneRenderer.getVertMeshRelation(oldLen)
 
     self.allocateSSBO()
     self.sendVerts()

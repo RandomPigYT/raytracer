@@ -55,7 +55,7 @@ def main():
     # scene.loadModel("models/utah.obj")
     # scene.loadModel("models/suzanne.obj")
     # scene.loadModel("models/car.obj")
-    # scene.loadModel("models/myCornellBox.obj")
+    # scene.loadModel("models/improved_cornell_box.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
     scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (
@@ -81,7 +81,6 @@ def main():
         ct.c_float * 4
     )(*(random.random(), random.random(), random.random(), 0))
     scene.sendMats()
-
 
     drawScene.render(window, scene, impl)
 
