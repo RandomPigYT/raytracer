@@ -10,6 +10,8 @@ layout(local_size_x = NUM_INVOCATIONS_PER_GROUP_X,
        local_size_y = NUM_INVOCATIONS_PER_GROUP_Y, local_size_z = 1) in;
 
 layout(rgba32f, binding = 0) uniform image2D rendered;
+layout(r32ui, binding = 1) uniform uimage1D vertMeshRelTex;
+
 
 #define RAND_MAX 0xffffffffu
 #define PI radians(180)
@@ -590,8 +592,8 @@ void main() {
 
     vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-    // colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
-    colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
   }
 
 

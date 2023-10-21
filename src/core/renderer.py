@@ -73,6 +73,7 @@ class renderer:
     objects = (0 * Object)()
 
     vertMeshRelations = (0 * ct.c_uint32)()
+    vertMeshRelTex = None
 
     bvhs = None
     numBvhs = ct.c_uint32()

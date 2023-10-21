@@ -61,6 +61,9 @@ class Scene:
 
         self.sceneRenderer = renderer.renderer(self, renderMode)
 
+        # Create vertex-mesh relation texture
+        self.sceneRenderer.vertMeshRelTex = gl.glGenTextures(1)
+
         self.name = name
 
         self.resolution = resolution

@@ -16,4 +16,3 @@ def getVertMeshRelation(self, startVert):
 
     for i in range(startVert, len(self.vertices)):
         self.vertMeshRelations[i] = findMesh(self, i)
-
