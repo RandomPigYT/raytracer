@@ -6,6 +6,8 @@
 #include "../include/extension.h"
 #include "c-vector/vec.h"
 
+#define MAX_TRIS_PER_NODE 1
+
 struct bvhNodeInfo_t {
   int64_t left;
   int64_t right;
@@ -320,7 +322,7 @@ void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,
   uint32_t nodeIndex = vector_size(*b) - 1;
   uint32_t numTris = vector_size((*bvhInfo)[nodeIndex].triangles);
 
-  if (numTris <= 4) {
+  if (numTris <= MAX_TRIS_PER_NODE) {
     (*b)[nodeIndex].numTris = numTris;
     memcpy((*b)[nodeIndex].triIndices, (*bvhInfo)[nodeIndex].triangles,
            numTris * sizeof(uint32_t));
