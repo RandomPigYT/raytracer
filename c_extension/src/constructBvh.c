@@ -305,7 +305,6 @@ void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
     int64_t parent = bvhInfo[nodeIndex].parent;
     int64_t grandparent = bvhInfo[parent].parent;
     while (grandparent != -1) {
-			grandparent = bvhInfo[parent].parent;
 
       if (bvhInfo[grandparent].right != parent) {
         b[nodeIndex].missIndex = bvhInfo[grandparent].right;
@@ -313,6 +312,7 @@ void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
       }
 
       parent = grandparent;
+			grandparent = parent != 0 ? bvhInfo[parent].parent : -1;
     }
   }
 
