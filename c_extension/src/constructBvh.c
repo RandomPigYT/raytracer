@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../include/extension.h"
 #include "c-vector/vec.h"
@@ -304,6 +305,8 @@ void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
     int64_t parent = bvhInfo[nodeIndex].parent;
     int64_t grandparent = bvhInfo[parent].parent;
     while (grandparent != -1) {
+			grandparent = bvhInfo[parent].parent;
+
       if (bvhInfo[grandparent].right != parent) {
         b[nodeIndex].missIndex = bvhInfo[grandparent].right;
         break;
@@ -417,6 +420,11 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
   assignHitMissIndices(b, bvhInfo, 0, LEFT);
 
   free(centroids);
+
+//system("clear");
+//for (int i = 0; i < vector_size(bvhInfo); i++){
+//	printf("%d.\t%ld %ld %ld %ld\n", i, bvhInfo[i].left, bvhInfo[i].right, bvhInfo[i].parent, vector_size(bvhInfo[i].triangles));
+//}
 
   cleanBvhInfo(bvhInfo);
   vector_free(bvhInfo);
