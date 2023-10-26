@@ -26,8 +26,13 @@ def raytrace(scene, maxBounces, raysPerPixel):
     gl.glUniform1ui(timeLoc, int(time.time() * 10000))
     gl.glUniform1ui(frameNumLoc, scene.sceneRenderer.frameNum)
 
+    gl.glActiveTexture(gl.GL_TEXTURE1)
+    gl.glBindTexture(gl.GL_TEXTURE_1D, scene.sceneRenderer.vertMeshRelTex)
+
     gl.glDispatchCompute(48, 45, 1)
     gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
+
+    gl.glBindTexture(gl.GL_TEXTURE_1D, 0)
 
     shader.useShader(scene.sceneRenderer.shaderProgram)
 

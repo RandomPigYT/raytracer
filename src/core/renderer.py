@@ -3,6 +3,7 @@ import ctypes as ct
 import core.transformedVerts as tv
 import c_extension as cext
 import core.vertMeshRelation as vmr
+import random
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -122,6 +123,14 @@ class renderer:
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
             len(transformedVerts),
         )
+        print(self.numBvhs.value, "\n")
+        for i in range(self.numBvhs.value):
+            print(i, ".\t", sep="", end="")
+            # print(self.bvhs[i].hitIndex, self.bvhs[i].missIndex, self.bvhs[i].numTris)
+            print(self.bvhs[i].numTris, "\t", self.bvhs[i].triIndices[0])
+
+            
+
 
     getTransformedVerts = tv.transformedVerts
     getVertMeshRelation = vmr.getVertMeshRelation
