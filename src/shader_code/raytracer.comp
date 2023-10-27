@@ -16,6 +16,9 @@ layout(r32ui, binding = 1) uniform uimage1D vertMeshRelTex;
 #define RAND_MAX 0xffffffffu
 #define PI radians(180)
 
+// #define NO_BVH
+
+
 struct Vertex {
   vec4 position;
   vec4 normal;
@@ -314,7 +317,7 @@ HitInfo traverseBvh(out uint meshIndex, out uint triIndex, vec3 rayDir, vec3 ray
 
   uint minMeshIndex = -1;
   uint minTriIndex = -1;
-#if 0
+#ifdef NO_BVH
   for (uint i = 0; i < meshes.length(); i++){
 
     for (uint j = 0; j < meshes[i].numTriangles; j += 3){

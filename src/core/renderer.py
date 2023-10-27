@@ -123,11 +123,6 @@ class renderer:
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
             len(transformedVerts),
         )
-        print(self.numBvhs.value, "\n")
-        for i in range(self.numBvhs.value):
-            print(i, ".\t", sep="", end="")
-            # print(self.bvhs[i].hitIndex, self.bvhs[i].missIndex, self.bvhs[i].numTris)
-            print(self.bvhs[i].numTris, "\t", self.bvhs[i].triIndices[0])
 
             
 
