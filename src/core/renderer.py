@@ -67,11 +67,19 @@ class Sphere(ct.Structure):
     ]
 
 
+class Transform(ct.Structure):
+    position = [0, 0, 0]
+    rotation = [0, 0, 0]
+    scale = [1, 1, 1]
+
+
 class renderer:
     vertices = (0 * Vertex)()
     meshes = (0 * Mesh)()
     materials = (0 * Material)()
     objects = (0 * Object)()
+
+    meshTransforms = []
 
     vertMeshRelations = (0 * ct.c_uint32)()
     vertMeshRelTex = None
@@ -94,6 +102,10 @@ class renderer:
 
     shaderProgram = None
     compute = None
+
+    rasterShader = None
+    meshVBO = []
+    meshVAO = 0
 
     # mode:
     # 0 -> raytrace
@@ -123,9 +135,6 @@ class renderer:
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
             len(transformedVerts),
         )
-
-            
-
 
     getTransformedVerts = tv.transformedVerts
     getVertMeshRelation = vmr.getVertMeshRelation

@@ -67,6 +67,8 @@ def loadModel(self, filename):
 
         startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
 
+        self.sceneRenderer.meshTransforms.append(renderer.Transform())
+
     # generate vertices
     for shape in shapes:
         temp = (len(shape.mesh.indices) * face)(
@@ -114,11 +116,17 @@ def loadModel(self, filename):
     )
 
     gl.glBindImageTexture(
-        1, self.sceneRenderer.vertMeshRelTex, 0, gl.GL_FALSE, 0, gl.GL_READ_ONLY, gl.GL_R32UI
+        1,
+        self.sceneRenderer.vertMeshRelTex,
+        0,
+        gl.GL_FALSE,
+        0,
+        gl.GL_READ_ONLY,
+        gl.GL_R32UI,
     )
 
     gl.glBindTexture(gl.GL_TEXTURE_1D, 0)
-    
+
     self.allocateSSBO()
     self.sendVerts()
     self.sendMeshes()

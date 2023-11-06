@@ -61,7 +61,7 @@ def initRenderCavas(self):
 
     # Shader for quad
     self.sceneRenderer.shaderProgram = shader.generateShaderProgram(
-        "./src/shader_code/vertex.vert", "./src/shader_code/canvas.frag"
+        "./src/shader_code/canvas.vert", "./src/shader_code/canvas.frag"
     )
 
     shader.useShader(self.sceneRenderer.shaderProgram)
