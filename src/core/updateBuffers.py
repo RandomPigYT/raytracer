@@ -5,7 +5,7 @@ import numpy as np
 
 def updateBuffers(self, start):
     for i in range(start, len(self.meshes)):
-        offset = self.meshes.startingVertex
+        offset = self.meshes[i].startingVertex
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.meshVBO[i])
         import core.renderer as renderer
@@ -17,4 +17,4 @@ def updateBuffers(self, start):
             gl.GL_DYNAMIC_DRAW,
         )
         del renderer
-        gl.glBindBuffer(0)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)

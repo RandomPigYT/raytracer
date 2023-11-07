@@ -69,8 +69,8 @@ def loadModel(self, filename):
 
         self.sceneRenderer.meshTransforms.append(renderer.Transform())
 
-    # Generate the VBOs for the newly added meshes
-    self.sceneRenderer.meshVBO.extend(gl.glGenBuffers(len(shapes)))
+        # Generate the VBOs for the newly added meshes
+        self.sceneRenderer.meshVBO.append(gl.glGenBuffers(1))
 
     # generate vertices
     for shape in shapes:

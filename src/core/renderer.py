@@ -118,12 +118,12 @@ class renderer:
 
         self.initRasterizer()
 
-    def render(self):
+    def render(self, voidColour=(0.663, 0.965, 0.969, 1)):
         if self.mode == RAYTRACE:
             rt.raytrace(self.scene, self.numBounces, self.raysPerPixel)
 
         elif self.mode == RASTERIZE:
-            pass
+            self.renderRasterized(voidColour)
 
     def switchMode(self, mode):
         self.mode = mode
