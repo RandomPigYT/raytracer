@@ -3,7 +3,9 @@ import ctypes as ct
 import core.transformedVerts as tv
 import c_extension as cext
 import core.vertMeshRelation as vmr
-import random
+import core.initRasterizer as ir
+import core.updateBuffers as ub
+import core.rasterize as rasterize
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -114,6 +116,8 @@ class renderer:
         self.mode = mode
         self.scene = scene
 
+        self.initRasterizer()
+
     def render(self):
         if self.mode == RAYTRACE:
             rt.raytrace(self.scene, self.numBounces, self.raysPerPixel)
@@ -138,3 +142,7 @@ class renderer:
 
     getTransformedVerts = tv.transformedVerts
     getVertMeshRelation = vmr.getVertMeshRelation
+    initRasterizer = ir.initRasterizer
+    updateBuffers = ub.updateBuffers
+
+    renderRasterized = rasterize.rasterize

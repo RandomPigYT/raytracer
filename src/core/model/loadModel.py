@@ -69,6 +69,9 @@ def loadModel(self, filename):
 
         self.sceneRenderer.meshTransforms.append(renderer.Transform())
 
+    # Generate the VBOs for the newly added meshes
+    self.sceneRenderer.meshVBO.extend(gl.glGenBuffers(len(shapes)))
+
     # generate vertices
     for shape in shapes:
         temp = (len(shape.mesh.indices) * face)(
@@ -96,6 +99,8 @@ def loadModel(self, filename):
 
     self.sceneRenderer.updateBvh()
     self.sceneRenderer.getVertMeshRelation(oldLen)
+
+    self.sceneRenderer.updateBuffers(oldLen)
 
     # TODO: Abstract out texture creation
     gl.glActiveTexture(gl.GL_TEXTURE1)
