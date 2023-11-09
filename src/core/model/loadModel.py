@@ -25,6 +25,7 @@ def numFaces(shapes):
 
 def loadModel(self, filename):
     oldLen = len(self.sceneRenderer.vertices)
+    oldMeshLen = len(self.sceneRenderer.meshes)
 
     reader = tol.ObjReader()
     status = reader.ParseFromFile(filename)
@@ -100,7 +101,7 @@ def loadModel(self, filename):
     self.sceneRenderer.updateBvh()
     self.sceneRenderer.getVertMeshRelation(oldLen)
 
-    self.sceneRenderer.updateBuffers(oldLen)
+    self.sceneRenderer.updateBuffers(oldMeshLen)
 
     # TODO: Abstract out texture creation
     gl.glActiveTexture(gl.GL_TEXTURE1)

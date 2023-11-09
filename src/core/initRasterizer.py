@@ -46,8 +46,8 @@ def initRasterizer(self):
 
     del renderer
 
-    # gl.glEnableVertexAttribArray(0)
-    # gl.glEnableVertexAttribArray(1)
-    # gl.glEnableVertexAttribArray(2)
+    gl.glEnableVertexAttribArray(0)
+    gl.glEnableVertexAttribArray(1)
+    gl.glEnableVertexAttribArray(2)
 
     gl.glBindVertexArray(0)

@@ -1,6 +1,7 @@
 import OpenGL.GL as gl
 import ctypes as ct
 import numpy as np
+import util
 
 
 def updateBuffers(self, start):
@@ -13,8 +14,10 @@ def updateBuffers(self, start):
         gl.glBufferData(
             gl.GL_ARRAY_BUFFER,
             self.meshes[i].numTriangles * ct.sizeof(renderer.Vertex),
-            ct.byref(self.vertices[offset]),
+            util.pointerArithmetic(self.vertices, offset),
             gl.GL_DYNAMIC_DRAW,
         )
         del renderer
+
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
+

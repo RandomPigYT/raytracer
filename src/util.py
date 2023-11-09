@@ -23,3 +23,10 @@ def realloc(array, n):
 
 def toCtypesArr(pyarr, arrType):
     return (len(pyarr) * arrType)(*pyarr)
+
+
+def pointerArithmetic(ptr, offset):
+    temp = ct.cast(ct.pointer(ptr), ct.c_void_p)
+    temp.value += offset * ct.sizeof(ptr._type_)
+
+    return ct.cast(temp.value, ct.POINTER(ptr._type_))

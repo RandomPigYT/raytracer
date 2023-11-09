@@ -40,7 +40,7 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 1)
+    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 0)
 
     # scene.initCanvas()
 
@@ -51,8 +51,8 @@ def main():
     )(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     # scene.loadModel("models/king.obj")
-    scene.loadModel("models/cube.obj")
-    # scene.loadModel("models/sphere.obj")
+    # scene.loadModel("models/cube.obj")
+    scene.loadModel("models/sphere.obj")
     # scene.loadModel("models/utah.obj")
     # scene.loadModel("models/suzanne.obj")
     # scene.loadModel("models/car.obj")
