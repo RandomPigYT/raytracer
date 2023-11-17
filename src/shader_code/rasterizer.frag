@@ -1,7 +1,8 @@
 #version 450 core
 
 out vec4 fragColour;
+in vec4 normalCoords;
 void main(){
 
-    fragColour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    fragColour = vec4(-normalCoords.xyz, 1.0f);
 }
