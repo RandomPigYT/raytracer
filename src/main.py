@@ -40,15 +40,15 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 1)
+    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 0)
 
     # scene.initCanvas()
 
-    # scene.loadModel("models/plane.obj")
+    scene.loadModel("models/plane.obj")
 
-    # scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(249 / 255, 170 / 255, 70 / 255, 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
+        ct.c_float * 4
+    )(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     # scene.loadModel("models/king.obj")
     # scene.loadModel("models/triangle.obj")
