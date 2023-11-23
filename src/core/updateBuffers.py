@@ -20,4 +20,3 @@ def updateBuffers(self, start):
         del renderer
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0)
-

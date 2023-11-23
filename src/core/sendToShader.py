@@ -1,151 +1,24 @@
 import ctypes as ct
-import core.canvas as canvas
-import core.model.loadModel as lm
 import OpenGL.GL as gl
-import sceneManager as sm
-import util
 from glfw.GLFW import *
 import glm
 import numpy as np
-import math
-import core.scene as sc
-import core.renderer as renderer
 
-# TODO: Refactor this file to only one functon that takes the pointer to the data,
-#       and the number of bytes to send
-
-
-def sendVerts(self):
-    if not len(self.sceneRenderer.vertices):
+def sendBuffer(ssbo, binding, buffer, count, size):
+    if not count:
         return
-    # Resize vertices ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.vertSSBO)
-    gl.glBufferData(
-        gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices),
-        None,
-        gl.GL_DYNAMIC_READ,
-    )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, self.sceneRenderer.vertSSBO)
 
-    # Populate vertices ssbo
+    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, ssbo)
+    gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, size * count, None, gl.GL_DYNAMIC_READ)
+    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, binding, ssbo)
+
+    # Populate the buffer
     ptr = ct.cast(
         gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
     )
-    ct.memmove(
-        ptr,
-        self.sceneRenderer.vertices,
-        ct.sizeof(renderer.Vertex) * len(self.sceneRenderer.vertices),
-    )
+    ct.memmove(ptr, buffer, size * count)
     gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-
-
-def sendMeshes(self):
-    if not len(self.sceneRenderer.meshes):
-        return
-    # Resize meshes ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.meshSSBO)
-    gl.glBufferData(
-        gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes),
-        None,
-        gl.GL_DYNAMIC_READ,
-    )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, self.sceneRenderer.meshSSBO)
-
-    # Populate meshes ssbo
-    ptr = ct.cast(
-        gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
-    )
-    ct.memmove(
-        ptr,
-        self.sceneRenderer.meshes,
-        ct.sizeof(renderer.Mesh) * len(self.sceneRenderer.meshes),
-    )
-    gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-
-
-def sendMats(self):
-    if not len(self.sceneRenderer.materials):
-        return
-
-    # Resize materials ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.materialSSBO)
-    gl.glBufferData(
-        gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials),
-        None,
-        gl.GL_DYNAMIC_READ,
-    )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, self.sceneRenderer.materialSSBO)
-
-    # Populate materials ssbo
-    ptr = ct.cast(
-        gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
-    )
-    ct.memmove(
-        ptr,
-        self.sceneRenderer.materials,
-        ct.sizeof(renderer.Material) * len(self.sceneRenderer.materials),
-    )
-    gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-
-
-def sendBvhs(self):
-    if not self.sceneRenderer.numBvhs.value:
-        return
-
-    # Resize bvhs ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.bvhSSBO)
-    gl.glBufferData(
-        gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value,
-        None,
-        gl.GL_DYNAMIC_READ,
-    )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, self.sceneRenderer.bvhSSBO)
-
-    # Populate materials ssbo
-    ptr = ct.cast(
-        gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
-    )
-    ct.memmove(
-        ptr,
-        self.sceneRenderer.bvhs,
-        ct.sizeof(renderer.Bvh) * self.sceneRenderer.numBvhs.value,
-    )
-    gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-
-
-def sendSpheresToShader(self):
-    if not len(self.sceneRenderer.spheres):
-        return
-
-    # Resize spheres ssbo
-    gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, self.sceneRenderer.spheresSSBO)
-    gl.glBufferData(
-        gl.GL_SHADER_STORAGE_BUFFER,
-        ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres),
-        None,
-        gl.GL_DYNAMIC_READ,
-    )
-    gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, self.sceneRenderer.spheresSSBO)
-
-    # Populate spheres ssbo
-    ptr = ct.cast(
-        gl.glMapBuffer(gl.GL_SHADER_STORAGE_BUFFER, gl.GL_WRITE_ONLY), ct.c_void_p
-    )
-    ct.memmove(
-        ptr,
-        self.sceneRenderer.spheres,
-        ct.sizeof(renderer.Sphere) * len(self.sceneRenderer.spheres),
-    )
-    gl.glUnmapBuffer(gl.GL_SHADER_STORAGE_BUFFER)
-
     gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
-
-    self.sendUniforms()
-    self.sendMats()
 
 
 def sendUniforms(self):

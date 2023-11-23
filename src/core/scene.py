@@ -85,11 +85,56 @@ class Scene:
     initCanvas = canvas.initRenderCavas
     resizeTexture = canvas.resizeTexture
 
-    sendVerts = sendToShader.sendVerts
-    sendMeshes = sendToShader.sendMeshes
-    sendMats = sendToShader.sendMats
-    sendBvhs = sendToShader.sendBvhs
-    sendSpheresToShader = sendToShader.sendSpheresToShader
+
+    def sendVerts(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.vertSSBO,
+            0,
+            self.sceneRenderer.vertices,
+            len(self.sceneRenderer.vertices),
+            ct.sizeof(renderer.Vertex),
+        )
+    
+    def sendMats(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.materialSSBO,
+            1,
+            self.sceneRenderer.materials,
+            len(self.sceneRenderer.materials),
+            ct.sizeof(renderer.Material),
+        )
+
+    
+    def sendMeshes(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.meshSSBO,
+            2,
+            self.sceneRenderer.meshes,
+            len(self.sceneRenderer.meshes),
+            ct.sizeof(renderer.Mesh),
+        )
+
+    def sendBvhs(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.bvhSSBO,
+            5,
+            self.sceneRenderer.bvhs,
+            self.sceneRenderer.numBvhs.value,
+            ct.sizeof(renderer.Bvh),
+        )
+    
+    def sendSpheresToShader(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.spheresSSBO,
+            4,
+            self.sceneRenderer.spheres,
+            len(self.sceneRenderer.spheres),
+            ct.sizeof(renderer.Sphere),
+        )
+        self.sendUniforms()
+        self.sendMats()
+
+
 
     sendUniforms = sendToShader.sendUniforms
 

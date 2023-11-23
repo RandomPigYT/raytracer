@@ -38,11 +38,14 @@ def initRasterizer(self):
 
     gl.glVertexAttribFormat(0, 4, gl.GL_FLOAT, gl.GL_FALSE, 0)
     gl.glVertexAttribBinding(0, bindingindex)
-    gl.glVertexAttribFormat(1, 4, gl.GL_FLOAT, gl.GL_FALSE, renderer.Vertex.normal.offset)
+    gl.glVertexAttribFormat(
+        1, 4, gl.GL_FLOAT, gl.GL_FALSE, renderer.Vertex.normal.offset
+    )
     gl.glVertexAttribBinding(1, bindingindex)
-    gl.glVertexAttribFormat(2, 2, gl.GL_FLOAT, gl.GL_FALSE, renderer.Vertex.textureCoord.offset)
+    gl.glVertexAttribFormat(
+        2, 2, gl.GL_FLOAT, gl.GL_FALSE, renderer.Vertex.textureCoord.offset
+    )
     gl.glVertexAttribBinding(2, bindingindex)
-
 
     del renderer
 
