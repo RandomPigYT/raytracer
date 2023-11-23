@@ -52,11 +52,11 @@ def main():
 
     # scene.loadModel("models/king.obj")
     # scene.loadModel("models/triangle.obj")
-    scene.loadModel("models/cube.obj")
+    # scene.loadModel("models/cube.obj")
     # scene.loadModel("models/sphere.obj")
     # scene.loadModel("models/utah.obj")
     # scene.loadModel("models/suzanne.obj")
-    # scene.loadModel("models/car.obj")
+    scene.loadModel("models/car.obj")
     # scene.loadModel("models/normal_cornell_box.obj")
     # scene.loadModel("models/CornellBox-Original.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
