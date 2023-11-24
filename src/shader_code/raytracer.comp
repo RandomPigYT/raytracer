@@ -16,7 +16,7 @@ layout(r32ui, binding = 1) uniform uimage1D vertMeshRelTex;
 #define RAND_MAX 0xffffffffu
 #define PI radians(180)
 
-// #define NO_BVH
+#define NO_BVH
 
 
 struct Vertex {
@@ -40,7 +40,7 @@ struct Mesh {
   uint numTriangles;
   uint materialID;
   uint objectID;
-  vec4 position;
+  mat4 transform;
 };
 
 struct Object {
@@ -143,12 +143,15 @@ HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s) {
   return h;
 }
 
-HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, vec3 pos){
+HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, mat4 transform){
   HitInfo h;
   h.didHit = true;
   
-  vec3 untransformedRayOrig = rayOrigin;
-  rayOrigin -= pos;
+  // vec3 untransformedRayOrig = rayOrigin;
+  // rayOrigin -= pos;
+  vertices[0] = (transform * vec4(vertices[0], 1.0f)).xyz; 
+  vertices[1] = (transform * vec4(vertices[1], 1.0f)).xyz; 
+  vertices[2] = (transform * vec4(vertices[2], 1.0f)).xyz; 
 
   float epsilon = 0.000001;
 
@@ -189,7 +192,8 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, vec3 po
   }
 
   h.normal = normalize(cross(edge2, edge1));
-  h.position = untransformedRayOrig + rayDir * h.rayT;
+  // h.position = untransformedRayOrig + rayDir * h.rayT;
+  h.position = rayOrigin + rayDir * h.rayT;
 
   return h;
 }
@@ -301,7 +305,8 @@ HitInfo didIsectTri(uint volumeIndex, vec3 rayDir, vec3 rayOrigin, out uint triI
   };
 
   uint m = imageLoad(vertMeshRelTex, 3 * int(triangle)).r;
-  HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].position.xyz);
+  // HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].position.xyz);
+  HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].transform);
   
 
   triIndex = triangle;
@@ -331,7 +336,7 @@ HitInfo traverseBvh(out uint meshIndex, out uint triIndex, vec3 rayDir, vec3 ray
 
       uint index;
 
-      HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[i].position.xyz);
+      HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[i].transform);
 
       if (!h.didHit)
         continue;

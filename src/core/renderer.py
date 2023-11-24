@@ -40,7 +40,7 @@ class Mesh(ct.Structure):
         ("numTriangles", ct.c_uint32),
         ("materialID", ct.c_uint32),
         ("objectID", ct.c_uint32),
-        ("position", 4 * ct.c_float),
+        ("transform", 4 * (4 * ct.c_float)),
     ]
 
 

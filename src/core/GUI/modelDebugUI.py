@@ -3,6 +3,8 @@ import sceneManager as sm
 import numpy as np
 from glfw.GLFW import *
 import ctypes as ct
+import glm
+import util
 
 
 def radius(sphere, sphereNum, window):
@@ -97,18 +99,49 @@ def material(materialID, num):
     sm.currentScene.resetFrame()
 
 
-def meshPosition(mesh, meshNum):
+def meshTransform(mesh, meshNum):
+
+    meshIndex = meshNum - 1
+
     status, pos = imgui.drag_float3(
         "Position" + str(meshNum),
-        mesh.position[0],
-        mesh.position[1],
-        mesh.position[2],
+        *sm.currentScene.sceneRenderer.meshTransforms[meshIndex].position,
         0.01,
         format="%.2f",
     )
     if status:
-        mesh.position = (*pos, 0)
+        sm.currentScene.sceneRenderer.meshTransforms[meshIndex].position = pos
+
+    status, rot = imgui.drag_float3(
+        "Rotation" + str(meshNum),
+        *sm.currentScene.sceneRenderer.meshTransforms[meshIndex].rotation,
+        0.01,
+        format="%.2f",
+    )
+    if status:
+        sm.currentScene.sceneRenderer.meshTransforms[meshIndex].rotation = rot
+
+    status, scale = imgui.drag_float3(
+        "Scale" + str(meshNum),
+        *sm.currentScene.sceneRenderer.meshTransforms[meshIndex].scale,
+        0.01,
+        format="%.2f",
+    )
+    if status:
+        sm.currentScene.sceneRenderer.meshTransforms[meshIndex].scale = scale
+    
+    transform = glm.translate(glm.mat4(1), glm.vec3(*pos))
+    transform = glm.rotate(transform, rot[0], glm.vec3(1, 0, 0))
+    transform = glm.rotate(transform, rot[1], glm.vec3(0, 1, 0))
+    transform = glm.rotate(transform, rot[2], glm.vec3(0, 0, 1))
+    transform = glm.scale(transform, glm.vec3(*scale))
+
+    mesh.transform = util.mat4ToFloatArray4Array4(transform)
+
     sm.currentScene.resetFrame()
+
+    # sm.currentScene.sceneRenderer.updateBvh()
+    # sm.currentScene.sendBvhs()
 
 
 def drawModel(window):
@@ -132,7 +165,7 @@ def drawModel(window):
     meshIndex = 0
     for i in sm.currentScene.sceneRenderer.meshes:
         imgui.text("Mesh " + str(meshIndex + 1))
-        meshPosition(i, meshIndex + 1)
+        meshTransform(i, meshIndex + 1)
         material(i.materialID, meshIndex + 1)
         meshIndex += 1
 

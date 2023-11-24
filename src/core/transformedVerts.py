@@ -1,15 +1,21 @@
 import core.renderer as renderer
 import ctypes as ct
+import glm
 
 
 def applyTransformation(vert, mesh):
-    temp = (4 * ct.c_float)(*vert.position)
-    # For now, this only includes translation
-    temp[0] += mesh.position[0]
-    temp[1] += mesh.position[1]
-    temp[2] += mesh.position[2]
+    # temp = (4 * ct.c_float)(*vert.position)
 
-    return temp
+    temp = glm.vec4(*vert.position)
+    temp = glm.mat4(mesh.transform) * temp
+
+    # # For now, this only includes translation
+    # temp[0] += mesh.position[0]
+    # temp[1] += mesh.position[1]
+    # temp[2] += mesh.position[2]
+
+    return (4 * ct.c_float)(*temp)
+
 
 
 def transformedVerts(self):

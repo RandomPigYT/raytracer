@@ -5,6 +5,7 @@ from sys import stderr
 import c_extension as cext
 import core.renderer as renderer
 import OpenGL.GL as gl
+import glm
 
 
 class face(ct.Structure):
@@ -67,6 +68,8 @@ def loadModel(self, filename):
         self.sceneRenderer.meshes[i + meshOffset].materialID = i + meshOffset
 
         startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
+
+        self.sceneRenderer.meshes[i + meshOffset].transform = util.mat4ToFloatArray4Array4(glm.mat4(1))
 
         self.sceneRenderer.meshTransforms.append(renderer.Transform())
 
