@@ -31,5 +31,6 @@ def pointerArithmetic(ptr, offset):
 
     return ct.cast(temp.value, ct.POINTER(ptr._type_))
 
+
 def mat4ToFloatArray4Array4(matrix):
     return (4 * (4 * ct.c_float))(*[(4 * ct.c_float)(*i) for i in matrix])

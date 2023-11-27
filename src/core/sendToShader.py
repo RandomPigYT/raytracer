@@ -4,6 +4,7 @@ from glfw.GLFW import *
 import glm
 import numpy as np
 
+
 def sendBuffer(ssbo, binding, buffer, count, size):
     if not count:
         return

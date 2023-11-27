@@ -34,14 +34,14 @@ def position(sphere, sphereNum, window):
 def material(materialID, num):
     status, albedo = imgui.color_edit3(
         "albedo " + str(num),
-        *sm.currentScene.sceneRenderer.materials[materialID].albedo
+        *sm.currentScene.sceneRenderer.materials[materialID].albedo,
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].albedo = (*albedo, 1)
 
     status, emission = imgui.color_edit3(
         "emission " + str(num),
-        *sm.currentScene.sceneRenderer.materials[materialID].emission
+        *sm.currentScene.sceneRenderer.materials[materialID].emission,
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].emission = (*emission, 1)
@@ -50,7 +50,7 @@ def material(materialID, num):
         "intensity " + str(num),
         *(sm.currentScene.sceneRenderer.materials[materialID].intensity[:-1]),
         0.01,
-        format="%0.2f"
+        format="%0.2f",
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].intensity = (*intensity, 1)
@@ -59,7 +59,7 @@ def material(materialID, num):
         "refractive index " + str(num),
         *(sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex[:-1]),
         0.001,
-        format="%0.3f"
+        format="%0.3f",
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex = ref
@@ -70,7 +70,7 @@ def material(materialID, num):
         0.001,
         format="%0.3f",
         min_value=0,
-        max_value=1
+        max_value=1,
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].roughness = roughness
@@ -100,7 +100,6 @@ def material(materialID, num):
 
 
 def meshTransform(mesh, meshNum):
-
     meshIndex = meshNum - 1
 
     status, pos = imgui.drag_float3(
@@ -129,7 +128,7 @@ def meshTransform(mesh, meshNum):
     )
     if status:
         sm.currentScene.sceneRenderer.meshTransforms[meshIndex].scale = scale
-    
+
     transform = glm.translate(glm.mat4(1), glm.vec3(*pos))
     transform = glm.rotate(transform, rot[0], glm.vec3(1, 0, 0))
     transform = glm.rotate(transform, rot[1], glm.vec3(0, 1, 0))

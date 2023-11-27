@@ -13,7 +13,6 @@ def rasterize(self, voidColour):
     import core.renderer as renderer
 
     for i in range(len(self.meshVBO)):
-
         sm.currentScene.sendRasterUniforms(i)
 
         bindingindex = 0

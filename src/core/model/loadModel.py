@@ -69,7 +69,9 @@ def loadModel(self, filename):
 
         startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
 
-        self.sceneRenderer.meshes[i + meshOffset].transform = util.mat4ToFloatArray4Array4(glm.mat4(1))
+        self.sceneRenderer.meshes[
+            i + meshOffset
+        ].transform = util.mat4ToFloatArray4Array4(glm.mat4(1))
 
         self.sceneRenderer.meshTransforms.append(renderer.Transform())
 

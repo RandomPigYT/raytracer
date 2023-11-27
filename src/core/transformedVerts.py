@@ -17,7 +17,6 @@ def applyTransformation(vert, mesh):
     return (4 * ct.c_float)(*temp)
 
 
-
 def transformedVerts(self):
     v = (len(self.vertices) * renderer.Vertex)()
 
