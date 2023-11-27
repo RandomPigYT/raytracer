@@ -179,3 +179,26 @@ class Scene:
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 
         self.sendUniforms()
+    
+    def sendRasterUniforms(self, meshIndex):
+        rendererObj = self.sceneRenderer
+
+        modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")
+        viewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "view")
+        projectionLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "projection")
+
+        model = glm.mat4(rendererObj.meshes[meshIndex].transform)
+
+        view = glm.mat4(1)
+        # view = glm.translate(view, -glm.vec3(*self.camera.position))
+        view = glm.lookAt(self.camera.position,
+                          glm.vec3(*self.camera.position) + glm.vec3(*self.camera.direction),
+                          glm.vec3(0, 1, 0))
+
+        projection = glm.perspective(glm.radians(self.camera.fov), self.resolution[0] / self.resolution[1], 0.1, 100)
+
+        gl.glUniformMatrix4fv(modelLoc, 1, gl.GL_FALSE, glm.value_ptr(model))
+        gl.glUniformMatrix4fv(viewLoc, 1, gl.GL_FALSE, glm.value_ptr(view))
+        gl.glUniformMatrix4fv(projectionLoc, 1, gl.GL_FALSE, glm.value_ptr(projection))
+
+

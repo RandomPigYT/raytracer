@@ -31,7 +31,6 @@ def raytrace(scene, maxBounces, raysPerPixel):
 
     gl.glDispatchCompute(48, 45, 1)
     gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
-    gl.glFinish()
 
     gl.glBindTexture(gl.GL_TEXTURE_1D, 0)
 

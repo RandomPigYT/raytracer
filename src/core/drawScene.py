@@ -30,6 +30,7 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
         # rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
         if os.name == "nt":
             scene.sceneRenderer.render()
+            gl.glFinish()
 
         cam.move()
 

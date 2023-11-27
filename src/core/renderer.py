@@ -139,6 +139,7 @@ class renderer:
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
             len(transformedVerts),
         )
+    
 
     getTransformedVerts = tv.transformedVerts
     getVertMeshRelation = vmr.getVertMeshRelation

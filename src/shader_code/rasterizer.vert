@@ -5,9 +5,12 @@ layout (location = 1) in vec4 normal;
 
 out vec4 normalCoords;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 void main(){
 
-    gl_Position = vec4(aPos.xyz, 1.0);
+    gl_Position = projection * view * model * vec4(aPos.xyz, 1.0);
     normalCoords = normal;
-
 }

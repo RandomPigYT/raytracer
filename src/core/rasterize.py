@@ -1,6 +1,7 @@
 import OpenGL.GL as gl
 import graphics.shader as shader
 import ctypes as ct
+import sceneManager as sm
 
 
 def rasterize(self, voidColour):
@@ -12,6 +13,9 @@ def rasterize(self, voidColour):
     import core.renderer as renderer
 
     for i in range(len(self.meshVBO)):
+
+        sm.currentScene.sendRasterUniforms(i)
+
         bindingindex = 0
         gl.glBindVertexBuffer(
             bindingindex, self.meshVBO[i], 0, ct.sizeof(renderer.Vertex)
