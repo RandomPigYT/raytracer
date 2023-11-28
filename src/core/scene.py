@@ -213,3 +213,4 @@ class Scene:
         )
 
         gl.glUniformMatrix4fv(normalViewLoc, 1, gl.GL_FALSE, glm.value_ptr(normalView))
+
