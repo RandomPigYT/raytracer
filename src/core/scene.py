@@ -209,9 +209,7 @@ class Scene:
         gl.glUniform3fv(cameraPosLoc, 1, glm.value_ptr(glm.vec3(*self.camera.position)))
 
         normalView = glm.lookAt(
-            self.camera.position,
-            glm.vec3(0.0, 0.0, 1.0),
-            glm.vec3(0, 1, 0)
+            self.camera.position, glm.vec3(0.0, 0.0, 1.0), glm.vec3(0, 1, 0)
         )
 
         gl.glUniformMatrix4fv(normalViewLoc, 1, gl.GL_FALSE, glm.value_ptr(normalView))
