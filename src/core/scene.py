@@ -182,6 +182,7 @@ class Scene:
         modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")
         viewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "view")
         projectionLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "projection")
+        normalViewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "normalView")
 
         model = glm.mat4(rendererObj.meshes[meshIndex].transform)
 
@@ -203,3 +204,14 @@ class Scene:
         gl.glUniformMatrix4fv(modelLoc, 1, gl.GL_FALSE, glm.value_ptr(model))
         gl.glUniformMatrix4fv(viewLoc, 1, gl.GL_FALSE, glm.value_ptr(view))
         gl.glUniformMatrix4fv(projectionLoc, 1, gl.GL_FALSE, glm.value_ptr(projection))
+
+        cameraPosLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "camPos")
+        gl.glUniform3fv(cameraPosLoc, 1, glm.value_ptr(glm.vec3(*self.camera.position)))
+
+        normalView = glm.lookAt(
+            self.camera.position,
+            glm.vec3(0.0, 0.0, 1.0),
+            glm.vec3(0, 1, 0)
+        )
+
+        gl.glUniformMatrix4fv(normalViewLoc, 1, gl.GL_FALSE, glm.value_ptr(normalView))

@@ -6,6 +6,7 @@ import core.vertMeshRelation as vmr
 import core.initRasterizer as ir
 import core.updateBuffers as ub
 import core.rasterize as rasterize
+import core.model.generateNormals as gn
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -146,3 +147,5 @@ class renderer:
     updateBuffers = ub.updateBuffers
 
     renderRasterized = rasterize.rasterize
+
+    generateNormals = gn.generateNormals

@@ -102,6 +102,8 @@ def loadModel(self, filename):
         )
 
         vertOffset += len(temp)
+    
+    self.sceneRenderer.generateNormals()
 
     # self.sceneRenderer.updateBvh()
     # self.sceneRenderer.getVertMeshRelation(oldLen)
