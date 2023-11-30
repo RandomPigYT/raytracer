@@ -179,11 +179,13 @@ class Scene:
     def sendRasterUniforms(self, meshIndex):
         rendererObj = self.sceneRenderer
 
+
         modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")
         viewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "view")
         projectionLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "projection")
         normalViewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "normalView")
 
+        cameraPosLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "camPos")
         model = glm.mat4(rendererObj.meshes[meshIndex].transform)
 
         view = glm.mat4(1)
@@ -194,9 +196,16 @@ class Scene:
             glm.vec3(0, 1, 0),
         )
 
+        try:
+            aspect = self.resolution[0] / self.resolution[1]
+        
+        except ZeroDivisionError:
+            aspect = 0
+            
+
         projection = glm.perspective(
             glm.radians(self.camera.fov),
-            self.resolution[0] / self.resolution[1],
+            aspect,
             0.1,
             100,
         )
@@ -204,13 +213,20 @@ class Scene:
         gl.glUniformMatrix4fv(modelLoc, 1, gl.GL_FALSE, glm.value_ptr(model))
         gl.glUniformMatrix4fv(viewLoc, 1, gl.GL_FALSE, glm.value_ptr(view))
         gl.glUniformMatrix4fv(projectionLoc, 1, gl.GL_FALSE, glm.value_ptr(projection))
+        # gl.glUniform3fv(cameraPosLoc, 1, glm.value_ptr(glm.vec3(*self.camera.position)))
+    
 
-        cameraPosLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "camPos")
-        gl.glUniform3fv(cameraPosLoc, 1, glm.value_ptr(glm.vec3(*self.camera.position)))
 
         normalView = glm.lookAt(
             self.camera.position, glm.vec3(0.0, 0.0, 1.0), glm.vec3(0, 1, 0)
         )
 
         gl.glUniformMatrix4fv(normalViewLoc, 1, gl.GL_FALSE, glm.value_ptr(normalView))
+
+        resolutionLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "resolution")
+        gl.glUniform2f(resolutionLoc, *self.resolution)
+
+        fovLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "fov")
+        gl.glUniform1f(fovLoc, glm.radians(self.camera.fov))
+
 
