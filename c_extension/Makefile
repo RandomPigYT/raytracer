@@ -45,7 +45,7 @@ all: dirs $(TARGET)
 lib: $(LIBTARGET)
 
 $(TARGET): $(OBJS) $(CPPOBJS)
-	$(CPP) $(CPPFLAGS) $(OBJS) $(CPPOBJS) -o $@ $(INCLUDEFLAGS)
+	$(CC) $(CPPFLAGS) $(OBJS) $(CPPOBJS) -o $@ $(LDFLAGS)
 
 $(LIBTARGET): $(SRCS) $(CPPSRCS)
 	$(CC) $(CFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS) 
@@ -54,7 +54,7 @@ $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ)/%.o: $(SRC)/%.cpp
-	$(CPP) $(CPPFLAGS) -c $< -o $@ $(INCLUDEFLAGS)
+	$(CPP) $(CPPFLAGS) -c $< -o $@ $(LDFLAGS)
 
 dirs:
 	@$(CREATE_DIR_COMMAND) $(DIRS)
