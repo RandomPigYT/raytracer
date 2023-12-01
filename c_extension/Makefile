@@ -7,7 +7,7 @@ LDFLAGS:=-lm -I./include/Fast-BVH/include -lstdc++
 INCLUDEFLAGS:=-I./include/Fast-BVH/include
 CPPFLAGS:=-Wall -Wextra -g -std=c++17 -O2
 
-WINFLAGS:=-L/usr/x86_64-mingw32/bin/cglm.dll
+WINFLAGS:=-L/usr/x86_64-mingw32/bin/cglm.dll -I./include/Fast-BVH/include -lstdc++
 
 PLATFORM:=linux
 
