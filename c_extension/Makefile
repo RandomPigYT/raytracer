@@ -1,8 +1,11 @@
 CC:=gcc
+CPP:=g++
 LD:=ld
 
 CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2
-LDFLAGS:=-lm
+LDFLAGS:=-lm -I./include/Fast-BVH/include -lstdc++
+INCLUDEFLAGS:=-I./include/Fast-BVH/include
+CPPFLAGS:=-Wall -Wextra -g -std=c++17 -O2
 
 WINFLAGS:=-L/usr/x86_64-mingw32/bin/cglm.dll
 
@@ -22,10 +25,13 @@ ifeq ($(PLATFORM), windows)
  	LDFLAGS = $(WINFLAGS)
 	LIBTARGET = $(LIB)/extension.dll
 	CC = x86_64-w64-mingw32-gcc
+	CPP = x86_64-w64-mingw32-g++
 endif
 
 SRCS:=$(shell find $(SRC) -type  f -name "*.c")
+CPPSRCS:=$(shell find $(SRC) -type f -name "*.cpp")
 OBJS:=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+CPPOBJS:=$(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(CPPSRCS))
 INCLUDES:=$(shell find $(INCLUDE) -type f -name "*.h")
 
 DIRS:=$(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
@@ -35,17 +41,20 @@ CREATE_DIR_COMMAND:=./dirs.sh
 .PHONY: all clean dirs library
 
 all: dirs $(TARGET)
-
+	
 lib: $(LIBTARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
+$(TARGET): $(OBJS) $(CPPOBJS)
+	$(CPP) $(CPPFLAGS) $(OBJS) $(CPPOBJS) -o $@ $(INCLUDEFLAGS)
 
-$(LIBTARGET): $(SRCS)
-	$(CC) $(CFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS)
+$(LIBTARGET): $(SRCS) $(CPPSRCS)
+	$(CC) $(CFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS) 
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ)/%.o: $(SRC)/%.cpp
+	$(CPP) $(CPPFLAGS) -c $< -o $@ $(INCLUDEFLAGS)
 
 dirs:
 	@$(CREATE_DIR_COMMAND) $(DIRS)

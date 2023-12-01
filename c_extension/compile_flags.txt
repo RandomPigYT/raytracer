@@ -1,0 +1,4 @@
+-I
+./include/Fast-BVH/include
+-l
+m
