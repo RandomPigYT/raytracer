@@ -94,6 +94,7 @@ LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^	LIBTARGET = $(LIB)\/extension.dll$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
 MAX	src/constructBvh.c	/^float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
+MAX_TRIS_PER_NODE	src/constructBvh.c	/^#define MAX_TRIS_PER_NODE /;"	d	file:
 MIN	src/constructBvh.c	/^float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
 OBJ	Makefile	/^OBJ:=obj$/;"	m
 OBJS	Makefile	/^OBJS:=$(patsubst $(SRC)\/%.c, $(OBJ)\/%.o, $(SRCS))$/;"	m

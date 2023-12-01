@@ -1,3 +1,6 @@
 [submodule "c_extension/src/c-vector"]
 	path = c_extension/src/c-vector
 	url = https://github.com/Mashpoe/c-vector.git
+[submodule "c_extension/include/Fast-BVH"]
+	path = c_extension/include/Fast-BVH
+	url = https://github.com/brandonpelfrey/Fast-BVH.git
