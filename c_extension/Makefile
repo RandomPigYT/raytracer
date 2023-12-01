@@ -5,7 +5,7 @@ LD:=ld
 CFLAGS:=-Wall -Wextra -g -std=gnu17 -O2
 LDFLAGS:=-lm -I./include/Fast-BVH/include -lstdc++
 INCLUDEFLAGS:=-I./include/Fast-BVH/include
-CPPFLAGS:=-Wall -Wextra -g -std=c++17 -O2
+CPPFLAGS:=-Wall -Wextra -g -std=c++17 -O2 -fpermissive
 
 WINFLAGS:=-L/usr/x86_64-mingw32/bin/cglm.dll -I./include/Fast-BVH/include -lstdc++
 
@@ -24,7 +24,7 @@ LIBTARGET:=$(LIB)/extension.so
 ifeq ($(PLATFORM), windows)
  	LDFLAGS = $(WINFLAGS)
 	LIBTARGET = $(LIB)/extension.dll
-	CC = x86_64-w64-mingw32-gcc
+	CC = x86_64-w64-mingw32-g++
 	CPP = x86_64-w64-mingw32-g++
 endif
 
