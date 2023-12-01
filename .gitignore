@@ -164,3 +164,4 @@ cython_debug/
 ./c_extension/src/main.c
 ./c_extension/obj/
 ./c_extension/bin/
+*.o
