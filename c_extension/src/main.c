@@ -27,5 +27,4 @@ int main(void) {
   unsigned int numBvh;
   struct bvh_t* b = constructBvh(&numBvh, v, 42);
 
-  cppTest();
 }
