@@ -169,6 +169,8 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
 	
 	float bucketWidth = min_span[1] / numBuckets;
 
+	free(min_span);
+
   vec4* volumes = NULL;
   float minCost = INFINITY;
 
