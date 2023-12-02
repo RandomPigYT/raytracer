@@ -16,7 +16,7 @@ layout(r32ui, binding = 1) uniform uimage1D vertMeshRelTex;
 #define RAND_MAX 0xffffffffu
 #define PI radians(180)
 
-#define NO_BVH
+// #define NO_BVH
 
 
 struct Vertex {

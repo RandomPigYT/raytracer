@@ -105,8 +105,8 @@ def loadModel(self, filename):
 
     self.sceneRenderer.generateNormals()
 
-    # self.sceneRenderer.updateBvh()
-    # self.sceneRenderer.getVertMeshRelation(oldLen)
+    self.sceneRenderer.updateBvh()
+    self.sceneRenderer.getVertMeshRelation(oldLen)
 
     self.sceneRenderer.updateBuffers(oldMeshLen)
 
