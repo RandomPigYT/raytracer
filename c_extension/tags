@@ -292,7 +292,7 @@ Vec3	include/Fast-BVH/include/FastBVH/BBox.h	/^  using Vec3 = Vector3<Float>;$/;
 Vec3	include/Fast-BVH/include/FastBVH/Intersection.h	/^  using Vec3 = Vector3<Float>;$/;"	t	struct:FastBVH::Intersection	typeref:typename:Vector3<Float>
 Vec3	include/Fast-BVH/include/FastBVH/Ray.h	/^  using Vec3 = Vector3<Float>;$/;"	t	struct:FastBVH::Ray	typeref:typename:Vector3<Float>
 Vector3	include/Fast-BVH/include/FastBVH/Vector3.h	/^struct alignas(sizeof(float) * 4) Vector3 final {$/;"	s	namespace:FastBVH
-Vert	main.c	/^  typedef struct vertex_t Vert;$/;"	t	function:main	typeref:struct:vertex_t	file:
+Vert	src/main.c	/^  typedef struct vertex_t Vert;$/;"	t	function:main	typeref:struct:vertex_t	file:
 Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference Sheet$/;"	c
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll -I.\/include\/Fast-BVH\/include$/;"	m
 Warning	include/Fast-BVH/examples/tiny_obj_loader.h	/^  const std::string &Warning() const { return warning_; }$/;"	f	class:tinyobj::ObjReader	typeref:typename:const std::string &
@@ -489,7 +489,7 @@ m_mtlBaseDir	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string m_mtlBa
 main	include/Fast-BVH/benchmark/main.cpp	/^int main() {$/;"	f	typeref:typename:int
 main	include/Fast-BVH/examples/CubeOfSpheres.cpp	/^int main() {$/;"	f	typeref:typename:int
 main	include/Fast-BVH/examples/ObjFile.cpp	/^int main(int argc, char** argv) {$/;"	f	typeref:typename:int
-main	main.c	/^int main(void) {$/;"	f	typeref:typename:int
+main	src/main.c	/^int main(void) {$/;"	f	typeref:typename:int
 material_ids	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<int> material_ids;  \/\/ per-face material ID$/;"	m	struct:tinyobj::__anonbe5b39fa0508	typeref:typename:std::vector<int>
 material_t	include/Fast-BVH/examples/tiny_obj_loader.h	/^} material_t;$/;"	t	namespace:tinyobj	typeref:struct:tinyobj::_material_t
 materials_	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<material_t> materials_;$/;"	m	class:tinyobj::ObjReader	typeref:typename:std::vector<material_t>
