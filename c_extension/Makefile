@@ -24,7 +24,7 @@ LIBTARGET:=$(LIB)/extension.so
 ifeq ($(PLATFORM), windows)
  	LDFLAGS = $(WINFLAGS) -lstdc++
 	LIBTARGET = $(LIB)/extension.dll
-	CC = x86_64-w64-mingw32-g++
+	CC = x86_64-w64-mingw32-gcc
 	CPP = x86_64-w64-mingw32-g++
 endif
 
@@ -51,14 +51,14 @@ $(TARGET): $(OBJS) $(CPPOBJS)
 #	$(CC) $(CPPFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS) 
 
 $(LIBTARGET): $(SRCS) $(CPPOBJS)
-	$(CC) $(CFLAGS) -fPIC -shared -static-libgcc -static-libstdc++ -o $@ $(SRCS) $(CPPOBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -fPIC -shared -static-libgcc -static-libstdc++ -o $@ $^ $(LDFLAGS)
 	
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ)/%.o: $(SRC)/%.cpp
-	$(CPP) $(CPPFLAGS) -fPIC -static-libstdc++ -c $< -o $@ $(LDFLAGS)
+	$(CPP) $(CPPFLAGS) -c $< -o $@ $(LDFLAGS)
 
 dirs:
 	@$(CREATE_DIR_COMMAND) $(DIRS)
