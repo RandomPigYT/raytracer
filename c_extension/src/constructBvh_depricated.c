@@ -61,7 +61,7 @@ float calcSurfaceArea(vec4* volume) {
   return 2 * ((l * b) + (b * h) + (l * h));
 }
 
-float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {
+float* calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {
   float maxPos = -INFINITY;
   float minPos = INFINITY;
 
@@ -72,7 +72,12 @@ float calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {
 
   float span = maxPos - minPos;
 
-  return span;
+	float* min_span = malloc(2 * sizeof(float));
+	min_span[0] = minPos;
+	min_span[1] = span;
+
+
+  return min_span;
 }
 
 vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
@@ -113,7 +118,7 @@ vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
 
 vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,
                        struct bvh_t* parentNode,
-                       struct bvhNodeInfo_t* parentInfo, uint32_t bucketIndex,
+                       struct bvhNodeInfo_t* parentInfo, float startCoord, uint32_t bucketIndex,
                        float bucketWidth, enum axis_e axis, uint32_t** leftTris,
                        uint32_t** rightTris) {
   uint32_t* left = vector_create();
@@ -121,7 +126,7 @@ vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,
 
   for (uint32_t i = 0; i < vector_size(parentInfo->triangles); i++) {
     if (centroids[parentInfo->triangles[i]][axis] <=
-        parentNode->corner1[axis] + ((bucketIndex + 1) * bucketWidth))
+        startCoord + ((bucketIndex + 1) * bucketWidth))
       vector_add(&left, parentInfo->triangles[i]);
 
     else
@@ -151,14 +156,18 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           vec4* centroids, struct bvh_t* parentNode,
                           struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris,
                           uint32_t** rightTris) {
-  float centroidSpan = calcCentroidSpan(centroids, parentInfo->triangles, axis);
+  float* min_span = calcCentroidSpan(centroids, parentInfo->triangles, axis);
 
-  uint32_t numBuckets =
-      ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) /
-           (centroidSpan / 2));
+//uint32_t numBuckets =
+//    ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) /
+//         (centroidSpan / 2));
 
-  float bucketWidth =
-      fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / numBuckets;
+	uint32_t numBuckets = 12;
+
+//float bucketWidth =
+//    fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) / numBuckets;
+	
+	float bucketWidth = min_span[1] / numBuckets;
 
   vec4* volumes = NULL;
   float minCost = INFINITY;
@@ -171,7 +180,7 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
     uint32_t* tempRightTris;
 
     vec4* v =
-        constructVolumes(s, centroids, parentNode, parentInfo, i, bucketWidth,
+        constructVolumes(s, centroids, parentNode, parentInfo, min_span[0], i, bucketWidth,
                          axis, &tempLeftTris, &tempRightTris);
 
     vec4 leftVolume[2];

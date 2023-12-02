@@ -141,12 +141,6 @@ class renderer:
             len(transformedVerts),
         )
 
-        for i in range(self.numBvhs.value):
-            print(i, ":", sep='')
-            print(self.bvhs[i].hitIndex, self.bvhs[i].missIndex, self.bvhs[i].numTris)
-            print(self.bvhs[i].triIndices[:self.bvhs[i].numTris])
-            print()
-
     getTransformedVerts = tv.transformedVerts
     getVertMeshRelation = vmr.getVertMeshRelation
     initRasterizer = ir.initRasterizer

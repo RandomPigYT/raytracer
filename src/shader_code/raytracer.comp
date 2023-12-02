@@ -572,6 +572,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
   float bgIntensity = 1.0f;
 
+
   for (int i = 0; i <= maxBounces; i++){
 
 
