@@ -66,7 +66,9 @@ dirs:
 clean:
 	-@rm -rf $(OBJ)/*
 	-@rm -rf $(BIN)/*
-	-@rm -rf $(LIB)/*
+	-@rm -rf $(LIB)/*.dll
+	-@rm -rf $(LIB)/*.so
+
 
 run: $(TARGET)
 	@./$(TARGET)
@@ -82,5 +84,5 @@ valgrind:
          ./$(TARGET) car.obj
 
 format:
-	@clang-format $(SRCS) $(INCLUDES) --style=Google -i
+	@clang-format $(SRCS) $(CPPSRCS) $(INCLUDES) --style=Google -i
 

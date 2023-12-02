@@ -43,9 +43,8 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
 int freeBvh(struct bvh_t* volumes);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
-
 
 #endif
