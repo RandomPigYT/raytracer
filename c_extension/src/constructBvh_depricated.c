@@ -157,11 +157,6 @@ vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,
                           struct bvhNodeInfo_t* parentInfo, uint32_t** leftTris,
                           uint32_t** rightTris) {
   float* min_span = calcCentroidSpan(centroids, parentInfo->triangles, axis);
-	
-	if (!min_span[1]){
-		fprintf(stderr, "Centroid span is zero\n");
-		exit(EXIT_FAILURE);
-	}
 
 //uint32_t numBuckets =
 //    ceil(fabs(parentNode->corner2[axis] - parentNode->corner1[axis]) /
