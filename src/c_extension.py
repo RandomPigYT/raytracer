@@ -7,7 +7,7 @@ import core.renderer as renderer
 ext = None
 
 if os.name == "nt":
-    os.add_dll_directory(os.path.realpath("./c_extension/lib"))
+    os.add_dll_directory(os.path.realpath("./c_extension/lib/dependencies"))
     ext = ct.CDLL("c_extension/lib/extension.dll")
 
 else:
