@@ -51,7 +51,7 @@ $(TARGET): $(OBJS) $(CPPOBJS)
 #	$(CC) $(CPPFLAGS) -fPIC -shared -o $@ $^ $(LDFLAGS) 
 
 $(LIBTARGET): $(SRCS) $(CPPOBJS)
-	$(CC) $(CFLAGS) -fPIC -shared -static -o $@ $(SRCS) $(CPPOBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -fPIC -shared -o $@ $(SRCS) $(CPPOBJS) $(LDFLAGS)
 	
 
 $(OBJ)/%.o: $(SRC)/%.c
