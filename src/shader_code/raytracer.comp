@@ -143,7 +143,27 @@ HitInfo testSphereIntersect(vec3 rayOrigin, vec3 rayDir, Sphere s) {
   return h;
 }
 
-HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, mat4 transform){
+vec3 barycentricCoords(vec3 verts[3], vec3 p){
+  vec3 v0 = verts[1] - verts[0];
+  vec3 v1 = verts[2] - verts[0];
+  vec3 v2 = p - verts[0];
+
+  float d00 = dot(v0, v0);
+  float d01 = dot(v0, v1);
+  float d11 = dot(v1, v1);
+  float d20 = dot(v2, v0);
+  float d21 = dot(v2, v1);
+
+  float invdenom = 1 / (d00 * d11 - d01 * d01);
+
+  float v = (d11 * d20 - d01 * d21) * invdenom;
+  float w = (d00 * d21 - d01 * d20) * invdenom;
+  float u = (1.0f - v - w);
+
+  return vec3(u, v, w);
+}
+
+HitInfo triangleIntersect(vec3 vertices[3], vec3 normals[3], vec3 rayDir, vec3 rayOrigin, mat4 transform){
   HitInfo h;
   h.didHit = true;
   
@@ -152,6 +172,14 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, mat4 tr
   vertices[0] = (transform * vec4(vertices[0], 1.0f)).xyz; 
   vertices[1] = (transform * vec4(vertices[1], 1.0f)).xyz; 
   vertices[2] = (transform * vec4(vertices[2], 1.0f)).xyz; 
+
+  mat4 rotate = transform;
+  rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  rotate /= determinant(rotate);
+
+  normals[0] = normalize(rotate * vec4(normals[0], 1.0f)).xyz; 
+  normals[1] = normalize(rotate * vec4(normals[1], 1.0f)).xyz; 
+  normals[2] = normalize(rotate * vec4(normals[2], 1.0f)).xyz; 
 
   float epsilon = 0.000001;
 
@@ -191,9 +219,15 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 rayDir, vec3 rayOrigin, mat4 tr
     return h;
   }
 
-  h.normal = normalize(cross(edge2, edge1));
+  float baryW = 1.0f - (baryU + baryV);
+  // h.normal = normalize(cross(edge2, edge1));
+  // h.normal = normalize(baryU * normals[0] + baryV * normals[1] + baryW * normals[1]);
   // h.position = untransformedRayOrig + rayDir * h.rayT;
   h.position = rayOrigin + rayDir * h.rayT;
+
+  vec3 barycentric = barycentricCoords(vertices, h.position);
+
+  h.normal = normalize(barycentric.x * normals[0] + barycentric.y * normals[1] + barycentric.z * normals[2]);
 
   return h;
 }
@@ -298,15 +332,21 @@ HitInfo didIsectTri(uint volumeIndex, vec3 rayDir, vec3 rayOrigin, out uint triI
 
   uint triangle = bvhs[volumeIndex].triIndices[0];
 
-  vec3 temp[] = {
+  vec3 tempVerts[] = {
     verts[3 * triangle].position.xyz,
     verts[3 * triangle + 1].position.xyz,
     verts[3 * triangle + 2].position.xyz
   };
 
+  vec3 tempNorms[] = {
+    verts[3 * triangle].normal.xyz,
+    verts[3 * triangle + 1].normal.xyz,
+    verts[3 * triangle + 2].normal.xyz
+  };
+
   uint m = imageLoad(vertMeshRelTex, 3 * int(triangle)).r;
   // HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].position.xyz);
-  HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].transform);
+  HitInfo h = triangleIntersect(tempVerts, tempNorms, rayDir, rayOrigin, meshes[m].transform);
   
 
   triIndex = triangle;
@@ -552,9 +592,11 @@ float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
 }
 
 vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
-
   
   vec3 rayOrigin = cameraPos;
+
+  // if (didIsectVolume(0, rayDir, rayOrigin))
+  //   return vec4(1, 0, 1, 1);
 
   vec3 colour = vec3(0, 0, 0);
   vec3 throughput = vec3(1.0, 1.0, 1.0);

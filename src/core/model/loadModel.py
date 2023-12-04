@@ -6,7 +6,7 @@ import c_extension as cext
 import core.renderer as renderer
 import OpenGL.GL as gl
 import glm
-
+import time
 
 class face(ct.Structure):
     _fields_ = [
@@ -104,9 +104,10 @@ def loadModel(self, filename):
         vertOffset += len(temp)
 
     self.sceneRenderer.generateNormals()
-
-    self.sceneRenderer.updateBvh()
-    self.sceneRenderer.getVertMeshRelation(oldLen)
+    # startTime = time.time()
+    # self.sceneRenderer.updateBvh()
+    # print(time.time() - startTime)
+    # self.sceneRenderer.getVertMeshRelation(oldLen)
 
     self.sceneRenderer.updateBuffers(oldMeshLen)
 

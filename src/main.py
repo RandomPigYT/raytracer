@@ -31,6 +31,7 @@ def main():
 
     io = imgui.get_io()
     io.config_flags |= imgui.CONFIG_NO_MOUSE
+    io.config_flags |= imgui.CONFIG_DOCKING_ENABLE
     # io.config_flags |= imgui.CONFIG_NAV_NO_CAPTURE_KEYBOARD
 
     glfwSetKeyCallback(window, inp.keyCallback)
@@ -42,7 +43,7 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 0)
+    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 1)
 
     # scene.initCanvas()
 
@@ -54,10 +55,11 @@ def main():
 
     # scene.loadModel("models/king.obj")
     # scene.loadModel("models/triangle.obj")
-    scene.loadModel("models/cube.obj")
+    # scene.loadModel("models/cube.obj")
     # scene.loadModel("models/sphere.obj")
     # scene.loadModel("models/utah.obj")
     # scene.loadModel("models/suzanne.obj")
+    scene.loadModel("models/casa2.obj")
     # scene.loadModel("models/car.obj")
     # scene.loadModel("models/normal_cornell_box.obj")
     # scene.loadModel("models/CornellBox-Original.obj")

@@ -7,6 +7,7 @@ def applyTransformation(vert, mesh):
     # temp = (4 * ct.c_float)(*vert.position)
 
     temp = glm.vec4(*vert.position)
+    temp[3] = 1
     temp = glm.mat4(mesh.transform) * temp
 
     # # For now, this only includes translation

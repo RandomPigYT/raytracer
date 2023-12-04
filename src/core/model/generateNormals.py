@@ -16,7 +16,7 @@ def generateNormals(self):
             and isVecNull(self.vertices[i + 1].normal)
             and isVecNull(self.vertices[i + 2].normal)
         ):
-            continue
+            break
 
         edge1 = glm.vec3(self.vertices[i + 1].position) - glm.vec3(
             self.vertices[i].position

@@ -101,6 +101,7 @@ def material(materialID, num):
 
 def meshTransform(mesh, meshNum):
     meshIndex = meshNum - 1
+    shouldUpdateBvh = False
 
     status, pos = imgui.drag_float3(
         "Position" + str(meshNum),
@@ -110,6 +111,7 @@ def meshTransform(mesh, meshNum):
     )
     if status:
         sm.currentScene.sceneRenderer.meshTransforms[meshIndex].position = pos
+        shouldUpdateBvh = True
 
     status, rot = imgui.drag_float3(
         "Rotation" + str(meshNum),
@@ -119,6 +121,7 @@ def meshTransform(mesh, meshNum):
     )
     if status:
         sm.currentScene.sceneRenderer.meshTransforms[meshIndex].rotation = rot
+        shouldUpdateBvh = True
 
     status, scale = imgui.drag_float3(
         "Scale" + str(meshNum),
@@ -128,6 +131,7 @@ def meshTransform(mesh, meshNum):
     )
     if status:
         sm.currentScene.sceneRenderer.meshTransforms[meshIndex].scale = scale
+        shouldUpdateBvh = True
 
     transform = glm.translate(glm.mat4(1), glm.vec3(*pos))
     transform = glm.rotate(transform, rot[0], glm.vec3(1, 0, 0))
@@ -138,9 +142,9 @@ def meshTransform(mesh, meshNum):
     mesh.transform = util.mat4ToFloatArray4Array4(transform)
 
     sm.currentScene.resetFrame()
-
-    # sm.currentScene.sceneRenderer.updateBvh()
-    # sm.currentScene.sendBvhs()
+    # if shouldUpdateBvh:
+    #     sm.currentScene.sceneRenderer.updateBvh()
+    #     sm.currentScene.sendBvhs()
 
 
 def drawModel(window):
