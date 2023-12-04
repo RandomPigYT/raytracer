@@ -1,5 +1,6 @@
 #include <float.h>
 #include <math.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -277,7 +278,34 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
     }
   }
 
-  return volumes;
+	
+	if (volumes)
+		return volumes;
+	
+	// If volumes are null
+	size_t numLeftTris = ceil((float)vector_size(parentInfo->triangles) / 2.0f);
+	*leftTris = vector_create();
+	*rightTris = vector_create();
+	
+	for (uint32_t i = 0; i < numLeftTris; i++){
+		vector_add(leftTris, parentInfo->triangles[i]);
+	}
+
+	for (uint32_t i = numLeftTris; i < vector_size(parentInfo->triangles); i++){
+		vector_add(rightTris, parentInfo->triangles[i]);
+	}
+	
+	vec4* leftVolume = getCorners(s->verts, *leftTris);
+	vec4* rightVolume = getCorners(s->verts, *rightTris);
+
+	volumes = malloc(4 * sizeof(vec4));
+	memcpy(volumes, leftVolume, 2 * sizeof(vec4));
+	memcpy(volumes + 2, rightVolume, 2 * sizeof(vec4));
+
+	free(leftVolume);
+	free(rightVolume);
+	
+	return volumes;
 }
 
 void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,
