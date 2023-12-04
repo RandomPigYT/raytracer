@@ -344,7 +344,7 @@ HitInfo didIsectTri(uint volumeIndex, vec3 rayDir, vec3 rayOrigin, out uint triI
     verts[3 * triangle + 2].normal.xyz
   };
 
-  uint m = imageLoad(vertMeshRelTex, 3 * int(triangle)).r;
+  uint m = imageLoad(vertMeshRelTex, int(triangle)).r;
   // HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].position.xyz);
   HitInfo h = triangleIntersect(tempVerts, tempNorms, rayDir, rayOrigin, meshes[m].transform);
   
@@ -424,7 +424,7 @@ HitInfo traverseBvh(out uint meshIndex, out uint triIndex, vec3 rayDir, vec3 ray
     currentIndex = bvhs[currentIndex].hitIndex;
   }
 
-  meshIndex = imageLoad(vertMeshRelTex, 3 * int(minTriIndex)).r;
+  meshIndex = imageLoad(vertMeshRelTex, int(minTriIndex)).r;
   triIndex = minTriIndex;
   return minHit;
 #endif
