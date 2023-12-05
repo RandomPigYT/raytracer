@@ -83,6 +83,8 @@ layout(std430, binding = 4) buffer sphereBuf { Sphere spheres[]; };
 
 layout(std430, binding = 5) buffer Bvhs { Bvh bvhs[]; };
 
+layout(std430, binding = 6) buffer VertMeshRel { uint vertMeshRel[]; };
+
 uniform vec3 cameraPos;
 uniform vec3 cameraDir;
 
@@ -344,7 +346,8 @@ HitInfo didIsectTri(uint volumeIndex, vec3 rayDir, vec3 rayOrigin, out uint triI
     verts[3 * triangle + 2].normal.xyz
   };
 
-  uint m = imageLoad(vertMeshRelTex, int(triangle)).r;
+  // uint m = imageLoad(vertMeshRelTex, int(triangle)).r;
+  uint m = vertMeshRel[triangle];
   // HitInfo h = triangleIntersect(temp, rayDir, rayOrigin, meshes[m].position.xyz);
   HitInfo h = triangleIntersect(tempVerts, tempNorms, rayDir, rayOrigin, meshes[m].transform);
   
@@ -394,7 +397,8 @@ HitInfo traverseBvh(out uint meshIndex, out uint triIndex, vec3 rayDir, vec3 ray
   }
 
   // meshIndex = minMeshIndex;
-  meshIndex = imageLoad(vertMeshRelTex, int(minTriIndex)).r;
+  // meshIndex = imageLoad(vertMeshRelTex, int(minTriIndex)).r;
+  meshIndex = vertMeshRel[minTriIndex];
   triIndex = minTriIndex;
   return minHit;
 #else
@@ -710,43 +714,45 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
 void main() {
 
+  if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1])){
   
-  vec4 colour = vec4(0, 0, 0, 1);
+    vec4 colour = vec4(0, 0, 0, 1);
 
 
-  float aspectRatio = (resolution[0]) / (resolution[1]);
-  vec3 rayDir = getRayDir(fov, aspectRatio);
+    float aspectRatio = (resolution[0]) / (resolution[1]);
+    vec3 rayDir = getRayDir(fov, aspectRatio);
 
-  float pixelLength = (2 * tan(radians(fov / 2)) * aspectRatio * blurStrength) / resolution[0];
-  float pixelHeight = (2 * tan(radians(fov / 2)) * blurStrength) / resolution[1];
-
-
-  uint seed = frameNum * gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * time;
-  
-
-  for (int i = 0; i < raysPerPixel; i++){ 
-
-    vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
-
-    colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
-    // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
-  }
+    float pixelLength = (2 * tan(radians(fov / 2)) * aspectRatio * blurStrength) / resolution[0];
+    float pixelHeight = (2 * tan(radians(fov / 2)) * blurStrength) / resolution[1];
 
 
-  ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
+    uint seed = frameNum * gl_GlobalInvocationID.x * gl_GlobalInvocationID.y * time;
+    
+
+    for (int i = 0; i < raysPerPixel; i++){ 
+
+      vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
+
+      colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+      // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
+    }
+
+
+    ivec2 texelCoord = ivec2(gl_GlobalInvocationID.xy);
 
 
 
 
-  if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1]) && frameNum == 1)
-    imageStore(rendered, texelCoord, colour);
+    if (frameNum == 1)
+      imageStore(rendered, texelCoord, colour);
 
-  else{
+    else{
 
-    vec4 prevColour = imageLoad(rendered, texelCoord);
-    colour = ((frameNum - 1) * prevColour + colour) / frameNum;
-    imageStore(rendered, texelCoord, colour);
+      vec4 prevColour = imageLoad(rendered, texelCoord);
+      colour = ((frameNum - 1) * prevColour + colour) / frameNum;
+      imageStore(rendered, texelCoord, colour);
 
+    }
   }
 
 }

@@ -10,7 +10,7 @@ import numpy as np
 import math
 import core.sendToShader as sendToShader
 import core.renderer as renderer
-
+import core.GUI.uiManager as uiManager
 
 class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
@@ -60,6 +60,7 @@ class Scene:
             sm.currentScene = self
 
         self.sceneRenderer = renderer.renderer(self, renderMode)
+        self.uiManager = uiManager.UIManager()
 
         # Create vertex-mesh relation texture
         self.sceneRenderer.vertMeshRelTex = gl.glGenTextures(1)
@@ -79,6 +80,7 @@ class Scene:
 
         self.initCanvas()
         self.initSSBO()
+    
 
     # Methods
     loadModel = lm.loadModel
@@ -119,6 +121,15 @@ class Scene:
             self.sceneRenderer.bvhs,
             self.sceneRenderer.numBvhs.value,
             ct.sizeof(renderer.Bvh),
+        )
+    
+    def sendVertMeshRel(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.vertMeshRelSSBO,
+            6,
+            self.sceneRenderer.vertMeshRelations,
+            len(self.sceneRenderer.vertMeshRelations),
+            ct.sizeof(ct.c_uint32),
         )
 
     def sendSpheresToShader(self):
@@ -165,6 +176,7 @@ class Scene:
         self.sceneRenderer.materialSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.spheresSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.bvhSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.vertMeshRelSSBO = gl.glGenBuffers(1)
 
     def allocateSSBO(self):
         self.sendVerts()

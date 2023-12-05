@@ -97,6 +97,7 @@ class renderer:
     materialSSBO = None
     bvhSSBO = None
     spheresSSBO = None
+    vertMeshRelSSBO = None
 
     frameNum = 0
 
