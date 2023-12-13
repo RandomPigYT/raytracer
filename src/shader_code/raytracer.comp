@@ -428,7 +428,8 @@ HitInfo traverseBvh(out uint meshIndex, out uint triIndex, vec3 rayDir, vec3 ray
     currentIndex = bvhs[currentIndex].hitIndex;
   }
 
-  meshIndex = imageLoad(vertMeshRelTex, int(minTriIndex)).r;
+  // meshIndex = imageLoad(vertMeshRelTex, int(minTriIndex)).r;
+  meshIndex = vertMeshRel[minTriIndex];
   triIndex = minTriIndex;
   return minHit;
 #endif

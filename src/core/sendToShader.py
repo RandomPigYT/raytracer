@@ -6,13 +6,14 @@ import numpy as np
 
 
 def sendBuffer(ssbo, binding, buffer, count, size):
-    if not count:
-        return
 
     # Resize buffer
     gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, ssbo)
     gl.glBufferData(gl.GL_SHADER_STORAGE_BUFFER, size * count, None, gl.GL_DYNAMIC_READ)
     gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, binding, ssbo)
+
+    if not count:
+        return
 
     # Populate the buffer
     ptr = ct.cast(

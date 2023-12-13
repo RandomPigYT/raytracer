@@ -142,9 +142,9 @@ def meshTransform(mesh, meshNum):
     mesh.transform = util.mat4ToFloatArray4Array4(transform)
 
     sm.currentScene.resetFrame()
-    # if shouldUpdateBvh:
-    #     sm.currentScene.sceneRenderer.updateBvh()
-    #     sm.currentScene.sendBvhs()
+    if shouldUpdateBvh:
+        sm.currentScene.sceneRenderer.updateBvh()
+        sm.currentScene.sendBvhs()
 
 
 def drawModel(window):
