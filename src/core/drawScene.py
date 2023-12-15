@@ -34,6 +34,7 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
 
         cam.move()
 
+        sm.currentScene.uiManager.render()
         gElem.elements(window)
 
         imgui.render()

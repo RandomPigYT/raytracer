@@ -7,6 +7,9 @@ import sceneManager as sm
 def rasterize(self, voidColour):
     gl.glClearColor(*voidColour)
 
+    if not len(self.meshes):
+        return
+
     shader.useShader(self.rasterShader)
     gl.glBindVertexArray(self.meshVAO)
 

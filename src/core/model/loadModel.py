@@ -37,6 +37,10 @@ def loadModel(self, filename):
 
     attribs = reader.GetAttrib()
     shapes = reader.GetShapes()
+    materials = reader.GetMaterials()
+
+    for m in materials:
+        print(m.diffuse_texname)
 
     v = (len(attribs.vertices) * ct.c_float)(*attribs.vertices)
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)

@@ -11,6 +11,7 @@ import math
 import core.sendToShader as sendToShader
 import core.renderer as renderer
 import core.GUI.uiManager as uiManager
+import core.GUI.menuBar as mb
 
 class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
@@ -60,7 +61,9 @@ class Scene:
             sm.currentScene = self
 
         self.sceneRenderer = renderer.renderer(self, renderMode)
+
         self.uiManager = uiManager.UIManager()
+        self.uiManager.addJob(mb.renderMenuBar, [self.uiManager.globalJobID], mb.menuBarCleanup, [], True, True)
 
         # Create vertex-mesh relation texture
         self.sceneRenderer.vertMeshRelTex = gl.glGenTextures(1)
@@ -181,8 +184,10 @@ class Scene:
     def allocateSSBO(self):
         self.sendVerts()
         self.sendMeshes()
+        self.sendVertMeshRel()
         self.sendMats()
         self.sendBvhs()
+        self.sendSpheresToShader()
 
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
 

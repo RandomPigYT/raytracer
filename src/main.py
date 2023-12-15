@@ -32,7 +32,7 @@ def main():
     io = imgui.get_io()
     io.config_flags |= imgui.CONFIG_NO_MOUSE
     io.config_flags |= imgui.CONFIG_DOCKING_ENABLE
-    # io.config_flags |= imgui.CONFIG_NAV_NO_CAPTURE_KEYBOARD
+    io.config_flags |= imgui.CONFIG_NAV_NO_CAPTURE_KEYBOARD
 
     glfwSetKeyCallback(window, inp.keyCallback)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
@@ -54,7 +54,7 @@ def main():
         ct.c_float * 4
     )(*(249 / 255, 170 / 255, 70 / 255, 0))
 
-    scene.loadModel("models/king.obj")
+    # scene.loadModel("models/king.obj")
     # scene.loadModel("models/triangle.obj")
     # scene.loadModel("models/cube.obj")
     # scene.loadModel("models/sphere.obj")

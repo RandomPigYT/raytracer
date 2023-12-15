@@ -32,7 +32,7 @@ def elements(window):
     if sm.currentScene.camera.lockCam:
         modelDebugUI.drawModel(window)
 
-        imgui.begin("Camera")
+        imgui.begin("Scene")
 
         status, blur = imgui.drag_float(
             "blur strength",
