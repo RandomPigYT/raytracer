@@ -9,8 +9,8 @@ def isVecNull(vec):
     return True
 
 
-def generateNormals(self):
-    for i in range(0, len(self.vertices), 3):
+def generateNormals(self, startVert):
+    for i in range(startVert, len(self.vertices), 3):
         if not (
             isVecNull(self.vertices[i].normal)
             and isVecNull(self.vertices[i + 1].normal)

@@ -9,16 +9,11 @@ def initGUI(s):
         [s.uiManager.globalJobID],
         mb.menuBarCleanup,
         [],
-        True,
+        False,
         True,
     )
 
     # self.sceneElementsIndex = gElem.elements(None)
     s.sceneElementsIndex = s.uiManager.addJob(
-        gElem.elements,
-        [None],
-        None,
-        [None],
-        False,
-        True
+        gElem.elements, [None], None, [None], False, True
     )

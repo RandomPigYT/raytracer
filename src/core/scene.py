@@ -90,8 +90,6 @@ class Scene:
     initCanvas = canvas.initRenderCavas
     resizeTexture = canvas.resizeTexture
 
-    
-
     def sendVerts(self):
         sendToShader.sendBuffer(
             self.sceneRenderer.vertSSBO,
@@ -196,7 +194,6 @@ class Scene:
         self.sendUniforms()
 
     def sendRasterUniforms(self, meshIndex):
-        print(meshIndex, len(self.sceneRenderer.meshVBO))
         rendererObj = self.sceneRenderer
 
         modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")

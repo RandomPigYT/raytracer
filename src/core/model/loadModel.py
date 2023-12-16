@@ -7,6 +7,7 @@ import core.renderer as renderer
 import OpenGL.GL as gl
 import glm
 import time
+import os
 
 
 class face(ct.Structure):
@@ -40,8 +41,7 @@ def loadModel(self, filename):
     shapes = reader.GetShapes()
     materials = reader.GetMaterials()
 
-    for m in materials:
-        print(m.diffuse_texname)
+    print(len(materials))
 
     v = (len(attribs.vertices) * ct.c_float)(*attribs.vertices)
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)
@@ -58,6 +58,9 @@ def loadModel(self, filename):
     )
     self.sceneRenderer.materials = util.realloc(
         self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(shapes)
+    )
+    self.sceneRenderer.objects = util.realloc(
+        self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
 
     # generate mesh data
@@ -108,7 +111,7 @@ def loadModel(self, filename):
 
         vertOffset += len(temp)
 
-    self.sceneRenderer.generateNormals()
+    self.sceneRenderer.generateNormals(oldLen)
     self.sceneRenderer.updateBvh()
     self.sceneRenderer.getVertMeshRelation(oldLen)
 
@@ -116,40 +119,6 @@ def loadModel(self, filename):
 
     self.sendVertMeshRel()
 
-    # TODO: Abstract out texture creation
-    # gl.glActiveTexture(gl.GL_TEXTURE1)
-    # gl.glBindTexture(gl.GL_TEXTURE_1D, self.sceneRenderer.vertMeshRelTex)
-
-    # gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
-    # gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-
-    # gl.glTexImage1D(
-    #     gl.GL_TEXTURE_1D,
-    #     0,
-    #     gl.GL_R32UI,
-    #     len(self.sceneRenderer.vertMeshRelations),
-    #     0,
-    #     gl.GL_RED_INTEGER,
-    #     gl.GL_UNSIGNED_INT,
-    #     ct.cast(self.sceneRenderer.vertMeshRelations, ct.POINTER(ct.c_int32)),
-    # )
-
-    # gl.glBindImageTexture(
-    #     1,
-    #     self.sceneRenderer.vertMeshRelTex,
-    #     0,
-    #     gl.GL_FALSE,
-    #     0,
-    #     gl.GL_READ_ONLY,
-    #     gl.GL_R32UI,
-    # )
-
-    # gl.glBindTexture(gl.GL_TEXTURE_1D, 0)
-
     self.allocateSSBO()
-    self.sendVerts()
-    self.sendMeshes()
-    self.sendMats()
-    self.sendBvhs()
 
     return True

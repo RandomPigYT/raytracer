@@ -46,7 +46,13 @@ class Mesh(ct.Structure):
 
 
 class Object(ct.Structure):
-    _fields_ = [("pos", ct.c_float * 3), ("ID", ct.c_uint32)]
+    _fields_ = [
+        ("transform", 4 * (4 * ct.c_float)),
+        ("ID", ct.c_uint32),
+        ("startingMesh", ct.c_uint32),
+        ("numMeshes", ct.c_uint32),
+        ("padding0", ct.c_int32),
+    ]
 
 
 class Bvh(ct.Structure):
@@ -77,40 +83,6 @@ class Transform(ct.Structure):
 
 
 class renderer:
-    # vertices = (0 * Vertex)()
-    # meshes = (0 * Mesh)()
-    # materials = (0 * Material)()
-    # objects = (0 * Object)()
-
-    # meshTransforms = []
-
-    # vertMeshRelations = (0 * ct.c_uint32)()
-    # vertMeshRelTex = None
-
-    # bvhs = None
-    # numBvhs = ct.c_uint32()
-
-    # spheres = (0 * Sphere)()
-
-    # vertSSBO = None
-    # meshSSBO = None
-    # materialSSBO = None
-    # bvhSSBO = None
-    # spheresSSBO = None
-    # vertMeshRelSSBO = None
-
-    # frameNum = 0
-
-    # numBounces = 10
-    # raysPerPixel = 1
-
-    # shaderProgram = None
-    # compute = None
-
-    # rasterShader = None
-    # meshVBO = []
-    # meshVAO = 0
-
     # mode:
     # 0 -> raytrace
     # 1 -> rasterize
@@ -122,6 +94,9 @@ class renderer:
         self.meshes = (0 * Mesh)()
         self.materials = (0 * Material)()
         self.objects = (0 * Object)()
+
+        self.objectNames = []
+        self.meshNames = []
 
         self.meshTransforms = []
 
