@@ -18,16 +18,18 @@ def keyCallback(window, key, scancode, action, mods):
         io = imgui.get_io()
         io.config_flags ^= imgui.CONFIG_NO_MOUSE
 
+
         if sm.currentScene.camera.lockCam:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
+            sm.currentScene.uiManager.activateJobs([sm.currentScene.sceneElementsIndex])
 
         else:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
-    
+            sm.currentScene.uiManager.deActivateJobs([sm.currentScene.sceneElementsIndex])
+
     if key == GLFW_KEY_BACKSPACE:
         io = imgui.get_io()
         io.keys_down[io.key_map[imgui.KEY_BACKSPACE]] ^= 1
-    
 
 
 def mouseButtonCallback(window, button, action, mods):

@@ -11,7 +11,8 @@ import math
 import core.sendToShader as sendToShader
 import core.renderer as renderer
 import core.GUI.uiManager as uiManager
-import core.GUI.menuBar as mb
+import core.GUI.initGUI as initGUI
+
 
 class Camera:
     position = (ct.c_float * 3)(0, 0, 0)
@@ -63,7 +64,7 @@ class Scene:
         self.sceneRenderer = renderer.renderer(self, renderMode)
 
         self.uiManager = uiManager.UIManager()
-        self.uiManager.addJob(mb.renderMenuBar, [self.uiManager.globalJobID], mb.menuBarCleanup, [], True, True)
+        initGUI.initGUI(self)
 
         # Create vertex-mesh relation texture
         self.sceneRenderer.vertMeshRelTex = gl.glGenTextures(1)
@@ -83,12 +84,13 @@ class Scene:
 
         self.initCanvas()
         self.initSSBO()
-    
 
     # Methods
     loadModel = lm.loadModel
     initCanvas = canvas.initRenderCavas
     resizeTexture = canvas.resizeTexture
+
+    
 
     def sendVerts(self):
         sendToShader.sendBuffer(
@@ -125,7 +127,7 @@ class Scene:
             self.sceneRenderer.numBvhs.value,
             ct.sizeof(renderer.Bvh),
         )
-    
+
     def sendVertMeshRel(self):
         sendToShader.sendBuffer(
             self.sceneRenderer.vertMeshRelSSBO,
@@ -196,7 +198,6 @@ class Scene:
     def sendRasterUniforms(self, meshIndex):
         rendererObj = self.sceneRenderer
 
-
         modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")
         viewLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "view")
         projectionLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "projection")
@@ -215,10 +216,9 @@ class Scene:
 
         try:
             aspect = self.resolution[0] / self.resolution[1]
-        
+
         except ZeroDivisionError:
             aspect = 0
-            
 
         projection = glm.perspective(
             glm.radians(self.camera.fov),
@@ -231,8 +231,6 @@ class Scene:
         gl.glUniformMatrix4fv(viewLoc, 1, gl.GL_FALSE, glm.value_ptr(view))
         gl.glUniformMatrix4fv(projectionLoc, 1, gl.GL_FALSE, glm.value_ptr(projection))
         # gl.glUniform3fv(cameraPosLoc, 1, glm.value_ptr(glm.vec3(*self.camera.position)))
-    
-
 
         normalView = glm.lookAt(
             self.camera.position, glm.vec3(0.0, 0.0, 1.0), glm.vec3(0, 1, 0)
@@ -245,5 +243,3 @@ class Scene:
 
         fovLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "fov")
         gl.glUniform1f(fovLoc, glm.radians(self.camera.fov))
-
-

@@ -2,6 +2,7 @@ from enum import Enum
 import imgui
 import core.GUI.menuBar as mb
 
+
 class containerTypes(Enum):
     BUTTON = 0
     TEXT_BOX = 1
@@ -10,8 +11,6 @@ class containerTypes(Enum):
     DRAG_FLOAT3 = 4
     COLOUR_PICKER = 5
     DROP_DOWN = 6
-
-
 
 
 class container:
@@ -29,7 +28,16 @@ class container:
 
 
 class Job:
-    def __init__(self, jobID, runFunc, renderArgs, cleanupFunc, cleanupArgs, isActive, isDefaultJob):
+    def __init__(
+        self,
+        jobID,
+        runFunc,
+        renderArgs,
+        cleanupFunc,
+        cleanupArgs,
+        isActive,
+        isDefaultJob,
+    ):
         self.id = jobID
 
         self.renderFunc = runFunc
@@ -39,25 +47,33 @@ class Job:
 
         self.isActive = isActive
         self.isDefaultJob = isDefaultJob
-    
+
     def run(self):
         return self.renderFunc(*self.renderArgs)
-    
+
     def cleanup(self):
-        self.cleanupFunc(*self.cleanupArgs)
-        
+        if self.cleanupFunc != None:
+            self.cleanupFunc(*self.cleanupArgs)
 
 
 class UIManager:
-
     def __init__(self):
         self.jobs = []
         self.globalJobID = 0
 
-    
-    def addJob(self, renderFunc, renderArgs, cleanupFunc, cleanupArgs, isActive, isDefaultJob):
+    def addJob(
+        self, renderFunc, renderArgs, cleanupFunc, cleanupArgs, isActive, isDefaultJob
+    ):
         self.globalJobID += 1
-        temp = Job(self.globalJobID - 1, renderFunc, renderArgs, cleanupFunc, cleanupArgs, isActive, isDefaultJob)
+        temp = Job(
+            self.globalJobID - 1,
+            renderFunc,
+            renderArgs,
+            cleanupFunc,
+            cleanupArgs,
+            isActive,
+            isDefaultJob,
+        )
         self.jobs.append(temp)
         return self.globalJobID - 1
 
@@ -71,13 +87,12 @@ class UIManager:
         for i in range(len(self.jobs)):
             if self.jobs[i].id in jobIDs:
                 self.jobs[i].isActive = True
-            
 
     def deActivateJobs(self, jobIDs):
         for i in range(len(self.jobs)):
             if self.jobs[i].id in jobIDs:
                 self.jobs[i].isActive = False
-        
+
     def makeDefault(self, jobIDs):
         for i in range(len(self.jobs)):
             if self.jobs[i].id in jobIDs:
@@ -87,14 +102,14 @@ class UIManager:
         for i in range(len(self.jobs)):
             if self.jobs[i].id in jobIDs:
                 self.jobs[i].isDefaultJob = False
-    
+
     def activateDefault(self):
         for i in range(len(self.jobs)):
             if not self.jobs[i].isDefaultJob:
                 self.jobs[i].isActive = False
                 continue
             self.jobs[i].isActive = True
-        
+
     def deactivateAll(self):
         for i in range(len(self.jobs)):
             self.jobs[i].isActive = False
@@ -109,6 +124,3 @@ class UIManager:
             if i.isActive:
                 if i.run():
                     i.cleanup()
-
-
-    

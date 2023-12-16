@@ -29,43 +29,42 @@ def elements(window):
     imgui.text("Res: " + str(width) + " " + str(height))
     imgui.end()
 
-    if sm.currentScene.camera.lockCam:
-        modelDebugUI.drawModel(window)
+    modelDebugUI.drawModel(window)
 
-        imgui.begin("Scene")
+    imgui.begin("Scene")
 
-        status, blur = imgui.drag_float(
-            "blur strength",
-            sm.currentScene.camera.blur,
-            0.01,
-            format="%0.2f",
-            min_value=0,
-        )
+    status, blur = imgui.drag_float(
+        "blur strength",
+        sm.currentScene.camera.blur,
+        0.01,
+        format="%0.2f",
+        min_value=0,
+    )
 
-        if status:
-            sm.currentScene.camera.blur = blur
-            sm.currentScene.sendUniforms()
+    if status:
+        sm.currentScene.camera.blur = blur
+        sm.currentScene.sendUniforms()
 
-        status, fov = imgui.drag_float(
-            "FOV", sm.currentScene.camera.fov, 0.1, format="%0.1f"
-        )
+    status, fov = imgui.drag_float(
+        "FOV", sm.currentScene.camera.fov, 0.1, format="%0.1f"
+    )
 
-        if status:
-            sm.currentScene.camera.fov = fov
+    if status:
+        sm.currentScene.camera.fov = fov
 
-        status, numBounces = imgui.drag_int(
-            "bounce limit", sm.currentScene.sceneRenderer.numBounces, min_value=1
-        )
-        numBounces = max(numBounces, 1)
+    status, numBounces = imgui.drag_int(
+        "bounce limit", sm.currentScene.sceneRenderer.numBounces, min_value=1
+    )
+    numBounces = max(numBounces, 1)
 
-        if status:
-            sm.currentScene.sceneRenderer.numBounces = numBounces
+    if status:
+        sm.currentScene.sceneRenderer.numBounces = numBounces
 
-        status, raysPerPixel = imgui.drag_int(
-            "rays per pixel", sm.currentScene.sceneRenderer.raysPerPixel, min_value=1
-        )
-        raysPerPixel = max(raysPerPixel, 1)
+    status, raysPerPixel = imgui.drag_int(
+        "rays per pixel", sm.currentScene.sceneRenderer.raysPerPixel, min_value=1
+    )
+    raysPerPixel = max(raysPerPixel, 1)
 
-        if status:
-            sm.currentScene.sceneRenderer.raysPerPixel = raysPerPixel
-        imgui.end()
+    if status:
+        sm.currentScene.sceneRenderer.raysPerPixel = raysPerPixel
+    imgui.end()

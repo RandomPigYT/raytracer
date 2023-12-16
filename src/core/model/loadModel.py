@@ -8,6 +8,7 @@ import OpenGL.GL as gl
 import glm
 import time
 
+
 class face(ct.Structure):
     _fields_ = [
         ("v_index", ct.c_int32),
