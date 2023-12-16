@@ -18,7 +18,11 @@ def newScene(selfIndex, name):
     cancel = imgui.button("Cancel")
     imgui.end()
 
-    sm.currentScene.uiManager.jobs[selfIndex].renderArgs[1] = name
+    # sm.currentScene.uiManager.jobs[selfIndex].renderArgs[1] = name
+    for i in range(len(sm.currentScene.uiManager.jobs)):
+        if sm.currentScene.uiManager.jobs[i].id == selfIndex:
+            sm.currentScene.uiManager.jobs[i].renderArgs[1] = name
+
 
     if done:
         sm.currentScene.__init__(name, (0, 0, 3), 0, 90, (1920, 1080), 1)
@@ -64,6 +68,10 @@ def drawDirTree(path):
 def loadModel(selfIndex):
     imgui.begin("Select file")
     result = drawDirTree("/")
+
+    if imgui.button("Cancel"):
+        result = True
+
     imgui.end()
 
     return result

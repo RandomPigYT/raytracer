@@ -77,39 +77,39 @@ class Transform(ct.Structure):
 
 
 class renderer:
-    vertices = (0 * Vertex)()
-    meshes = (0 * Mesh)()
-    materials = (0 * Material)()
-    objects = (0 * Object)()
+    # vertices = (0 * Vertex)()
+    # meshes = (0 * Mesh)()
+    # materials = (0 * Material)()
+    # objects = (0 * Object)()
 
-    meshTransforms = []
+    # meshTransforms = []
 
-    vertMeshRelations = (0 * ct.c_uint32)()
-    vertMeshRelTex = None
+    # vertMeshRelations = (0 * ct.c_uint32)()
+    # vertMeshRelTex = None
 
-    bvhs = None
-    numBvhs = ct.c_uint32()
+    # bvhs = None
+    # numBvhs = ct.c_uint32()
 
-    spheres = (0 * Sphere)()
+    # spheres = (0 * Sphere)()
 
-    vertSSBO = None
-    meshSSBO = None
-    materialSSBO = None
-    bvhSSBO = None
-    spheresSSBO = None
-    vertMeshRelSSBO = None
+    # vertSSBO = None
+    # meshSSBO = None
+    # materialSSBO = None
+    # bvhSSBO = None
+    # spheresSSBO = None
+    # vertMeshRelSSBO = None
 
-    frameNum = 0
+    # frameNum = 0
 
-    numBounces = 10
-    raysPerPixel = 1
+    # numBounces = 10
+    # raysPerPixel = 1
 
-    shaderProgram = None
-    compute = None
+    # shaderProgram = None
+    # compute = None
 
-    rasterShader = None
-    meshVBO = []
-    meshVAO = 0
+    # rasterShader = None
+    # meshVBO = []
+    # meshVAO = 0
 
     # mode:
     # 0 -> raytrace
@@ -117,6 +117,40 @@ class renderer:
     def __init__(self, scene, mode: int):
         self.mode = mode
         self.scene = scene
+
+        self.vertices = (0 * Vertex)()
+        self.meshes = (0 * Mesh)()
+        self.materials = (0 * Material)()
+        self.objects = (0 * Object)()
+
+        self.meshTransforms = []
+
+        self.vertMeshRelations = (0 * ct.c_uint32)()
+        self.vertMeshRelTex = None
+
+        self.bvhs = None
+        self.numBvhs = ct.c_uint32()
+
+        self.spheres = (0 * Sphere)()
+
+        self.vertSSBO = None
+        self.meshSSBO = None
+        self.materialSSBO = None
+        self.bvhSSBO = None
+        self.spheresSSBO = None
+        self.vertMeshRelSSBO = None
+
+        self.frameNum = 0
+
+        self.numBounces = 10
+        self.raysPerPixel = 1
+
+        self.shaderProgram = None
+        self.compute = None
+
+        self.rasterShader = None
+        self.meshVBO = []
+        self.meshVAO = 0
 
         self.initRasterizer()
 

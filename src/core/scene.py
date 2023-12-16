@@ -196,6 +196,7 @@ class Scene:
         self.sendUniforms()
 
     def sendRasterUniforms(self, meshIndex):
+        print(meshIndex, len(self.sceneRenderer.meshVBO))
         rendererObj = self.sceneRenderer
 
         modelLoc = gl.glGetUniformLocation(rendererObj.rasterShader, "model")
