@@ -136,7 +136,7 @@ def renderMenuBar(selfIndex):
             if clicked_loadModel:
                 sm.currentScene.uiManager.addJob(
                     loadModel,
-                    [sm.currentScene.uiManager.globalJobID, "/"],
+                    [sm.currentScene.uiManager.globalJobID, "."],
                     loadModelCleanup,
                     [sm.currentScene.uiManager.globalJobID],
                     True,

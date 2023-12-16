@@ -26,9 +26,13 @@ def keyCallback(window, key, scancode, action, mods):
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
             sm.currentScene.uiManager.deactivateAll()
 
-    if key == GLFW_KEY_BACKSPACE:
+    if key == GLFW_KEY_BACKSPACE and action == GLFW_PRESS:
         io = imgui.get_io()
-        io.keys_down[io.key_map[imgui.KEY_BACKSPACE]] ^= 1
+        io.keys_down[io.key_map[imgui.KEY_BACKSPACE]] = 1
+
+    if key == GLFW_KEY_BACKSPACE and action == GLFW_RELEASE:
+        io = imgui.get_io()
+        io.keys_down[io.key_map[imgui.KEY_BACKSPACE]] = 0
 
 
 def mouseButtonCallback(window, button, action, mods):

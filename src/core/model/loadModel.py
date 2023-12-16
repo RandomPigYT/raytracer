@@ -8,6 +8,7 @@ import OpenGL.GL as gl
 import glm
 import time
 import os
+import pathlib
 
 
 class face(ct.Structure):
@@ -41,8 +42,6 @@ def loadModel(self, filename):
     shapes = reader.GetShapes()
     materials = reader.GetMaterials()
 
-    print(len(materials))
-
     v = (len(attribs.vertices) * ct.c_float)(*attribs.vertices)
     vn = (len(attribs.normals) * ct.c_float)(*attribs.normals)
     vt = (len(attribs.texcoords) * ct.c_float)(*attribs.texcoords)
@@ -63,9 +62,38 @@ def loadModel(self, filename):
         self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
 
+    # Set object data
+    objIndex = len(self.sceneRenderer.objects) - 1
+    self.sceneRenderer.objects[objIndex].transform = util.mat4ToFloatArray4Array4(
+        glm.mat4(1)
+    )
+    self.sceneRenderer.objects[objIndex].ID = objIndex
+    self.sceneRenderer.objects[objIndex].startingMesh = oldMeshLen
+    self.sceneRenderer.objects[objIndex].numMeshes = len(shapes)
+
+    objname = pathlib.Path(filename).stem
+    if objname not in self.sceneRenderer.objectNames:
+        self.sceneRenderer.objectNames.append(objname)
+
+    else:
+        self.sceneRenderer.objectNames.append(
+            objname + "(" + str(self.sceneRenderer.objectNames.count(objname)) + ")"
+        )
+
     # generate mesh data
     startingVertCount = 0
     for i in range(len(shapes)):
+        if shapes[i].name not in self.sceneRenderer.meshNames:
+            self.sceneRenderer.meshNames.append(shapes[i].name)
+
+        else:
+            self.sceneRenderer.meshNames.append(
+                shapes[i].name
+                + "("
+                + str(self.sceneRenderer.meshNames.count(shapes[i].name))
+                + ")"
+            )
+
         self.sceneRenderer.meshes[i + meshOffset].startingVertex = (
             startingVertCount + vertOffset
         )
