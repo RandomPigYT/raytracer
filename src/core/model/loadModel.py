@@ -9,6 +9,8 @@ import glm
 import time
 import os
 import pathlib
+from PIL import Image
+import numpy as np
 
 
 class face(ct.Structure):
@@ -27,15 +29,76 @@ def numFaces(shapes):
     return count
 
 
+def loadTexture(renderer, filename, texType):
+    # types
+    # 0: diffuse texture
+    # 1: roughness map
+    # 2: metallic map
+    # 3: emissive map
+    # 4: normal map
+    # 5: opacity map
+    types = [
+        renderer.textures,
+        renderer.roughnessMaps,
+        renderer.metallicMaps,
+        renderer.emissiveMaps,
+        renderer.normalMaps,
+        renderer.opacityMaps,
+        renderer.specularMaps
+    ]
+
+    numChannels = [
+        3,
+        1,
+        1,
+        3,
+        3,
+        1,
+        1
+    ]
+
+    texArray = types[texType]
+    texIndex = len(texArray)
+
+    texHandlex = None
+
+    filename = os.path.expanduser(filename)
+
+    try:
+        texHandle = Image.open(filename).convert("RGB")
+    except FileNotFoundError:
+        stderr.write("Failed to load texture " + filename + "\n")
+        return False
+    
+    texArray = util.realloc(texArray, len(texArray) + 1)
+
+    red, green, blue = texHandle.split()
+
+    texData = np.array(texHandle).flatten() / 255
+    redData = np.array(red).flatten() / 255
+
+
+    
+
+
+
+
+
+
+
 def loadModel(self, filename):
+
+    loadTexture(self.sceneRenderer, r"C:\Users\HP\Desktop\vintage-lamp-free\textures\Curves_Emissive_emissive.jpeg", 0)
+
     oldLen = len(self.sceneRenderer.vertices)
     oldMeshLen = len(self.sceneRenderer.meshes)
+    oldMaterialLen = len(self.sceneRenderer.materials)
 
     reader = tol.ObjReader()
     status = reader.ParseFromFile(filename)
 
     if not status:
-        stderr.write("Failed to load " + filename)
+        stderr.write("Failed to load " + filename + "\n")
         return False
 
     attribs = reader.GetAttrib()
@@ -49,6 +112,7 @@ def loadModel(self, filename):
     vertOffset = len(self.sceneRenderer.vertices)
     meshOffset = len(self.sceneRenderer.meshes)
 
+    # Allocate memory
     self.sceneRenderer.vertices = util.realloc(
         self.sceneRenderer.vertices, len(self.sceneRenderer.vertices) + numFaces(shapes)
     )
@@ -56,11 +120,16 @@ def loadModel(self, filename):
         self.sceneRenderer.meshes, len(self.sceneRenderer.meshes) + len(shapes)
     )
     self.sceneRenderer.materials = util.realloc(
-        self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(shapes)
+        self.sceneRenderer.materials, len(self.sceneRenderer.materials) + len(materials)
     )
     self.sceneRenderer.objects = util.realloc(
         self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
+
+    # Add materials
+    for i in range(len(materials)):
+        pass
+        print(materials[i].specular_texname)
 
     # Set object data
     objIndex = len(self.sceneRenderer.objects) - 1
@@ -79,6 +148,8 @@ def loadModel(self, filename):
         self.sceneRenderer.objectNames.append(
             objname + "(" + str(self.sceneRenderer.objectNames.count(objname)) + ")"
         )
+
+    self.sceneRenderer.objectTransforms.append(renderer.Transform())
 
     # generate mesh data
     startingVertCount = 0

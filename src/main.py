@@ -48,18 +48,18 @@ def main():
 
     # scene.initCanvas()
 
-    # scene.loadModel("models/plane.obj")
+    scene.loadModel("models/plane.obj")
 
-    # scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(249 / 255, 170 / 255, 70 / 255, 0))
+    scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
+        ct.c_float * 4
+    )(*(249 / 255, 170 / 255, 70 / 255, 0))
 
     # scene.loadModel("models/king.obj")
     # scene.loadModel("models/triangle.obj")
     # scene.loadModel("models/cube.obj")
     # scene.loadModel("models/sphere.obj")
-    scene.loadModel("models/utah.obj")
-    # scene.loadModel("models/suzanne.obj")
+    # scene.loadModel("models/utah_upgraded.obj")
+    scene.loadModel("models/suzanne.obj")
     # scene.loadModel("models/casa2.obj")
     # scene.loadModel("models/car.obj")
     # scene.loadModel("models/normal_cornell_box.obj")
@@ -78,7 +78,7 @@ def main():
     ].emission = (ct.c_float * 4)(0xF6 / 255, 0xCD / 255, 0x8B / 255, 0)
     scene.sceneRenderer.materials[
         scene.sceneRenderer.spheres[1].materialID
-    ].intensity = (ct.c_float * 4)(*(12, 12, 12, 0))
+    ].intensity = (ct.c_float * 4)(*(5, 5, 5, 0))
 
     # scene.createSphere(27.5, (ct.c_float * 4)(2, -28.05, 2, 0))
     # scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))

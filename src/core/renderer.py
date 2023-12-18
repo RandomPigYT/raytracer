@@ -23,15 +23,23 @@ class Vertex(ct.Structure):
 
 class Material(ct.Structure):
     _fields_ = [
-        # ("kd", ct.c_float * 4),  # 0   12
-        # ("ks", ct.c_float * 4),  # 32    12
         ("albedo", ct.c_float * 4),
-        ("emission", ct.c_float * 4),  # 48  12
+        ("emission", ct.c_float * 4),
         ("intensity", ct.c_float * 4),
         ("refractiveIndex", ct.c_float * 4),
-        ("roughness", ct.c_float * 2),  # 16  8
+        ("roughness", ct.c_float * 2),
         ("metallic", ct.c_float),
-        ("reflectance", ct.c_float),  # 24  8
+        ("reflectance", ct.c_float),
+        ("opacity", ct.c_float),
+        ("transmissionRoughness", ct.c_float),
+        ("textureID", ct.c_int32),
+        ("roughnessMapID", ct.c_int32),
+        ("metallicMapID", ct.c_int32),
+        ("emissiveMapID", ct.c_int32),
+        ("normalMapID", ct.c_int32),
+        ("opacityMapID", ct.c_int32),
+        ("specuarMapID", ct.c_int32),
+        ("padding0", ct.c_float * 3)
     ]
 
 
@@ -99,9 +107,17 @@ class renderer:
         self.meshNames = []
 
         self.meshTransforms = []
+        self.objectTransforms = []
+
+        self.textures = (0 * ct.c_uint32)()
+        self.roughnessMaps = (0 * ct.c_uint32)()
+        self.metallicMaps = (0 * ct.c_uint32)()
+        self.emissiveMaps = (0 * ct.c_uint32)()
+        self.normalMaps = (0 * ct.c_uint32)()
+        self.opacityMaps = (0 * ct.c_uint32)()
+        self.specularMaps = (0 * ct.c_uint32)()
 
         self.vertMeshRelations = (0 * ct.c_uint32)()
-        self.vertMeshRelTex = None
 
         self.bvhs = None
         self.numBvhs = ct.c_uint32()
