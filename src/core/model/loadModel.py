@@ -30,9 +30,11 @@ def numFaces(shapes):
     return count
 
 
-def loadTexture(rendererInstance: renderer.renderer, filename, texType):
+def loadTexture(rendererInstance: renderer.renderer, filename, texType, appendTexDir=True):
+    if appendTexDir and filename != "":
+        filename = "./models/textures/" + filename
     maxSize = (2048, 2048)
-    print(filename)
+    print("Loading texture:", filename)
 
     if filename == "":
         return -1
@@ -59,7 +61,7 @@ def loadTexture(rendererInstance: renderer.renderer, filename, texType):
         image = Image.open(filename).convert("RGB")
         image.thumbnail(maxSize, Image.Resampling.LANCZOS)
 
-    except FileNotFoundError:
+    except:
         stderr.write("Failed to load texture " + filename + "\n")
         return -1
 
@@ -174,6 +176,7 @@ def loadModel(self, filename):
         self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
 
+    loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", 0, False)
     # Add materials
     for i in range(len(materials)):
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
@@ -269,7 +272,6 @@ def loadModel(self, filename):
         )
         # print(shapes[i].name)
         # print(self.sceneRenderer.materials[self.sceneRenderer.meshes[i + meshOffset].materialID].textureID)
-        print(self.sceneRenderer.meshes[i + meshOffset].materialID)
 
         startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
 

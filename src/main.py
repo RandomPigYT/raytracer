@@ -55,7 +55,7 @@ def main():
 
     # scene.initCanvas()
 
-    scene.loadModel("models/plane.obj")
+    # scene.loadModel("models/plane.obj")
 
     # scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
     #     ct.c_float * 4
@@ -71,7 +71,8 @@ def main():
     # scene.loadModel("models/casa2.obj")
     # scene.loadModel("models/car.obj")
     # scene.loadModel("models/normal_cornell_box.obj")
-    scene.loadModel("models/lamp.obj")
+    # scene.loadModel("models/lamp.obj")
+    scene.loadModel("models/office.obj")
     scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
     scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (
         ct.c_float * 4

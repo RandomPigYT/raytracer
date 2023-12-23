@@ -593,7 +593,8 @@ vec2 interpTexel(vec3 bary, uint vertIndex, int texID){
   vec2 texel = verts[vertIndex].texelCoord * u + verts[vertIndex + 1].texelCoord * v + verts[vertIndex + 2].texelCoord * w;
 
   
-  return texel;
+  return vec2(texel.x, 1.0f - texel.y);
+  // return texel;
 }
 
 float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
