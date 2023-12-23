@@ -7,6 +7,8 @@ import core.initRasterizer as ir
 import core.updateBuffers as ub
 import core.rasterize as rasterize
 import core.model.generateNormals as gn
+import OpenGL.GL as gl
+import util
 
 RAYTRACE = 0
 RASTERIZE = 1
@@ -27,6 +29,7 @@ class Material(ct.Structure):
         ("emission", ct.c_float * 4),
         ("intensity", ct.c_float * 4),
         ("refractiveIndex", ct.c_float * 4),
+        ("transmittance", ct.c_float * 4),
         ("roughness", ct.c_float * 2),
         ("metallic", ct.c_float),
         ("reflectance", ct.c_float),
@@ -38,8 +41,8 @@ class Material(ct.Structure):
         ("emissiveMapID", ct.c_int32),
         ("normalMapID", ct.c_int32),
         ("opacityMapID", ct.c_int32),
-        ("specuarMapID", ct.c_int32),
-        ("padding0", ct.c_float * 3)
+        ("specularMapID", ct.c_int32),
+        ("padding0", ct.c_float * 3),
     ]
 
 
@@ -109,13 +112,9 @@ class renderer:
         self.meshTransforms = []
         self.objectTransforms = []
 
-        self.textures = (0 * ct.c_uint32)()
-        self.roughnessMaps = (0 * ct.c_uint32)()
-        self.metallicMaps = (0 * ct.c_uint32)()
-        self.emissiveMaps = (0 * ct.c_uint32)()
-        self.normalMaps = (0 * ct.c_uint32)()
-        self.opacityMaps = (0 * ct.c_uint32)()
-        self.specularMaps = (0 * ct.c_uint32)()
+        # Texture arrays
+        # Format: [<Texture array ID>, <List of texture names>, <Texture handle>]
+        self.textures = [(0 * ct.c_uint32)(), [], (0 * ct.c_uint64)()]
 
         self.vertMeshRelations = (0 * ct.c_uint32)()
 
@@ -130,6 +129,7 @@ class renderer:
         self.bvhSSBO = None
         self.spheresSSBO = None
         self.vertMeshRelSSBO = None
+        self.texSSBO = None
 
         self.frameNum = 0
 
@@ -144,6 +144,10 @@ class renderer:
         self.meshVAO = 0
 
         self.initRasterizer()
+
+        self.deleteTextureArrays()
+
+        self.setDefaultMaterial()
 
     def render(self, voidColour=(0.663, 0.965, 0.969, 1)):
         if self.mode == RAYTRACE:
@@ -165,6 +169,24 @@ class renderer:
             ct.byref(self.numBvhs),
             ct.cast(transformedVerts, ct.POINTER(Vertex)),
             len(transformedVerts),
+        )
+
+    def setDefaultMaterial(self):
+        self.materials = util.realloc(self.materials, 1)
+        self.materials[0].albedo = (4 * ct.c_float)(
+            162.0 / 255.0, 164.0 / 255.0, 165.0 / 255.0, 0.0
+        )
+        self.materials[0].textureID = -1
+        self.materials[0].roughnessMapID = -1
+        self.materials[0].metallicMapID = -1
+        self.materials[0].emissiveMapID = -1
+        self.materials[0].normalMapID = -1
+        self.materials[0].opacityMapID = -1
+        self.materials[0].specularMapID = -1
+
+    def deleteTextureArrays(self):
+        gl.glDeleteTextures(
+            len(self.textures[0]), ct.cast(self.textures[0], ct.POINTER(ct.c_float))
         )
 
     getTransformedVerts = tv.transformedVerts

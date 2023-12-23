@@ -3,7 +3,7 @@
 
 #version 450 core
 
-#extension GL_AMD_sparse_texture : enable
+#extension GL_ARB_bindless_texture : require
 
 #define NUM_INVOCATIONS_PER_GROUP_X 40
 #define NUM_INVOCATIONS_PER_GROUP_Y 24
@@ -31,6 +31,7 @@ struct Material {
   vec4 emission;
   vec4 intensity;
   vec4 refractiveIndex;
+  vec4 transmittance;
   vec2 roughness;
   float metallic;
   float reflectance;
@@ -72,6 +73,7 @@ struct HitInfo {
   vec3 normal;
   float rayT;
   vec3 position;
+  vec3 bary;
 };
 
 struct Bvh {
@@ -96,6 +98,8 @@ layout(std430, binding = 4) buffer sphereBuf { Sphere spheres[]; };
 layout(std430, binding = 5) buffer Bvhs { Bvh bvhs[]; };
 
 layout(std430, binding = 6) buffer VertMeshRel { uint vertMeshRel[]; };
+
+layout(std430, binding = 7) buffer Textures { sampler2D textures[]; };
 
 uniform vec3 cameraPos;
 uniform vec3 cameraDir;
@@ -180,7 +184,7 @@ vec3 barycentricCoords(vec3 verts[3], vec3 p){
 HitInfo triangleIntersect(vec3 vertices[3], vec3 normals[3], vec3 rayDir, vec3 rayOrigin, mat4 transform){
   HitInfo h;
   h.didHit = true;
-  
+
   // vec3 untransformedRayOrig = rayOrigin;
   // rayOrigin -= pos;
   vertices[0] = (transform * vec4(vertices[0], 1.0f)).xyz; 
@@ -242,6 +246,8 @@ HitInfo triangleIntersect(vec3 vertices[3], vec3 normals[3], vec3 rayDir, vec3 r
   vec3 barycentric = barycentricCoords(vertices, h.position);
 
   h.normal = normalize(barycentric.x * normals[0] + barycentric.y * normals[1] + barycentric.z * normals[2]);
+  // h.bary = vec3(baryU, baryV, baryW);
+  h.bary = barycentric;
 
   return h;
 }
@@ -578,6 +584,17 @@ vec3 GGXbrdf(vec3 V, vec3 L, vec3 N, Material mat){
   return brdf;
 }
 
+vec2 interpTexel(vec3 bary, uint vertIndex, int texID){
+
+  float u = bary.x;
+  float v = bary.y;
+  float w = bary.z;
+
+  vec2 texel = verts[vertIndex].texelCoord * u + verts[vertIndex + 1].texelCoord * v + verts[vertIndex + 2].texelCoord * w;
+
+  
+  return vec2(texel.x, 1.0f - texel.y);
+}
 
 float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
 
@@ -644,6 +661,14 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     mat = isTriCloser ? materials[meshes[meshIndex].materialID] :
                         materials[spheres[sphereIndex].materialID];                       
     
+    uint tempVertIndex = triIndex * 3;
+
+    vec2 textureCoord = interpTexel(hit.bary, tempVertIndex, mat.textureID);
+    // return vec4(textureCoord, 0.0f, 1.0f);
+    // return vec4(hit.bary.xyz, 1.0f);
+
+    mat.albedo = mat.textureID != -1 ? texture(textures[mat.textureID], textureCoord) : mat.albedo;
+    
     // Perfectly vertical normals don't work properly, so this is needed to offset it by a tiny amount
     hit.normal += 0.000000001;
 
@@ -666,7 +691,11 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     float xi = random(seed);
     bool isSpecular = false;
 
-    float probability = 1.0f;
+    if (xi <= mat.metallic){
+      mat.metallic = 1.0f;
+    }
+
+    xi = random(seed);
 
     if (xi <= mat.reflectance * mat.reflectance){
       isSpecular = true;
@@ -676,6 +705,8 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
       isSpecular = true;
       mat.reflectance = 1.0f;
     }
+
+  
 
 
     float weight;
@@ -730,6 +761,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
 
 void main() {
+
 
   if (gl_GlobalInvocationID.x < uint(resolution[0]) && gl_GlobalInvocationID.y < uint(resolution[1])){
   

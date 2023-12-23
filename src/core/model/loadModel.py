@@ -11,6 +11,7 @@ import os
 import pathlib
 from PIL import Image
 import numpy as np
+import OpenGL.raw.GL.ARB.bindless_texture as bindless
 
 
 class face(ct.Structure):
@@ -29,7 +30,13 @@ def numFaces(shapes):
     return count
 
 
-def loadTexture(renderer, filename, texType):
+def loadTexture(rendererInstance: renderer.renderer, filename, texType):
+    maxSize = (2048, 2048)
+    print(filename)
+
+    if filename == "":
+        return -1
+
     # types
     # 0: diffuse texture
     # 1: roughness map
@@ -37,59 +44,100 @@ def loadTexture(renderer, filename, texType):
     # 3: emissive map
     # 4: normal map
     # 5: opacity map
-    types = [
-        renderer.textures,
-        renderer.roughnessMaps,
-        renderer.metallicMaps,
-        renderer.emissiveMaps,
-        renderer.normalMaps,
-        renderer.opacityMaps,
-        renderer.specularMaps
-    ]
+    # 6: specular map
 
-    numChannels = [
-        3,
-        1,
-        1,
-        3,
-        3,
-        1,
-        1
-    ]
+    numChannels = [3, 1, 1, 3, 3, 1, 1]
 
-    texArray = types[texType]
-    texIndex = len(texArray)
+    texArray = rendererInstance.textures
+    texIndex = len(texArray[0])
 
-    texHandlex = None
+    image = None
 
     filename = os.path.expanduser(filename)
 
     try:
-        texHandle = Image.open(filename).convert("RGB")
+        image = Image.open(filename).convert("RGB")
+        image.thumbnail(maxSize, Image.Resampling.LANCZOS)
+
     except FileNotFoundError:
         stderr.write("Failed to load texture " + filename + "\n")
-        return False
-    
-    texArray = util.realloc(texArray, len(texArray) + 1)
+        return -1
 
-    red, green, blue = texHandle.split()
+    oldLen = len(texArray[0])
+    texArray[0] = util.realloc(texArray[0], oldLen + 1)
+    texArray[0][texIndex] = gl.glGenTextures(1)
 
-    texData = np.array(texHandle).flatten() / 255
-    redData = np.array(red).flatten() / 255
+    texArray[2] = util.realloc(texArray[2], len(texArray[0]))
 
+    width, height = image.size
 
-    
+    red = None
+    if numChannels[texType] == 1:
+        red, green, blue = image.split()
 
+        red = red.convert("RGB")
 
+        green.close()
+        blue.close()
 
+    if numChannels[texType] == 1:
+        data = np.array(red).flatten() / 255
 
+    else:
+        data = np.array(image).flatten() / 255
 
+    texBaseName = os.path.basename(filename)
+
+    if texBaseName in texArray[1]:
+        texBaseName += "(" + str(texArray[1].count(texBaseName)) + ")"
+
+    texArray[1].append(texBaseName)
+
+    gl.glBindTexture(gl.GL_TEXTURE_2D, texArray[0][texIndex])
+
+    # gl.glTexImage2D(
+    #     gl.GL_TEXTURE_2D,
+    #     0,
+    #     gl.GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
+    #     width,
+    #     height,
+    #     0,
+    #     gl.GL_RGB,
+    #     gl.GL_FLOAT,
+    #     data,
+    # )
+
+    gl.glTexImage2D(
+        gl.GL_TEXTURE_2D,
+        0,
+        gl.GL_RGB32F,
+        width,
+        height,
+        0,
+        gl.GL_RGB,
+        gl.GL_FLOAT,
+        data,
+    )
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+
+    texArray[2][texIndex] = bindless.glGetTextureHandleARB(texArray[0][texIndex])
+    bindless.glMakeTextureHandleResidentARB(texArray[2][texIndex])
+
+    gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
+
+    image.close()
+
+    if numChannels[texType] == 1:
+        red.close()
+
+    print(texIndex)
+    return texIndex
 
 
 def loadModel(self, filename):
-
-    loadTexture(self.sceneRenderer, r"C:\Users\HP\Desktop\vintage-lamp-free\textures\Curves_Emissive_emissive.jpeg", 0)
-
     oldLen = len(self.sceneRenderer.vertices)
     oldMeshLen = len(self.sceneRenderer.meshes)
     oldMaterialLen = len(self.sceneRenderer.materials)
@@ -128,8 +176,50 @@ def loadModel(self, filename):
 
     # Add materials
     for i in range(len(materials)):
-        pass
-        print(materials[i].specular_texname)
+        self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
+            *materials[i].diffuse, 0.0
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].emission = (4 * ct.c_float)(
+            0.0, 0.0, 0.0, 0.0
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].refractiveIndex = (
+            4 * ct.c_float
+        )(materials[i].ior, 0.0, 0.0, 0.0)
+        self.sceneRenderer.materials[oldMaterialLen + i].transmittance = (
+            4 * ct.c_float
+        )(*materials[i].transmittance, 0.0)
+        self.sceneRenderer.materials[oldMaterialLen + i].roughness = (2 * ct.c_float)(
+            materials[i].roughness, 0.0
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].metallic = materials[
+            i
+        ].metallic
+        self.sceneRenderer.materials[oldMaterialLen + i].reflectance = materials[
+            i
+        ].specular[0]
+        self.sceneRenderer.materials[oldMaterialLen + i].opacity = materials[i].dissolve
+        self.sceneRenderer.materials[oldMaterialLen + i].transmissionRoughness = 0
+
+        self.sceneRenderer.materials[oldMaterialLen + i].textureID = loadTexture(
+            self.sceneRenderer, materials[i].diffuse_texname, 0
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].roughnessMapID = loadTexture(
+            self.sceneRenderer, materials[i].roughness_texname, 1
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].metallicMapID = loadTexture(
+            self.sceneRenderer, materials[i].metallic_texname, 2
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].emissiveMapID = loadTexture(
+            self.sceneRenderer, materials[i].emissive_texname, 3
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].normalMapID = loadTexture(
+            self.sceneRenderer, materials[i].normal_texname, 4
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
+            self.sceneRenderer, materials[i].specular_texname, 6
+        )
+    
+
 
     # Set object data
     objIndex = len(self.sceneRenderer.objects) - 1
@@ -172,7 +262,14 @@ def loadModel(self, filename):
             shapes[i].mesh.indices
         )
 
-        self.sceneRenderer.meshes[i + meshOffset].materialID = i + meshOffset
+        self.sceneRenderer.meshes[i + meshOffset].materialID = (
+            oldMaterialLen + shapes[i].mesh.material_ids[0]
+            if shapes[i].mesh.material_ids[0] != -1
+            else 0
+        )
+        # print(shapes[i].name)
+        # print(self.sceneRenderer.materials[self.sceneRenderer.meshes[i + meshOffset].materialID].textureID)
+        print(self.sceneRenderer.meshes[i + meshOffset].materialID)
 
         startingVertCount += self.sceneRenderer.meshes[i + meshOffset].numTriangles
 

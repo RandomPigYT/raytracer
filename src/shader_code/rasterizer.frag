@@ -14,6 +14,12 @@ uniform mat4 view;
 
 // layout(pixel_center_integer) in vec4 gl_FragCoord;
 
+
+vec3 gammaCorrect(vec3 x, float gamma){
+	const float invGamma = 1 / gamma;
+	return pow(x, vec3(invGamma));
+}
+
 void main(){
     float aspect = resolution[0] / resolution[1];
 
@@ -36,4 +42,6 @@ void main(){
     float multiplier = dot(-fragDir.xyz, -normalCoords.xyz);
     
     fragColour = vec4(baseColour * abs(multiplier), 1.0f);
+
+    fragColour = vec4(gammaCorrect(fragColour.rgb, 2.2), 1.0f);
 }

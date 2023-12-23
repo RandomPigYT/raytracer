@@ -1,0 +1,20 @@
+# Blender 3.5.0 MTL File: 'lamp.blend'
+# www.blender.org
+
+newmtl Kerosene_Lamp
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+illum 2
+Pr 0.500000
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_diffuse.png
+map_Ke C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_emissive.jpeg
+map_d C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_opacity.png
+norm C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_normal.png
+map_Pr C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_roughness.png
+map_Pm C:/Users/HP/Desktop/lamp/textures/Kerosene_Lamp_metallic.png

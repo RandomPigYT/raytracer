@@ -135,6 +135,15 @@ class Scene:
             ct.sizeof(ct.c_uint32),
         )
 
+    def sendTextures(self):
+        sendToShader.sendBuffer(
+            self.sceneRenderer.texSSBO,
+            7,
+            self.sceneRenderer.textures[2],
+            len(self.sceneRenderer.textures[2]),
+            ct.sizeof(ct.c_uint64),
+        )
+
     def sendSpheresToShader(self):
         sendToShader.sendBuffer(
             self.sceneRenderer.spheresSSBO,
@@ -180,6 +189,7 @@ class Scene:
         self.sceneRenderer.spheresSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.bvhSSBO = gl.glGenBuffers(1)
         self.sceneRenderer.vertMeshRelSSBO = gl.glGenBuffers(1)
+        self.sceneRenderer.texSSBO = gl.glGenBuffers(1)
 
     def allocateSSBO(self):
         self.sendVerts()
@@ -187,6 +197,7 @@ class Scene:
         self.sendVertMeshRel()
         self.sendMats()
         self.sendBvhs()
+        self.sendTextures()
         self.sendSpheresToShader()
 
         gl.glBindBuffer(gl.GL_SHADER_STORAGE_BUFFER, 0)
