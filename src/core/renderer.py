@@ -176,6 +176,7 @@ class renderer:
         self.materials[0].albedo = (4 * ct.c_float)(
             162.0 / 255.0, 164.0 / 255.0, 165.0 / 255.0, 0.0
         )
+        self.materials[0].opacity = 1.0
         self.materials[0].textureID = -1
         self.materials[0].roughnessMapID = -1
         self.materials[0].metallicMapID = -1

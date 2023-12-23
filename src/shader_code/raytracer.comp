@@ -593,7 +593,7 @@ vec2 interpTexel(vec3 bary, uint vertIndex, int texID){
   vec2 texel = verts[vertIndex].texelCoord * u + verts[vertIndex + 1].texelCoord * v + verts[vertIndex + 2].texelCoord * w;
 
   
-  return vec2(texel.x, 1.0f - texel.y);
+  return texel;
 }
 
 float GGXpdf(float roughness, vec3 H, vec3 N, vec3 L, float reflectance){
@@ -668,6 +668,12 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     // return vec4(hit.bary.xyz, 1.0f);
 
     mat.albedo = mat.textureID != -1 ? texture(textures[mat.textureID], textureCoord) : mat.albedo;
+    mat.emission = mat.emissiveMapID != -1 ? texture(textures[mat.emissiveMapID], textureCoord) : mat.emission;
+    mat.roughness = mat.roughnessMapID != -1 ? texture(textures[mat.roughnessMapID], textureCoord).xy : mat.roughness;
+    mat.metallic = mat.metallicMapID != -1 ? texture(textures[mat.metallicMapID], textureCoord).x : mat.metallic;
+    mat.reflectance = mat.specularMapID != -1 ? texture(textures[mat.specularMapID], textureCoord).x : mat.reflectance;
+    mat.opacity = mat.opacityMapID != -1 ? texture(textures[mat.opacityMapID], textureCoord).x : mat.opacity;
+    hit.normal = mat.normalMapID != -1 ? texture(textures[mat.normalMapID], textureCoord).xyz : hit.normal;
     
     // Perfectly vertical normals don't work properly, so this is needed to offset it by a tiny amount
     hit.normal += 0.000000001;
@@ -691,6 +697,15 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     float xi = random(seed);
     bool isSpecular = false;
 
+    bool refracted = false;
+    if (xi < 1 - mat.opacity){
+      mat.metallic = 0.0f;
+      mat.reflectance = 0.0f;
+      isSpecular = false;
+      refracted = true;
+    }
+
+    xi = random(seed);
     if (xi <= mat.metallic){
       mat.metallic = 1.0f;
     }
@@ -750,7 +765,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
 
 
-    rayDir = reflectedRay;
+    rayDir = refracted ? rayDir : reflectedRay;
     vec3 offset = rayDir * 0.001;
 
     rayOrigin = hit.position + offset;
