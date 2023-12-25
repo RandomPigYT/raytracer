@@ -13,8 +13,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Backdrop_baseColor.jpg
-map_Ke Backdrop_baseColor.jpg
+map_Kd textures/Backdrop_baseColor.jpg
+map_Ke textures/Backdrop_baseColor.jpg
 
 newmtl BlackTrim
 Kd 0.000000 0.000000 0.000000
@@ -43,8 +43,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Chair_baseColor.jpg
-map_Ke Chair_baseColor.jpg
+map_Kd textures/Chair_baseColor.jpg
+map_Ke textures/Chair_baseColor.jpg
 
 newmtl Chrome
 Kd 0.247883 0.247883 0.247883
@@ -89,7 +89,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Window_baseColor.jpg
+map_Kd textures/Window_baseColor.jpg
 
 newmtl Clockface
 Ks 0.500000 0.500000 0.500000
@@ -103,8 +103,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Clockface_baseColor.jpg
-map_Ke Clockface_baseColor.jpg
+map_Kd textures/Clockface_baseColor.jpg
+map_Ke textures/Clockface_baseColor.jpg
 
 newmtl Cupboard
 Ks 0.500000 0.500000 0.500000
@@ -117,9 +117,9 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Cupboard_baseColor.jpg
-map_Pm Cupboard_metallicRoughness_metal_scale2.jpg
-map_Pr Cupboard_metallicRoughness_rough.jpg
+map_Kd textures/Cupboard_baseColor.jpg
+map_Pm textures/Cupboard_metallicRoughness_metal_scale2.jpg
+map_Pr textures/Cupboard_metallicRoughness_rough.jpg
 
 newmtl Curtain
 Ks 0.500000 0.500000 0.500000
@@ -134,7 +134,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Curtain_baseColor.jpg
+map_Kd textures/Curtain_baseColor.jpg
 
 newmtl DeskPainting
 Ks 0.500000 0.500000 0.500000
@@ -149,7 +149,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd DeskPainting_baseColor.jpg
+map_Kd textures/DeskPainting_baseColor.jpg
 
 newmtl DeskPaintingFrame
 Kd 0.800000 0.382316 0.367500
@@ -179,7 +179,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Dirt_baseColor.jpg
+map_Kd textures/Dirt_baseColor.jpg
 
 newmtl Floor
 Ks 0.500000 0.500000 0.500000
@@ -194,7 +194,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Floor_baseColor.jpg
+map_Kd textures/Floor_baseColor.jpg
 
 newmtl Keyboard
 Ks 0.500000 0.500000 0.500000
@@ -208,8 +208,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Keyboard_baseColor.jpg
-map_Ke Keyboard_baseColor.jpg
+map_Kd textures/Keyboard_baseColor.jpg
+map_Ke textures/Keyboard_baseColor.jpg
 
 newmtl Leaves
 Kd 0.360004 0.488497 0.253749
@@ -268,8 +268,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Notepad_baseColor_cutoff9.png
-map_d Notepad_baseColor_cutoff9.png
+map_Kd textures/Notepad_baseColor_cutoff9.png
+map_d textures/Notepad_baseColor_cutoff9.png
 
 newmtl NotepadBook
 Kd 0.800000 0.800000 0.800000
@@ -299,7 +299,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Painting_baseColor.jpg
+map_Kd textures/Painting_baseColor.jpg
 
 newmtl Painting2
 Ks 0.500000 0.500000 0.500000
@@ -314,7 +314,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Painting2_baseColor.jpg
+map_Kd textures/Painting2_baseColor.jpg
 
 newmtl Painting3
 Ks 0.500000 0.500000 0.500000
@@ -329,7 +329,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Painting3_baseColor.jpg
+map_Kd textures/Painting3_baseColor.jpg
 
 newmtl Plug
 Ks 0.500000 0.500000 0.500000
@@ -343,8 +343,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Plug_baseColor.jpg
-map_Ke Plug_baseColor.jpg
+map_Kd textures/Plug_baseColor.jpg
+map_Ke textures/Plug_baseColor.jpg
 
 newmtl Roof
 Ks 0.500000 0.500000 0.500000
@@ -358,9 +358,9 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Roof_baseColor.jpg
-map_Ke Roof_baseColor.jpg
-map_Bump -bm 1.000000 Roof_normal.jpg
+map_Kd textures/Roof_baseColor.jpg
+map_Ke textures/Roof_baseColor.jpg
+norm textures/Roof_normal.jpg
 
 newmtl Screen
 Kd 0.000000 0.000000 0.000000
@@ -390,7 +390,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd SkirtingBoard_baseColor.jpg
+map_Kd textures/SkirtingBoard_baseColor.jpg
 
 newmtl Table
 Kd 0.446559 0.446559 0.446559
@@ -419,8 +419,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Towel_baseColor_scale1.jpg
-map_Ke Towel_baseColor.jpg
+map_Kd textures/Towel_baseColor_scale1.jpg
+map_Ke textures/Towel_baseColor.jpg
 
 newmtl Wall
 Ks 0.500000 0.500000 0.500000
@@ -435,8 +435,8 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Wall_baseColor.jpg
-map_Bump -bm 1.000000 Wall_normal_scale0_norm.jpg
+map_Kd textures/Wall_baseColor.jpg
+norm textures/Wall_normal_scale0_norm.jpg
 
 newmtl WallPictureFrames
 Ks 0.500000 0.500000 0.500000
@@ -451,7 +451,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd WallPictureFrames_baseColor.jpg
+map_Kd textures/WallPictureFrames_baseColor.jpg
 
 newmtl Window
 Ks 0.500000 0.500000 0.500000
@@ -466,7 +466,7 @@ Pc 0.000000
 Pcr 0.030000
 aniso 0.000000
 anisor 0.000000
-map_Kd Window_baseColor.jpg
+map_Kd textures/Window_baseColor.jpg
 
 newmtl WindowFrame
 Kd 0.000000 0.000000 0.000000

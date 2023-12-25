@@ -55,6 +55,18 @@ def material(materialID, num):
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].intensity = (*intensity, 1)
 
+    status, op = imgui.drag_float(
+        "opacity " + str(num),
+        sm.currentScene.sceneRenderer.materials[materialID].opacity,
+        0.001,
+        format="%0.3f",
+        min_value=0,
+        max_value=1,
+    )
+
+    if status:
+        sm.currentScene.sceneRenderer.materials[materialID].opacity = op
+
     status, ref = imgui.drag_float3(
         "refractive index " + str(num),
         *(sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex[:-1]),
@@ -142,7 +154,7 @@ def meshTransform(mesh, meshNum):
     mesh.transform = util.mat4ToFloatArray4Array4(transform)
 
     sm.currentScene.resetFrame()
-    if shouldUpdateBvh:
+    if shouldUpdateBvh and sm.currentScene.sceneRenderer.mode == 0:
         sm.currentScene.sceneRenderer.updateBvh()
         sm.currentScene.sendBvhs()
 
@@ -167,7 +179,7 @@ def drawModel(window):
 
     meshIndex = 0
     for i in sm.currentScene.sceneRenderer.meshes:
-        imgui.text("Mesh " + str(meshIndex + 1))
+        imgui.text(sm.currentScene.sceneRenderer.meshNames[meshIndex])
         meshTransform(i, meshIndex + 1)
         material(i.materialID, meshIndex + 1)
         meshIndex += 1

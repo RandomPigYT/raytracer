@@ -30,11 +30,13 @@ def numFaces(shapes):
     return count
 
 
-def loadTexture(rendererInstance: renderer.renderer, filename, texType, appendTexDir=True):
+def loadTexture(
+    rendererInstance: renderer.renderer, filename, modelDir, texType, appendTexDir=True
+):
     if appendTexDir and filename != "":
-        filename = "./models/textures/" + filename
+        filename = os.path.join(modelDir, filename)
+        print("Loading texture:", filename)
     maxSize = (2048, 2048)
-    print("Loading texture:", filename)
 
     if filename == "":
         return -1
@@ -176,7 +178,8 @@ def loadModel(self, filename):
         self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
 
-    loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", 0, False)
+    loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
+    modelDir = os.path.dirname(os.path.realpath(filename))
     # Add materials
     for i in range(len(materials)):
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
@@ -184,6 +187,9 @@ def loadModel(self, filename):
         )
         self.sceneRenderer.materials[oldMaterialLen + i].emission = (4 * ct.c_float)(
             0.0, 0.0, 0.0, 0.0
+        )
+        self.sceneRenderer.materials[oldMaterialLen + i].intensity = (4 * ct.c_float)(
+            1, 0, 0, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].refractiveIndex = (
             4 * ct.c_float
@@ -204,25 +210,23 @@ def loadModel(self, filename):
         self.sceneRenderer.materials[oldMaterialLen + i].transmissionRoughness = 0
 
         self.sceneRenderer.materials[oldMaterialLen + i].textureID = loadTexture(
-            self.sceneRenderer, materials[i].diffuse_texname, 0
+            self.sceneRenderer, materials[i].diffuse_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].roughnessMapID = loadTexture(
-            self.sceneRenderer, materials[i].roughness_texname, 1
+            self.sceneRenderer, materials[i].roughness_texname, modelDir, 1
         )
         self.sceneRenderer.materials[oldMaterialLen + i].metallicMapID = loadTexture(
-            self.sceneRenderer, materials[i].metallic_texname, 2
+            self.sceneRenderer, materials[i].metallic_texname, modelDir, 2
         )
         self.sceneRenderer.materials[oldMaterialLen + i].emissiveMapID = loadTexture(
-            self.sceneRenderer, materials[i].emissive_texname, 3
+            self.sceneRenderer, materials[i].emissive_texname, modelDir, 3
         )
         self.sceneRenderer.materials[oldMaterialLen + i].normalMapID = loadTexture(
-            self.sceneRenderer, materials[i].normal_texname, 4
+            self.sceneRenderer, materials[i].normal_texname, modelDir, 4
         )
         self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
-            self.sceneRenderer, materials[i].specular_texname, 6
+            self.sceneRenderer, materials[i].specular_texname, modelDir, 6
         )
-    
-
 
     # Set object data
     objIndex = len(self.sceneRenderer.objects) - 1

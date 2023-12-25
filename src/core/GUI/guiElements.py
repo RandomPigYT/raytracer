@@ -67,4 +67,10 @@ def elements(window):
 
     if status:
         sm.currentScene.sceneRenderer.raysPerPixel = raysPerPixel
+
+    if imgui.button("Toggle Raytracy"):
+        sm.currentScene.resetFrame()
+        sm.currentScene.sceneRenderer.updateBvh()
+        sm.currentScene.sendBvhs()
+        sm.currentScene.sceneRenderer.mode ^= 1
     imgui.end()

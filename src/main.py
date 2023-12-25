@@ -50,7 +50,7 @@ def main():
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 0)
+    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 1)
     # scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1280, 720), 0)
 
     # scene.initCanvas()

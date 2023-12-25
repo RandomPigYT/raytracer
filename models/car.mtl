@@ -1,0 +1,33 @@
+# Blender 3.5.0 MTL File: 'car.blend'
+# www.blender.org
+
+newmtl glass
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd textures\glass_baseColor.png
+map_Pm textures\glass_metallicRoughness_metal_scale0.jpg
+map_Pr textures\glass_metallicRoughness_rough.jpg
+map_d textures\glass_baseColor.png
+
+newmtl material
+Ks 0.500000 0.500000 0.500000
+Ni 1.450000
+d 1.000000
+illum 2
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000
+map_Kd textures\material_baseColor.jpg
+map_Pm textures\material_metallicRoughness_metal.jpg
+map_Pr textures\material_metallicRoughness_rough.jpg
+map_Ke textures\material_emissive.jpg
+norm textures\material_normal.jpg
