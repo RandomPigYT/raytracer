@@ -196,7 +196,7 @@ Iterable	include/Fast-BVH/include/FastBVH/Iterable.h	/^class Iterable final {$/;
 JoinPath	include/Fast-BVH/examples/tiny_obj_loader.h	/^static std::string JoinPath(const std::string &dir,$/;"	f	namespace:tinyobj	typeref:typename:std::string
 LDFLAGS	Makefile	/^ 	LDFLAGS = $(WINFLAGS) -lstdc++$/;"	m
 LDFLAGS	Makefile	/^LDFLAGS:=-lm -I.\/include\/Fast-BVH\/include -lstdc++ $/;"	m
-LEFT	src/constructBvh_depricated.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
+LEFT	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
 LIB	Makefile	/^LIB:=lib$/;"	m
 LIBTARGET	Makefile	/^LIBTARGET:=$(LIB)\/extension.so$/;"	m
 LOG_ERROR	include/Fast-BVH/examples/Log.h	/^#define LOG_ERROR(/;"	d
@@ -208,11 +208,9 @@ List	include/Fast-BVH/tests/BuildStrategy.cxx	/^  using List = std::list<T>;$/;"
 LoadMtl	include/Fast-BVH/examples/tiny_obj_loader.h	/^void LoadMtl(std::map<std::string, int> *material_map,$/;"	f	namespace:tinyobj	typeref:typename:void
 LoadObj	include/Fast-BVH/examples/tiny_obj_loader.h	/^bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,$/;"	f	namespace:tinyobj	typeref:typename:bool
 LoadObjWithCallback	include/Fast-BVH/examples/tiny_obj_loader.h	/^bool LoadObjWithCallback(std::istream &inStream, const callback_t &callback,$/;"	f	namespace:tinyobj	typeref:typename:bool
-MAX	constructBvh.cpp	/^T MAX(T a, T b) {$/;"	f	typeref:typename:T
-MAX	src/constructBvh_depricated.c	/^float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
-MAX_TRIS_PER_NODE	src/constructBvh_depricated.c	/^#define MAX_TRIS_PER_NODE /;"	d	file:
-MIN	constructBvh.cpp	/^T MIN(T a, T b) {$/;"	f	typeref:typename:T
-MIN	src/constructBvh_depricated.c	/^float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
+MAX	src/constructBvh.c	/^float MAX(float x, float y) { return x > y ? x : y; }$/;"	f	typeref:typename:float
+MAX_TRIS_PER_NODE	src/constructBvh.c	/^#define MAX_TRIS_PER_NODE /;"	d	file:
+MIN	src/constructBvh.c	/^float MIN(float x, float y) { return x < y ? x : y; }$/;"	f	typeref:typename:float
 MODEL_PATH	include/Fast-BVH/benchmark/main.cpp	/^#define MODEL_PATH /;"	d	file:
 MaterialFileReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^  explicit MaterialFileReader(const std::string &mtl_basedir)$/;"	f	class:tinyobj::MaterialFileReader
 MaterialFileReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^class MaterialFileReader : public MaterialReader {$/;"	c	namespace:tinyobj
@@ -220,7 +218,6 @@ MaterialReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^  MaterialReader() 
 MaterialReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^class MaterialReader {$/;"	c	namespace:tinyobj
 MaterialStreamReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^  explicit MaterialStreamReader(std::istream &inStream)$/;"	f	class:tinyobj::MaterialStreamReader
 MaterialStreamReader	include/Fast-BVH/examples/tiny_obj_loader.h	/^class MaterialStreamReader : public MaterialReader {$/;"	c	namespace:tinyobj
-Node	constructBvh.cpp	/^using Node = FastBVH::ConstIterable<FastBVH::Node<float>>;$/;"	t	typeref:typename:FastBVH::ConstIterable<FastBVH::Node<float>>	file:
 Node	include/Fast-BVH/include/FastBVH/BVH.h	/^struct Node final {$/;"	s	namespace:FastBVH
 NodeArray	include/Fast-BVH/include/FastBVH/BVH.h	/^using NodeArray = std::vector<Node<Float>>;$/;"	t	namespace:FastBVH	typeref:typename:std::vector<Node<Float>>
 OBJ	Makefile	/^OBJ:=obj$/;"	m
@@ -238,7 +235,7 @@ Preparing the Scene Data	include/Fast-BVH/doxygen/GettingStarted.md	/^### Prepar
 PrimGroup	include/Fast-BVH/examples/tiny_obj_loader.h	/^struct PrimGroup {$/;"	s	namespace:tinyobj
 Primitive	include/Fast-BVH/tests/Primitive.h	/^struct Primitive final {$/;"	s	namespace:FastBVH::Testing
 RAYTRACE_EXTENSION_H	include/extension.h	/^#define RAYTRACE_EXTENSION_H$/;"	d
-RIGHT	src/constructBvh_depricated.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
+RIGHT	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	e	enum:side_e	file:
 Ray	include/Fast-BVH/benchmark/FaceIntersector.h	/^  using Ray = FastBVH::Ray<float>;$/;"	t	class:FastBVH::Benchmark::FaceIntersector	typeref:typename:FastBVH::Ray<float>
 Ray	include/Fast-BVH/include/FastBVH/Ray.h	/^  constexpr Ray(const Vec3& o, const Vec3& d) noexcept$/;"	f	struct:FastBVH::Ray
 Ray	include/Fast-BVH/include/FastBVH/Ray.h	/^struct Ray final {$/;"	s	namespace:FastBVH
@@ -297,9 +294,9 @@ Visual Studio Reference Sheet	src/c-vector/README.md	/^# Visual Studio Reference
 WINFLAGS	Makefile	/^WINFLAGS:=-L\/usr\/x86_64-mingw32\/bin\/cglm.dll -I.\/include\/Fast-BVH\/include$/;"	m
 Warning	include/Fast-BVH/examples/tiny_obj_loader.h	/^  const std::string &Warning() const { return warning_; }$/;"	f	class:tinyobj::ObjReader	typeref:typename:const std::string &
 What About Structures?	src/c-vector/README.md	/^# What About Structures?$/;"	c
-X_AXIS	src/constructBvh_depricated.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
-Y_AXIS	src/constructBvh_depricated.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
-Z_AXIS	src/constructBvh_depricated.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
+X_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
+Y_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
+Z_AXIS	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	e	enum:axis_e	file:
 __anon19e08f4f0111	include/Fast-BVH/examples/CubeOfSpheres.cpp	/^namespace {$/;"	n	file:
 __anon19e08f4f0202	include/Fast-BVH/examples/CubeOfSpheres.cpp	/^  auto trace_kernel = [traverser](const Ray<float>& ray) {$/;"	f	function:main	file:
 __anon27f14bb20111	include/Fast-BVH/benchmark/main.cpp	/^namespace {$/;"	n	namespace:FastBVH::Benchmark	file:
@@ -338,13 +335,13 @@ anisotropy	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t anisotropy;   
 anisotropy_rotation	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t anisotropy_rotation;  \/\/ anisor. [0, 1] default 0$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
 array	include/Fast-BVH/include/FastBVH/Iterable.h	/^  T* array;$/;"	m	class:FastBVH::Iterable	typeref:typename:T *
 array	include/Fast-BVH/include/FastBVH/Iterable.h	/^  const T* array;$/;"	m	class:FastBVH::ConstIterable	typeref:typename:const T *
-assignHitMissIndices	src/constructBvh_depricated.c	/^void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,$/;"	f	typeref:typename:void
+assignHitMissIndices	src/constructBvh.c	/^void assignHitMissIndices(struct bvh_t* b, struct bvhNodeInfo_t* bvhInfo,$/;"	f	typeref:typename:void
 attrib	include/Fast-BVH/benchmark/FaceIntersector.h	/^  const tinyobj::attrib_t& attrib;$/;"	m	class:FastBVH::Benchmark::FaceIntersector	typeref:typename:const tinyobj::attrib_t &
 attrib	include/Fast-BVH/examples/ObjFile.cpp	/^  const tinyobj::attrib_t& attrib;$/;"	m	class:__anonef77d1dc0111::FaceIntersector	typeref:typename:const tinyobj::attrib_t &	file:
 attrib_	include/Fast-BVH/examples/tiny_obj_loader.h	/^  attrib_t attrib_;$/;"	m	class:tinyobj::ObjReader	typeref:typename:attrib_t
 attrib_t	include/Fast-BVH/examples/tiny_obj_loader.h	/^  attrib_t() {}$/;"	f	struct:tinyobj::attrib_t
 attrib_t	include/Fast-BVH/examples/tiny_obj_loader.h	/^struct attrib_t {$/;"	s	namespace:tinyobj
-axis_e	src/constructBvh_depricated.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	g	file:
+axis_e	src/constructBvh.c	/^enum axis_e { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };$/;"	g	file:
 bbox	include/Fast-BVH/include/FastBVH/BVH.h	/^  BBox<Float> bbox;$/;"	m	struct:FastBVH::Node	typeref:typename:BBox<Float>
 begin	include/Fast-BVH/include/FastBVH/Iterable.h	/^  inline auto begin() const noexcept { return array; }$/;"	f	class:FastBVH::ConstIterable	typeref:typename:auto
 begin	include/Fast-BVH/include/FastBVH/Iterable.h	/^  inline auto begin() const noexcept { return array; }$/;"	f	class:FastBVH::Iterable	typeref:typename:auto
@@ -359,11 +356,11 @@ bump_multiplier	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t bump_mult
 bump_texname	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string bump_texname;                \/\/ map_bump, map_Bump, bump$/;"	m	struct:tinyobj::_material_t	typeref:typename:std::string
 bump_texopt	include/Fast-BVH/examples/tiny_obj_loader.h	/^  texture_option_t bump_texopt;$/;"	m	struct:tinyobj::_material_t	typeref:typename:texture_option_t
 bvh	include/Fast-BVH/include/FastBVH/Traverser.h	/^  const BVH<Float, Primitive>& bvh;$/;"	m	class:FastBVH::Traverser	typeref:typename:const BVH<Float,Primitive> &
-bvhNodeInfo_t	src/constructBvh_depricated.c	/^struct bvhNodeInfo_t {$/;"	s	file:
+bvhNodeInfo_t	src/constructBvh.c	/^struct bvhNodeInfo_t {$/;"	s	file:
 bvh_t	include/extension.h	/^struct bvh_t {$/;"	s
-calcCentroidSpan	src/constructBvh_depricated.c	/^float* calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {$/;"	f	typeref:typename:float *
-calcCentroids	src/constructBvh_depricated.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
-calcSurfaceArea	src/constructBvh_depricated.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
+calcCentroidSpan	src/constructBvh.c	/^float* calcCentroidSpan(vec4* centroids, uint32_t* triangles, enum axis_e axis) {$/;"	f	typeref:typename:float *
+calcCentroids	src/constructBvh.c	/^vec4* calcCentroids(struct sceneInfo_t* s) {$/;"	f	typeref:typename:vec4 *
+calcSurfaceArea	src/constructBvh.c	/^float calcSurfaceArea(vec4* volume) {$/;"	f	typeref:typename:float
 callback_t	include/Fast-BVH/examples/tiny_obj_loader.h	/^} callback_t;$/;"	t	namespace:tinyobj	typeref:struct:tinyobj::callback_t_
 callback_t_	include/Fast-BVH/examples/tiny_obj_loader.h	/^  callback_t_()$/;"	f	struct:tinyobj::callback_t_
 callback_t_	include/Fast-BVH/examples/tiny_obj_loader.h	/^typedef struct callback_t_ {$/;"	s	namespace:tinyobj
@@ -378,7 +375,7 @@ center	include/Fast-BVH/examples/CubeOfSpheres.cpp	/^  Vector3<Float> center;  \
 clamp	include/Fast-BVH/examples/tiny_obj_loader.h	/^  bool clamp;               \/\/ -clamp (default false)$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:bool
 clean	Makefile	/^clean:$/;"	t
 clean	include/Fast-BVH/Makefile	/^clean:$/;"	t
-cleanBvhInfo	src/constructBvh_depricated.c	/^void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo) {$/;"	f	typeref:typename:void
+cleanBvhInfo	src/constructBvh.c	/^void cleanBvhInfo(struct bvhNodeInfo_t* bvhInfo) {$/;"	f	typeref:typename:void
 clear	include/Fast-BVH/examples/tiny_obj_loader.h	/^  void clear() {$/;"	f	struct:tinyobj::PrimGroup	typeref:typename:void
 clearcoat_roughness	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t clearcoat_roughness;  \/\/ [0, 1] default 0$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
 clearcoat_thickness	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t clearcoat_thickness;  \/\/ [0, 1] default 0$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
@@ -388,10 +385,9 @@ colors	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> color
 colorspace	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string colorspace;  \/\/ Explicitly specify color space of stored texel$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:std::string
 combineFaces	include/Fast-BVH/benchmark/main.cpp	/^std::vector<Face> combineFaces(const std::vector<tinyobj::shape_t>& shapes) {$/;"	f	namespace:FastBVH::Benchmark::__anon27f14bb20111	typeref:typename:std::vector<Face>
 combineFaces	include/Fast-BVH/examples/ObjFile.cpp	/^std::vector<Face> combineFaces(const std::vector<tinyobj::shape_t>& shapes) {$/;"	f	namespace:__anonef77d1dc0111	typeref:typename:std::vector<Face>
-constructBvh	constructBvh.cpp	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
-constructBvh	src/constructBvh_depricated.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
-constructTree	src/constructBvh_depricated.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void
-constructVolumes	src/constructBvh_depricated.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
+constructBvh	src/constructBvh.c	/^struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,$/;"	f	typeref:struct:bvh_t *
+constructTree	src/constructBvh.c	/^void constructTree(struct bvh_t** b, struct bvhNodeInfo_t** bvhInfo,$/;"	f	typeref:typename:void
+constructVolumes	src/constructBvh.c	/^vec4* constructVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 contrast	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t contrast;          \/\/ gain_value in -mm option (default 1)$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:real_t
 copyPixelData	include/Fast-BVH/benchmark/Scheduler.h	/^  std::vector<unsigned char> copyPixelData() const { return pixels; }$/;"	f	class:FastBVH::Benchmark::Scheduler	typeref:typename:std::vector<unsigned char>
 corner1	include/extension.h	/^  vec4 corner1;$/;"	m	struct:bvh_t	typeref:typename:vec4
@@ -399,7 +395,6 @@ corner2	include/extension.h	/^  vec4 corner2;$/;"	m	struct:bvh_t	typeref:typenam
 count	include/Fast-BVH/include/FastBVH/Iterable.h	/^  std::size_t count;$/;"	m	class:FastBVH::ConstIterable	typeref:typename:std::size_t
 count	include/Fast-BVH/include/FastBVH/Iterable.h	/^  std::size_t count;$/;"	m	class:FastBVH::Iterable	typeref:typename:std::size_t
 countLeafs	include/Fast-BVH/include/FastBVH/BVH.h	/^  auto countLeafs() const noexcept {$/;"	f	class:FastBVH::BVH	typeref:typename:auto
-createBBox	constructBvh.cpp	/^FastBVH::BBox<float> createBBox(const struct triangle_t& tri) {$/;"	f	typeref:typename:FastBVH::BBox<float>
 cross	include/Fast-BVH/include/FastBVH/Vector3.h	/^Vector3<Float> cross(const Vector3<Float>& a,$/;"	f	namespace:FastBVH	typeref:typename:Vector3<Float>
 cxxflags	include/Fast-BVH/CMakeLists.txt	/^  set(cxxflags ${gnu_cxxflags})$/;"	v
 d	include/Fast-BVH/include/FastBVH/Ray.h	/^  Vec3 d;$/;"	m	struct:FastBVH::Ray	typeref:typename:Vec3
@@ -438,16 +433,14 @@ face_t	include/extension.h	/^struct face_t {$/;"	s
 faces	include/Fast-BVH/benchmark/FaceIntersector.h	/^  const std::vector<Face>& faces;$/;"	m	class:FastBVH::Benchmark::FaceIntersector	typeref:typename:const std::vector<Face> &
 faces	include/Fast-BVH/examples/ObjFile.cpp	/^  const std::vector<Face>& faces;$/;"	m	class:__anonef77d1dc0111::FaceIntersector	typeref:typename:const std::vector<Face> &	file:
 findGoodCameraPosition	include/Fast-BVH/examples/ObjFile.cpp	/^FastBVH::Vector3<float> findGoodCameraPosition(const FastBVH::BVH<float, uint32_t>& bvh) {$/;"	f	namespace:__anonef77d1dc0111	typeref:typename:FastBVH::Vector3<float>
-findOptimalVolumes	src/constructBvh_depricated.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
-findParentSibling	constructBvh.cpp	/^int64_t findParentSibling(Node nodes, int64_t* parents, uint32_t node,$/;"	f	typeref:typename:int64_t
+findOptimalVolumes	src/constructBvh.c	/^vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,$/;"	f	typeref:typename:vec4 *
 fixIndex	include/Fast-BVH/examples/tiny_obj_loader.h	/^static inline bool fixIndex(int idx, int n, int *ret) {$/;"	f	namespace:tinyobj	typeref:typename:bool
 floatValues	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> floatValues;$/;"	m	struct:tinyobj::__anonbe5b39fa0308	typeref:typename:std::vector<real_t>
 format	Makefile	/^format:$/;"	t
-freeBvh	constructBvh.cpp	/^int freeBvh(struct bvh_t* volumes) {$/;"	f	typeref:typename:int
-freeBvh	src/constructBvh_depricated.c	/^int freeBvh(struct bvh_t* volumes) {$/;"	f	typeref:typename:int
+freeBvh	src/constructBvh.c	/^int freeBvh(struct bvh_t* volumes) {$/;"	f	typeref:typename:int
 generateVerts	src/generateVerts.c	/^void generateVerts(struct vertex_t** outVecBuf, float* v, float* vn, float* vt,$/;"	f	typeref:typename:void
 getCenter	include/Fast-BVH/include/FastBVH/BBox.h	/^  Vec3 getCenter() const noexcept { return (max + min) * Float(0.5); }$/;"	f	struct:FastBVH::BBox	typeref:typename:Vec3
-getCorners	src/constructBvh_depricated.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {$/;"	f	typeref:typename:vec4 *
+getCorners	src/constructBvh.c	/^vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {$/;"	f	typeref:typename:vec4 *
 getHitPosition	include/Fast-BVH/include/FastBVH/Intersection.h	/^  Vec3 getHitPosition(const Vec3& ray_pos, const Vec3& ray_dir) const noexcept {$/;"	f	struct:FastBVH::Intersection	typeref:typename:Vec3
 getNodes	include/Fast-BVH/include/FastBVH/BVH.h	/^  inline auto getNodes() const noexcept {$/;"	f	class:FastBVH::BVH	typeref:typename:auto
 getPrimitives	include/Fast-BVH/include/FastBVH/BVH.h	/^  inline auto getPrimitives() const noexcept { return primitives; }$/;"	f	class:FastBVH::BVH	typeref:typename:auto
@@ -456,7 +449,6 @@ group_cb	include/Fast-BVH/examples/tiny_obj_loader.h	/^  void (*group_cb)(void *
 headers	include/Fast-BVH/Makefile	/^headers := include\/FastBVH.h \\$/;"	m
 hitIndex	include/extension.h	/^  int32_t hitIndex;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 i	include/Fast-BVH/include/FastBVH/Traverser.h	/^  uint32_t i;$/;"	m	struct:FastBVH::TraverserImpl::Traversal	typeref:typename:uint32_t
-id	constructBvh.cpp	/^  uint32_t id;$/;"	m	struct:triangle_t	typeref:typename:uint32_t	file:
 illum	include/Fast-BVH/examples/tiny_obj_loader.h	/^  int illum;$/;"	m	struct:tinyobj::_material_t	typeref:typename:int
 imfchan	include/Fast-BVH/examples/tiny_obj_loader.h	/^  char imfchan;  \/\/ -imfchan (the default for bump is 'l' and for decal is 'm')$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:char
 img_x_res	include/Fast-BVH/benchmark/Scheduler.h	/^  std::size_t img_x_res;$/;"	m	class:FastBVH::Benchmark::Scheduler	typeref:typename:std::size_t
@@ -473,10 +465,8 @@ intersect	include/Fast-BVH/include/FastBVH/BBox.h	/^bool BBox<Float>::intersect(
 intersector	include/Fast-BVH/include/FastBVH/Traverser.h	/^  Intersector intersector;$/;"	m	class:FastBVH::Traverser	typeref:typename:Intersector
 inv_d	include/Fast-BVH/include/FastBVH/Ray.h	/^  Vec3 inv_d;$/;"	m	struct:FastBVH::Ray	typeref:typename:Vec3
 ior	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t ior;       \/\/ index of refraction$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
-isInternalLeft	constructBvh.cpp	/^bool isInternalLeft(Node nodes, uint32_t node, int64_t parent) {$/;"	f	typeref:typename:bool
-isInternalRight	constructBvh.cpp	/^bool isInternalRight(Node nodes, uint32_t node, int64_t parent) {$/;"	f	typeref:typename:bool
 isLeaf	include/Fast-BVH/include/FastBVH/BVH.h	/^  inline constexpr bool isLeaf() const noexcept { return right_offset == 0; }$/;"	f	struct:FastBVH::Node	typeref:typename:bool
-left	src/constructBvh_depricated.c	/^  int64_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
+left	src/constructBvh.c	/^  int64_t left;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 length	include/Fast-BVH/include/FastBVH/Vector3.h	/^inline Float length(const Vector3<Float>& a) noexcept {$/;"	f	namespace:FastBVH	typeref:typename:Float
 length	src/c-vector/vec.c	/^  vec_size_t length;$/;"	m	struct:vector_data	typeref:typename:vec_size_t	file:
 lib	Makefile	/^lib: $(LIBTARGET)$/;"	t
@@ -541,7 +531,7 @@ normalize	include/Fast-BVH/include/FastBVH/Vector3.h	/^inline Vector3<Float> nor
 normals	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> normals;         \/\/ 'vn'$/;"	m	struct:tinyobj::attrib_t	typeref:typename:std::vector<real_t>
 now	include/Fast-BVH/examples/Stopwatch.h	/^  static TimePoint now() noexcept { return Clock::now(); }$/;"	f	class:FastBVH::Stopwatch	typeref:typename:TimePoint
 numTris	include/extension.h	/^  uint32_t numTris;$/;"	m	struct:bvh_t	typeref:typename:uint32_t
-numVerts	src/constructBvh_depricated.c	/^  uint32_t numVerts;$/;"	m	struct:sceneInfo_t	typeref:typename:uint32_t	file:
+numVerts	src/constructBvh.c	/^  uint32_t numVerts;$/;"	m	struct:sceneInfo_t	typeref:typename:uint32_t	file:
 num_face_vertices	include/Fast-BVH/examples/tiny_obj_loader.h	/^      num_face_vertices;          \/\/ The number of vertices per$/;"	m	struct:tinyobj::__anonbe5b39fa0508	typeref:typename:std::vector<unsigned char>
 num_ints	include/Fast-BVH/examples/tiny_obj_loader.h	/^  int num_ints;$/;"	m	struct:tinyobj::tag_sizes	typeref:typename:int
 num_line_vertices	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<int> num_line_vertices;  \/\/ The number of vertices per line.$/;"	m	struct:tinyobj::__anonbe5b39fa0608	typeref:typename:std::vector<int>
@@ -574,7 +564,7 @@ operator []	include/Fast-BVH/include/FastBVH/Iterable.h	/^  const auto& operator
 operator []	include/Fast-BVH/include/FastBVH/Vector3.h	/^  inline Float& operator[](const unsigned int i) { return (&x)[i]; }$/;"	f	struct:FastBVH::Vector3	typeref:typename:Float &
 operator []	include/Fast-BVH/include/FastBVH/Vector3.h	/^  inline const Float& operator[](const unsigned int i) const noexcept {$/;"	f	struct:FastBVH::Vector3	typeref:typename:const Float &
 operator bool	include/Fast-BVH/include/FastBVH/Intersection.h	/^  operator bool() const noexcept {$/;"	f	struct:FastBVH::Intersection
-optimalVolumeInAxis	src/constructBvh_depricated.c	/^vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,$/;"	f	typeref:typename:vec4 *
+optimalVolumeInAxis	src/constructBvh.c	/^vec4* optimalVolumeInAxis(float* cost, enum axis_e axis, struct sceneInfo_t* s,$/;"	f	typeref:typename:vec4 *
 origin_offset	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t origin_offset[3];  \/\/ -o u [v [w]] (default 0 0 0)$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:real_t[3]
 pad0	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t pad0;$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
 pad2	include/Fast-BVH/examples/tiny_obj_loader.h	/^  int pad2;$/;"	m	struct:tinyobj::_material_t	typeref:typename:int
@@ -582,8 +572,7 @@ pad_	include/Fast-BVH/examples/tiny_obj_loader.h	/^  int pad_;$/;"	m	struct:tiny
 padding0	include/extension.h	/^  int32_t padding0;$/;"	m	struct:bvh_t	typeref:typename:int32_t
 padding2	include/extension.h	/^  vec2 padding2;$/;"	m	struct:vertex_t	typeref:typename:vec2
 parent	include/Fast-BVH/include/FastBVH/BuildStrategy1.h	/^  uint32_t parent;$/;"	m	struct:FastBVH::Strategy1::BuildEntry	typeref:typename:uint32_t
-parent	src/constructBvh_depricated.c	/^  int64_t parent;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
-parseBvh	constructBvh.cpp	/^void parseBvh(struct bvh_t* bvh,$/;"	f	typeref:typename:void
+parent	src/constructBvh.c	/^  int64_t parent;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 parseInt	include/Fast-BVH/examples/tiny_obj_loader.h	/^static inline int parseInt(const char **token) {$/;"	f	namespace:tinyobj	typeref:typename:int
 parseOnOff	include/Fast-BVH/examples/tiny_obj_loader.h	/^static inline bool parseOnOff(const char **token, bool default_value = true) {$/;"	f	namespace:tinyobj	typeref:typename:bool
 parseRawTriple	include/Fast-BVH/examples/tiny_obj_loader.h	/^static vertex_index_t parseRawTriple(const char **token) {$/;"	f	namespace:tinyobj	typeref:typename:vertex_index_t
@@ -620,7 +609,7 @@ reflection_texname	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string r
 reflection_texopt	include/Fast-BVH/examples/tiny_obj_loader.h	/^  texture_option_t reflection_texopt;$/;"	m	struct:tinyobj::_material_t	typeref:typename:texture_option_t
 render_time	include/Fast-BVH/benchmark/main.cpp	/^  double render_time;$/;"	m	struct:FastBVH::Benchmark::__anon27f14bb20111::StrategyResults	typeref:typename:double	file:
 reset	include/Fast-BVH/examples/Stopwatch.h	/^  void reset() noexcept { start = now(); }$/;"	f	class:FastBVH::Stopwatch	typeref:typename:void
-right	src/constructBvh_depricated.c	/^  int64_t right;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
+right	src/constructBvh.c	/^  int64_t right;$/;"	m	struct:bvhNodeInfo_t	typeref:typename:int64_t	file:
 right_offset	include/Fast-BVH/include/FastBVH/BVH.h	/^  uint32_t right_offset;$/;"	m	struct:FastBVH::Node	typeref:typename:uint32_t
 roughness	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t roughness;            \/\/ [0, 1] default 0$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
 roughness_texname	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string roughness_texname;  \/\/ map_Pr$/;"	m	struct:tinyobj::_material_t	typeref:typename:std::string
@@ -630,7 +619,7 @@ safeGetline	include/Fast-BVH/examples/tiny_obj_loader.h	/^static std::istream &s
 saveResults	include/Fast-BVH/benchmark/Scheduler.h	/^  bool saveResults(const char* filename) {$/;"	f	class:FastBVH::Benchmark::Scheduler	typeref:typename:bool
 saveResults	include/Fast-BVH/examples/SimpleScheduler.h	/^  bool saveResults(const char* filename) {$/;"	f	class:FastBVH::SimpleScheduler	typeref:typename:bool
 scale	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t scale[3];          \/\/ -s u [v [w]] (default 1 1 1)$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:real_t[3]
-sceneInfo_t	src/constructBvh_depricated.c	/^struct sceneInfo_t {$/;"	s	file:
+sceneInfo_t	src/constructBvh.c	/^struct sceneInfo_t {$/;"	s	file:
 schedule	include/Fast-BVH/benchmark/Scheduler.h	/^  void schedule(Tracer tracer, Observer observer) {$/;"	f	class:FastBVH::Benchmark::Scheduler	typeref:typename:void
 schedule	include/Fast-BVH/examples/SimpleScheduler.h	/^  void schedule(Tracer tracer) {$/;"	f	class:FastBVH::SimpleScheduler	typeref:typename:void
 shape_t	include/Fast-BVH/examples/tiny_obj_loader.h	/^} shape_t;$/;"	t	namespace:tinyobj	typeref:struct:tinyobj::__anonbe5b39fa0808
@@ -641,7 +630,7 @@ sheen	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t sheen;             
 sheen_texname	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::string sheen_texname;      \/\/ map_Ps$/;"	m	struct:tinyobj::_material_t	typeref:typename:std::string
 sheen_texopt	include/Fast-BVH/examples/tiny_obj_loader.h	/^  texture_option_t sheen_texopt;$/;"	m	struct:tinyobj::_material_t	typeref:typename:texture_option_t
 shininess	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t shininess;$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t
-side_e	src/constructBvh_depricated.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	g	file:
+side_e	src/constructBvh.c	/^enum side_e { LEFT = 0, RIGHT = 1 };$/;"	g	file:
 simple-target	include/Fast-BVH/Makefile	/^simple-target: $(examples)$/;"	t
 size	include/Fast-BVH/include/FastBVH/BuildStrategy1.h	/^  auto size() const noexcept { return stack_ptr; }$/;"	f	class:FastBVH::Strategy1::BuildStack	typeref:typename:auto
 size	include/Fast-BVH/include/FastBVH/Iterable.h	/^  auto size() const noexcept { return count; }$/;"	f	class:FastBVH::ConstIterable	typeref:typename:auto
@@ -679,9 +668,7 @@ traceLine	include/Fast-BVH/benchmark/Scheduler.h	/^  void traceLine(Tracer trace
 transmittance	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t transmittance[3];$/;"	m	struct:tinyobj::_material_t	typeref:typename:real_t[3]
 traverse	include/Fast-BVH/include/FastBVH/Traverser.h	/^Traverser<Float, Primitive, Intersector, Flags>::traverse($/;"	f	class:FastBVH::Traverser	typeref:typename:Intersection<Float,Primitive>
 triIndices	include/extension.h	/^  uint32_t triIndices[4];$/;"	m	struct:bvh_t	typeref:typename:uint32_t[4]
-triangle_t	constructBvh.cpp	/^  triangle_t(uint32_t id, vertex_t* verts) {$/;"	f	struct:triangle_t	file:
-triangle_t	constructBvh.cpp	/^struct triangle_t {$/;"	s	file:
-triangles	src/constructBvh_depricated.c	/^  uint32_t* triangles;  \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:
+triangles	src/constructBvh.c	/^  uint32_t* triangles;  \/\/ Vector$/;"	m	struct:bvhNodeInfo_t	typeref:typename:uint32_t *	file:
 triangulate	include/Fast-BVH/examples/tiny_obj_loader.h	/^  bool triangulate;  \/\/ triangulate polygon?$/;"	m	struct:tinyobj::ObjReaderConfig	typeref:typename:bool
 tryParseDouble	include/Fast-BVH/examples/tiny_obj_loader.h	/^static bool tryParseDouble(const char *s, const char *s_end, double *result) {$/;"	f	namespace:tinyobj	typeref:typename:bool
 turbulence	include/Fast-BVH/examples/tiny_obj_loader.h	/^  real_t turbulence[3];     \/\/ -t u [v [w]] (default 0 0 0)$/;"	m	struct:tinyobj::__anonbe5b39fa0208	typeref:typename:real_t[3]
@@ -735,8 +722,7 @@ vertex_indices	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<verte
 vertex_t	include/extension.h	/^struct vertex_t {$/;"	s
 vertex_weights	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> vertex_weights;  \/\/ 'v'(w)$/;"	m	struct:tinyobj::attrib_t	typeref:typename:std::vector<real_t>
 vertices	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> vertices;  \/\/ 'v'(xyz)$/;"	m	struct:tinyobj::attrib_t	typeref:typename:std::vector<real_t>
-verts	constructBvh.cpp	/^  struct vertex_t* verts;$/;"	m	struct:triangle_t	typeref:struct:vertex_t *	file:
-verts	src/constructBvh_depricated.c	/^  struct vertex_t* verts;$/;"	m	struct:sceneInfo_t	typeref:struct:vertex_t *	file:
+verts	src/constructBvh.c	/^  struct vertex_t* verts;$/;"	m	struct:sceneInfo_t	typeref:struct:vertex_t *	file:
 vn	include/Fast-BVH/examples/tiny_obj_loader.h	/^  std::vector<real_t> vn;$/;"	m	struct:tinyobj::obj_shape	typeref:typename:std::vector<real_t>
 vn_idx	include/Fast-BVH/examples/tiny_obj_loader.h	/^  int v_idx, vt_idx, vn_idx;$/;"	m	struct:tinyobj::vertex_index_t	typeref:typename:int
 vn_index	include/extension.h	/^  int32_t vn_index;$/;"	m	struct:face_t	typeref:typename:int32_t

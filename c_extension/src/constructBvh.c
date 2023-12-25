@@ -85,6 +85,22 @@ vec4* getCorners(struct vertex_t* verts, uint32_t* triangles) {
   vec4 minCorner = {INFINITY, INFINITY, INFINITY, INFINITY};
   vec4 maxCorner = {-INFINITY, -INFINITY, -INFINITY, -INFINITY};
 
+	if (!vector_size(triangles)){
+		
+		for (uint32_t i = 0; i < 4; i ++)	{
+			minCorner[i] = 0;
+			maxCorner[i] = 0;
+		}
+
+		vec4* corners = malloc(2 * sizeof(vec4));
+
+		memcpy(corners, minCorner, sizeof(vec4));
+		memcpy(corners + 1, maxCorner, sizeof(vec4));
+
+		return corners;
+
+	}
+
   for (uint32_t i = 0; i < vector_size(triangles); i++) {
     // Finds the smallest coordinates for each axis from the vertices of a
     // triangle, and then sets it as the 'minCorner' if it is lower than
@@ -287,13 +303,13 @@ vec4* findOptimalVolumes(struct sceneInfo_t* s, vec4* centroids,
 	*leftTris = vector_create();
 	*rightTris = vector_create();
 	
-	for (uint32_t i = 0; i < numLeftTris; i++){
-		vector_add(leftTris, parentInfo->triangles[i]);
-	}
+//for (uint32_t i = 0; i < numLeftTris; i++){
+//	vector_add(leftTris, parentInfo->triangles[i]);
+//}
 
-	for (uint32_t i = numLeftTris; i < vector_size(parentInfo->triangles); i++){
-		vector_add(rightTris, parentInfo->triangles[i]);
-	}
+//for (uint32_t i = numLeftTris; i < vector_size(parentInfo->triangles); i++){
+//	vector_add(rightTris, parentInfo->triangles[i]);
+//}
 	
 	vec4* leftVolume = getCorners(s->verts, *leftTris);
 	vec4* rightVolume = getCorners(s->verts, *rightTris);
