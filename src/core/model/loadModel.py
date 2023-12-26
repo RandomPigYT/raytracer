@@ -184,10 +184,7 @@ def loadModel(self, filename):
         tempName = materials[i].name
         if materials[i].name in self.sceneRenderer.matNames:
             tempName = (
-                tempName
-                + "("
-                + str(self.sceneRenderer.matnames.count(tempName))
-                + ")"
+                tempName + "(" + str(self.sceneRenderer.matnames.count(tempName)) + ")"
             )
         self.sceneRenderer.matNames.append(tempName)
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(

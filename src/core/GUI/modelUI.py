@@ -4,24 +4,28 @@ import ctypes as ct
 import glm
 import util
 
-def textureCombo(valuePtr: ct.POINTER(ct.c_int32), label,  num):
+
+def textureCombo(valuePtr: ct.POINTER(ct.c_int32), label, num):
     selected = valuePtr.contents.value
     with imgui.begin_combo(
         label + "##" + str(num),
-        sm.currentScene.sceneRenderer.textures[1][selected] if selected != -1 else "Select Texture",
+        sm.currentScene.sceneRenderer.textures[1][selected]
+        if selected != -1
+        else "Select Texture",
     ) as combo:
         if combo.opened:
             for i, tex in enumerate(sm.currentScene.sceneRenderer.textures[1][1:]):
-                isSelected = (i + 1 == selected)
+                isSelected = i + 1 == selected
                 if imgui.selectable(tex, isSelected)[0]:
                     valuePtr.contents.value = i + 1
-                
+
                 if isSelected:
                     imgui.set_item_default_focus()
-            
+
             isSelected = -1 == selected
             if imgui.selectable("No Texture", isSelected)[0]:
                 valuePtr.contents.value = -1
+
 
 def drawMaterialControls(materialID, num):
     status, albedo = imgui.color_edit3(
@@ -91,34 +95,50 @@ def drawMaterialControls(materialID, num):
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].reflectance = reflectance
-    
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].textureID)
+
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].textureID
+    )
     textureCombo(ct.pointer(tempTexID), "Texture", num)
     sm.currentScene.sceneRenderer.materials[materialID].textureID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].roughnessMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].roughnessMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Roughness Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].roughnessMapID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].metallicMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].metallicMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Metallic Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].metallicMapID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].emissiveMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].emissiveMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Emissive Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].emissiveMapID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].normalMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].normalMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Normal Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].normalMapID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].opacityMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].opacityMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Opacity Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].opacityMapID = tempTexID.value
 
-    tempTexID = ct.c_int32(sm.currentScene.sceneRenderer.materials[materialID].specularMapID)
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].specularMapID
+    )
     textureCombo(ct.pointer(tempTexID), "Specular Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].specularMapID = tempTexID.value
+
+
 def materials():
     imgui.begin("Materials")
 
@@ -129,14 +149,12 @@ def materials():
 
     sm.currentScene.resetFrame()
     imgui.end()
-    
 
 
 # type:
 # 0: mesh
 # 1: object
 def drawTransforms(index, elementType, objIndex):
-    
     transformList = None
     elementList = None
     if elementType == 0:
@@ -273,14 +291,17 @@ def objects():
                             ],
                         ) as combo:
                             if combo.opened:
-                                for k, mat in enumerate(sm.currentScene.sceneRenderer.matNames):
-                                    isSelected = (k == selected)
+                                for k, mat in enumerate(
+                                    sm.currentScene.sceneRenderer.matNames
+                                ):
+                                    isSelected = k == selected
                                     if imgui.selectable(mat, isSelected)[0]:
-                                        sm.currentScene.sceneRenderer.meshes[j].materialID = k
-                                    
+                                        sm.currentScene.sceneRenderer.meshes[
+                                            j
+                                        ].materialID = k
+
                                     if isSelected:
                                         imgui.set_item_default_focus()
-
 
                         imgui.tree_pop()
             imgui.tree_pop()
