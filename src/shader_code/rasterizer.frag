@@ -14,6 +14,15 @@ uniform mat4 view;
 
 // layout(pixel_center_integer) in vec4 gl_FragCoord;
 
+vec3 toneMap(vec3 x){
+	float a = 2.51f;
+	float b = 0.03f;
+	float c = 2.43f;
+	float d = 0.59f;
+	float e = 0.14f;
+
+	return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0f, 1.0f);
+}
 
 vec3 gammaCorrect(vec3 x, float gamma){
 	const float invGamma = 1 / gamma;
@@ -42,6 +51,7 @@ void main(){
     float multiplier = dot(-fragDir.xyz, -normalCoords.xyz);
     
     fragColour = vec4(baseColour * abs(multiplier), 1.0f);
+    fragColour = vec4(toneMap(fragColour.rgb), 1.0f);
 
     fragColour = vec4(gammaCorrect(fragColour.rgb, 2.2), 1.0f);
 }

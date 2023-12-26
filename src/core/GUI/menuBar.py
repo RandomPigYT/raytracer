@@ -1,6 +1,9 @@
 import sceneManager as sm
 import imgui
 import os
+import core.GUI.drawDirTree as ddt
+import time
+import threading
 
 # import core.GUI.uiManager as uiManager
 
@@ -39,33 +42,9 @@ def newSceneCleanup(selfIndex, prevJobs):
     sm.currentScene.uiManager.activateJobs(ids)
 
 
-def drawDirTree(path):
-    try:
-        dirs = [
-            i for i in os.listdir(path) if not os.path.isfile(os.path.join(path, i))
-        ]
-        files = [i for i in os.listdir(path) if os.path.isfile(os.path.join(path, i))]
-
-    except PermissionError:
-        return False
-
-    for i in dirs:
-        if imgui.tree_node(i):
-            if drawDirTree(os.path.join(path, i)):
-                imgui.tree_pop()
-                return True
-            imgui.tree_pop()
-
-    for i in files:
-        if os.path.splitext(i)[1].lower() == ".obj":
-            if imgui.button(i):
-                sm.currentScene.loadModel(os.path.join(path, i))
-                return True
-
-    return False
-
 
 def loadModel(selfIndex, pathInp):
+
     imgui.begin("Select file")
 
     result = False
@@ -74,12 +53,17 @@ def loadModel(selfIndex, pathInp):
         "Select Directory", value=pathInp, buffer_length=400
     )
 
+    condition = lambda ext: ext.lower() == ".obj"
+
     try:
         os.listdir(os.path.expanduser(pathInp))
-        result = drawDirTree(os.path.expanduser(pathInp))
+        result = ddt.drawDirTree(
+            os.path.expanduser(pathInp), condition, sm.currentScene.loadModel
+        )
 
     except FileNotFoundError:
         pass
+
 
     if imgui.button("Cancel"):
         result = True

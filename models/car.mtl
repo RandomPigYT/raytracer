@@ -30,4 +30,4 @@ map_Kd textures\material_baseColor.jpg
 map_Pm textures\material_metallicRoughness_metal.jpg
 map_Pr textures\material_metallicRoughness_rough.jpg
 map_Ke textures\material_emissive.jpg
-norm textures\material_normal.jpg
+#norm textures\material_normal.jpg

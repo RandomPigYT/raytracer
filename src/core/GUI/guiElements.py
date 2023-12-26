@@ -3,6 +3,7 @@ import deltatime
 import sceneManager as sm
 import core.GUI.modelDebugUI as modelDebugUI
 import OpenGL.GL as gl
+import core.GUI.modelUI as modelUI
 
 frameNum = 0
 avgFPS = 0
@@ -29,7 +30,8 @@ def elements(window):
     imgui.text("Res: " + str(width) + " " + str(height))
     imgui.end()
 
-    modelDebugUI.drawModel(window)
+    # modelDebugUI.drawModel(window)
+    modelUI.drawUI()
 
     imgui.begin("Scene")
 
@@ -73,4 +75,7 @@ def elements(window):
         sm.currentScene.sceneRenderer.updateBvh()
         sm.currentScene.sendBvhs()
         sm.currentScene.sceneRenderer.mode ^= 1
+
+    if imgui.button("Refresh Scene"):
+        sm.currentScene.allocateSSBO()
     imgui.end()

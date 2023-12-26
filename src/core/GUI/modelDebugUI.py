@@ -116,7 +116,7 @@ def meshTransform(mesh, meshNum):
     shouldUpdateBvh = False
 
     status, pos = imgui.drag_float3(
-        "Position" + str(meshNum),
+        "Position##" + str(meshNum),
         *sm.currentScene.sceneRenderer.meshTransforms[meshIndex].position,
         0.01,
         format="%.2f",

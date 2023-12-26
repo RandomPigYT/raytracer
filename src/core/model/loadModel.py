@@ -13,7 +13,6 @@ from PIL import Image
 import numpy as np
 import OpenGL.raw.GL.ARB.bindless_texture as bindless
 
-
 class face(ct.Structure):
     _fields_ = [
         ("v_index", ct.c_int32),
@@ -35,8 +34,8 @@ def loadTexture(
 ):
     if appendTexDir and filename != "":
         filename = os.path.join(modelDir, filename)
-        print("Loading texture:", filename)
-    maxSize = (2048, 2048)
+        # print("Loading texture:", filename)
+    maxSize = (4096, 4096)
 
     if filename == "":
         return -1
@@ -137,11 +136,11 @@ def loadTexture(
     if numChannels[texType] == 1:
         red.close()
 
-    print(texIndex)
     return texIndex
 
 
 def loadModel(self, filename):
+
     oldLen = len(self.sceneRenderer.vertices)
     oldMeshLen = len(self.sceneRenderer.meshes)
     oldMaterialLen = len(self.sceneRenderer.materials)
@@ -322,5 +321,5 @@ def loadModel(self, filename):
     self.sendVertMeshRel()
 
     self.allocateSSBO()
-
+    
     return True

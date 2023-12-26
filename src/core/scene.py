@@ -12,6 +12,7 @@ import core.sendToShader as sendToShader
 import core.renderer as renderer
 import core.GUI.uiManager as uiManager
 import core.GUI.initGUI as initGUI
+import threading
 
 
 class Camera:
@@ -66,9 +67,6 @@ class Scene:
         self.uiManager = uiManager.UIManager()
         initGUI.initGUI(self)
 
-        # Create vertex-mesh relation texture
-        self.sceneRenderer.vertMeshRelTex = gl.glGenTextures(1)
-
         self.name = name
 
         self.resolution = resolution
@@ -81,6 +79,7 @@ class Scene:
 
         self.camera.prevMousePos[0] = 0
         self.camera.prevMousePos[1] = 0
+
 
         self.initCanvas()
         self.initSSBO()

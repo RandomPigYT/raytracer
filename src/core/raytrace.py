@@ -4,6 +4,7 @@ import OpenGL.GL as gl
 import time
 import sceneManager as sm
 import graphics.shader as shader
+import math
 
 
 def raytrace(scene, maxBounces, raysPerPixel):
@@ -27,7 +28,6 @@ def raytrace(scene, maxBounces, raysPerPixel):
     gl.glUniform1ui(frameNumLoc, scene.sceneRenderer.frameNum)
 
     gl.glActiveTexture(gl.GL_TEXTURE1)
-    gl.glBindTexture(gl.GL_TEXTURE_1D, scene.sceneRenderer.vertMeshRelTex)
 
     gl.glDispatchCompute(48, 45, 1)
     gl.glMemoryBarrier(gl.GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)
