@@ -80,9 +80,10 @@ class Scene:
         self.camera.prevMousePos[0] = 0
         self.camera.prevMousePos[1] = 0
 
-
         self.initCanvas()
         self.initSSBO()
+
+        lm.loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
 
     # Methods
     loadModel = lm.loadModel

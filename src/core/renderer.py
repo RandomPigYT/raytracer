@@ -108,6 +108,7 @@ class renderer:
 
         self.objectNames = []
         self.meshNames = []
+        self.matNames = []
 
         self.meshTransforms = []
         self.objectTransforms = []
@@ -172,6 +173,7 @@ class renderer:
         )
 
     def setDefaultMaterial(self):
+        self.matNames.append("Default material")
         self.materials = util.realloc(self.materials, 1)
         self.materials[0].albedo = (4 * ct.c_float)(
             162.0 / 255.0, 164.0 / 255.0, 165.0 / 255.0, 0.0

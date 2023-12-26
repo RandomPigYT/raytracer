@@ -13,6 +13,7 @@ from PIL import Image
 import numpy as np
 import OpenGL.raw.GL.ARB.bindless_texture as bindless
 
+
 class face(ct.Structure):
     _fields_ = [
         ("v_index", ct.c_int32),
@@ -140,7 +141,6 @@ def loadTexture(
 
 
 def loadModel(self, filename):
-
     oldLen = len(self.sceneRenderer.vertices)
     oldMeshLen = len(self.sceneRenderer.meshes)
     oldMaterialLen = len(self.sceneRenderer.materials)
@@ -177,10 +177,19 @@ def loadModel(self, filename):
         self.sceneRenderer.objects, len(self.sceneRenderer.objects) + 1
     )
 
-    loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
+    # loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
     modelDir = os.path.dirname(os.path.realpath(filename))
     # Add materials
     for i in range(len(materials)):
+        tempName = materials[i].name
+        if materials[i].name in self.sceneRenderer.matNames:
+            tempName = (
+                tempName
+                + "("
+                + str(self.sceneRenderer.matnames.count(tempName))
+                + ")"
+            )
+        self.sceneRenderer.matNames.append(tempName)
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
             *materials[i].diffuse, 0.0
         )
@@ -321,5 +330,5 @@ def loadModel(self, filename):
     self.sendVertMeshRel()
 
     self.allocateSSBO()
-    
+
     return True

@@ -42,9 +42,7 @@ def newSceneCleanup(selfIndex, prevJobs):
     sm.currentScene.uiManager.activateJobs(ids)
 
 
-
 def loadModel(selfIndex, pathInp):
-
     imgui.begin("Select file")
 
     result = False
@@ -63,7 +61,6 @@ def loadModel(selfIndex, pathInp):
 
     except FileNotFoundError:
         pass
-
 
     if imgui.button("Cancel"):
         result = True

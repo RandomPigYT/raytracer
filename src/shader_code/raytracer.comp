@@ -658,6 +658,8 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
     bool isTriCloser = triHit.rayT < sphereHit.rayT;
 
+    isTriCloser = true;
+
     hit = isTriCloser ? triHit : sphereHit;
     mat = isTriCloser ? materials[meshes[meshIndex].materialID] :
                         materials[spheres[sphereIndex].materialID];                       
