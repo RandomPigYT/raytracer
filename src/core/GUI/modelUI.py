@@ -54,6 +54,7 @@ def createMaterial(selfIndex, name):
         matArray[newMatIndex].normalMapID = -1
         matArray[newMatIndex].opacityMapID = -1
         matArray[newMatIndex].specularMapID = -1
+        matArray[newMatIndex].displacementMapID = -1
 
     if cancel:
         return True
@@ -197,6 +198,12 @@ def drawMaterialControls(materialID, num):
     )
     textureCombo(ct.pointer(tempTexID), "Specular Map", num)
     sm.currentScene.sceneRenderer.materials[materialID].specularMapID = tempTexID.value
+
+    tempTexID = ct.c_int32(
+        sm.currentScene.sceneRenderer.materials[materialID].displacementMapID
+    )
+    textureCombo(ct.pointer(tempTexID), "Displacement Map", num)
+    sm.currentScene.sceneRenderer.materials[materialID].displacementMapID = tempTexID.value
 
 
 def materials():

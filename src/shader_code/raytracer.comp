@@ -44,6 +44,7 @@ struct Material {
   int normalMapID;
   int opacityMapID;
   int specularMapID;
+  int displacementMapID;
 };
 
 struct Mesh {
@@ -670,6 +671,10 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     // return vec4(textureCoord, 0.0f, 1.0f);
     // return vec4(hit.bary.xyz, 1.0f);
 
+    if (mat.displacementMapID != -1){
+      hit.position += hit.normal * texture(textures[mat.displacementMapID], textureCoord).x * mat.intensity.x;
+    }
+
     mat.albedo = mat.textureID != -1 ? texture(textures[mat.textureID], textureCoord) : mat.albedo;
     mat.emission = mat.emissiveMapID != -1 ? texture(textures[mat.emissiveMapID], textureCoord) : mat.emission;
     mat.roughness = mat.roughnessMapID != -1 ? texture(textures[mat.roughnessMapID], textureCoord).xy : mat.roughness;
@@ -678,6 +683,12 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     mat.opacity = mat.opacityMapID != -1 ? texture(textures[mat.opacityMapID], textureCoord).x : mat.opacity;
     hit.normal = mat.normalMapID != -1 ? normalize(texture(textures[mat.normalMapID], textureCoord).xyz) : hit.normal;
 
+    mat4 rotate = meshes[meshIndex].transform;
+    rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    rotate /= determinant(rotate);
+
+    hit.normal = (rotate * vec4(hit.normal, 1.0f)).xyz;
+    
     // return vec4(hit.normal, 1.0f);
     
     // Perfectly vertical normals don't work properly, so this is needed to offset it by a tiny amount

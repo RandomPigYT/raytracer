@@ -12,7 +12,7 @@ def deleteVerts(meshIndex):
     startingVert = r.meshes[meshIndex].startingVertex
     numVerts = r.meshes[meshIndex].numTriangles
 
-    try:
+    if startingVert + numVerts != len(r.vertices):
         import core.renderer as renderer
         dst = ct.cast(
             ct.byref(r.vertices[startingVert]), ct.POINTER(renderer.Vertex)
@@ -23,14 +23,12 @@ def deleteVerts(meshIndex):
         ct.memmove(dst, src, len(r.vertices[startingVert + numVerts:]) * ct.sizeof(renderer.Vertex))
         del renderer
         
-        r.vertices = util.realloc(r.vertices, len(r.vertices) - numVerts)
-
-    except IndexError:
-        r.vertices = util.realloc(r.vertices, 0)
+    r.vertices = util.realloc(r.vertices, len(r.vertices) - numVerts)
 
 
     for i in range(meshIndex + 1, len(r.meshes)):
         r.meshes[i].startingVertex -= numVerts
+
 
     
 
@@ -42,7 +40,7 @@ def deleteObject(index):
     for i in range(startingMesh, startingMesh + numMeshes):
         deleteVerts(i)
 
-    try:
+    if startingMesh + numMeshes != len(r.meshes):
         import core.renderer as renderer
         dst = ct.cast(
             ct.byref(r.meshes[startingMesh]), ct.POINTER(renderer.Mesh)
@@ -53,10 +51,7 @@ def deleteObject(index):
         ct.memmove(dst, src, len(r.meshes[startingMesh + numMeshes:]) * ct.sizeof(renderer.Mesh))
         del renderer
 
-        r.meshes = util.realloc(r.meshes, len(r.meshes) - numMeshes)
-    
-    except IndexError:
-        r.meshes = util.realloc(r.meshes, 0)
+    r.meshes = util.realloc(r.meshes, len(r.meshes) - numMeshes)
 
 
     r.meshNames = r.meshNames[:startingMesh] + r.meshNames[startingMesh + numMeshes:]
@@ -66,7 +61,7 @@ def deleteObject(index):
     for i in range(index + 1, len(r.objects)):
         r.objects[i].startingMesh -= numMeshes
 
-    try:
+    if index + 1 != len(r.objects):
         import core.renderer as renderer
         dst = ct.cast(
             ct.byref(r.objects[index]), ct.POINTER(renderer.Object)
@@ -77,11 +72,8 @@ def deleteObject(index):
         ct.memmove(dst, src, len(r.objects[index + 1:]) * ct.sizeof(renderer.Object))
         del renderer
 
-        r.objects = util.realloc(r.objects, len(r.objects) - 1)
+    r.objects = util.realloc(r.objects, len(r.objects) - 1)
     
-    except IndexError:
-        r.objects = util.realloc(r.objects, 0)
-
     r.objectNames = r.objectNames[:index] + r.objectNames[index + 1:]
     r.objectTransforms = r.objectTransforms[:index] + r.objectTransforms[index + 1:]
 

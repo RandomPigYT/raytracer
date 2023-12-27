@@ -42,7 +42,8 @@ class Material(ct.Structure):
         ("normalMapID", ct.c_int32),
         ("opacityMapID", ct.c_int32),
         ("specularMapID", ct.c_int32),
-        ("padding0", ct.c_float * 3),
+        ("displacementMapID", ct.c_int32),
+        ("padding0", ct.c_float * 2),
     ]
 
 
@@ -186,6 +187,7 @@ class renderer:
         self.materials[0].normalMapID = -1
         self.materials[0].opacityMapID = -1
         self.materials[0].specularMapID = -1
+        self.materials[0].displacementMapID = -1
 
     def deleteTextureArrays(self):
         gl.glDeleteTextures(

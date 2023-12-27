@@ -49,8 +49,9 @@ def loadTexture(
     # 4: normal map
     # 5: opacity map
     # 6: specular map
+    # 7: displacement map
 
-    numChannels = [3, 1, 1, 3, 3, 1, 1]
+    numChannels = [3, 1, 1, 3, 3, 1, 1, 1]
 
     texArray = rendererInstance.textures
     texIndex = len(texArray[0])
@@ -184,7 +185,7 @@ def loadModel(self, filename):
         tempName = materials[i].name if materials[i].name != "" else "(Unnamed)"
         if materials[i].name in self.sceneRenderer.matNames:
             tempName = (
-                tempName + "(" + str(self.sceneRenderer.matnames.count(tempName)) + ")"
+                tempName + "(" + str(self.sceneRenderer.matNames.count(tempName)) + ")"
             )
         self.sceneRenderer.matNames.append(tempName)
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
@@ -232,6 +233,10 @@ def loadModel(self, filename):
         self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
             self.sceneRenderer, materials[i].specular_texname, modelDir, 6
         )
+        self.sceneRenderer.materials[oldMaterialLen + i].displacementMapID = loadTexture(
+            self.sceneRenderer, materials[i].displacement_texname, modelDir, 7
+        )
+        print(materials[i].displacement_texname)
 
     # Set object data
     objIndex = len(self.sceneRenderer.objects) - 1
