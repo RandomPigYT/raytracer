@@ -687,7 +687,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     rotate /= determinant(rotate);
 
-    hit.normal = (rotate * vec4(hit.normal, 1.0f)).xyz;
+    hit.normal = normalize((rotate * vec4(hit.normal, 1.0f)).xyz);
     
     // return vec4(hit.normal, 1.0f);
     
@@ -783,7 +783,11 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
     colour += throughput * mat.emission.xyz * mat.intensity.x;
 
-    throughput *= brdf * weight * dot(hit.normal, reflectedRay);
+    if (!refracted)
+      throughput *= brdf * weight * dot(hit.normal, reflectedRay);
+    
+    else 
+      ;
 
     // if (isnan(colour.x) || isnan(colour.y) || isnan(colour.z) || isnan(pdf))
     //   return vec4(1, 0, 1, 1);
@@ -791,7 +795,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
 
 
-    rayDir = refracted ? refract(rayDir, -hit.normal, 1.5) : reflectedRay;
+    rayDir = refracted ? rayDir : reflectedRay;
     vec3 offset = rayDir * 0.001;
 
     rayOrigin = hit.position + offset;

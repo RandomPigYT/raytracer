@@ -230,13 +230,15 @@ def loadModel(self, filename):
         self.sceneRenderer.materials[oldMaterialLen + i].normalMapID = loadTexture(
             self.sceneRenderer, materials[i].normal_texname, modelDir, 4
         )
+        self.sceneRenderer.materials[oldMaterialLen + i].opacityMapID = loadTexture(
+            self.sceneRenderer, materials[i].alpha_texname, modelDir, 5
+        )
         self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
             self.sceneRenderer, materials[i].specular_texname, modelDir, 6
         )
         self.sceneRenderer.materials[oldMaterialLen + i].displacementMapID = loadTexture(
             self.sceneRenderer, materials[i].displacement_texname, modelDir, 7
         )
-        print(materials[i].displacement_texname)
 
     # Set object data
     objIndex = len(self.sceneRenderer.objects) - 1

@@ -120,9 +120,18 @@ def drawMaterialControls(materialID, num):
         min_value=0,
         max_value=1,
     )
-
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].opacity = op
+
+    status, ref = imgui.drag_float3(
+        "refractive index##" + str(num),
+        *(sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex[:-1]),
+        0.001,
+        format="%0.3f",
+    )
+    if status:
+        sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex = ref
+
 
     status, roughness = imgui.drag_float2(
         "roughness##" + str(num),
