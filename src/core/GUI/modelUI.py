@@ -3,10 +3,66 @@ import sceneManager as sm
 import ctypes as ct
 import glm
 import util
+import math
+import core.GUI.delete as delete
+
+
+def enterName(label, name):
+    imgui.begin(label)
+    changed, name = imgui.input_text("", value=name, buffer_length=400)
+    imgui.same_line()
+    done = imgui.button("Done")
+    imgui.same_line()
+    cancel = imgui.button("Cancel")
+
+    if done and name == "":
+        cancel = True
+        done = False
+    imgui.end()
+
+    return name, done, cancel
+
+
+def createMaterial(selfIndex, name):
+    name, done, cancel = enterName("Material Name", name)
+
+    # sm.currentScene.uiManager.jobs[selfIndex].renderArgs[1] = name
+    for i in range(len(sm.currentScene.uiManager.jobs)):
+        if sm.currentScene.uiManager.jobs[i].id == selfIndex:
+            sm.currentScene.uiManager.jobs[i].renderArgs[1] = name
+
+    if done:
+        if name in sm.currentScene.sceneRenderer.matNames:
+            name += "(" + str(sm.currentScene.sceneRenderer.matNames.count(name)) + ")"
+
+        sm.currentScene.sceneRenderer.matNames.append(name)
+
+        newMatIndex = len(sm.currentScene.sceneRenderer.materials)
+        sm.currentScene.sceneRenderer.materials = util.realloc(
+            sm.currentScene.sceneRenderer.materials,
+            len(sm.currentScene.sceneRenderer.materials) + 1,
+        )
+        matArray = sm.currentScene.sceneRenderer.materials  # To reduce verbosity
+        matArray[newMatIndex].albedo = (4 * ct.c_float)(
+            162.0 / 255.0, 164.0 / 255.0, 165.0 / 255.0, 0.0
+        )
+        matArray[newMatIndex].opacity = 1.0
+        matArray[newMatIndex].textureID = -1
+        matArray[newMatIndex].roughnessMapID = -1
+        matArray[newMatIndex].metallicMapID = -1
+        matArray[newMatIndex].emissiveMapID = -1
+        matArray[newMatIndex].normalMapID = -1
+        matArray[newMatIndex].opacityMapID = -1
+        matArray[newMatIndex].specularMapID = -1
+
+    if cancel:
+        return True
+
+    return done
 
 
 def textureCombo(valuePtr: ct.POINTER(ct.c_int32), label, num):
-    selected = valuePtr.contents.value
+    selected = valuePtr.contents.value if valuePtr.contents.value != 0 else -1
     with imgui.begin_combo(
         label + "##" + str(num),
         sm.currentScene.sceneRenderer.textures[1][selected]
@@ -35,9 +91,13 @@ def drawMaterialControls(materialID, num):
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].albedo = (*albedo, 1)
 
-    status, emission = imgui.color_edit3(
+    status, emission = imgui.drag_float3(
         "emission##" + str(num),
-        *sm.currentScene.sceneRenderer.materials[materialID].emission,
+        *sm.currentScene.sceneRenderer.materials[materialID].emission[:-1],
+        0.01,
+        format="%0.2f",
+        min_value=0,
+        max_value=math.inf,
     )
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].emission = (*emission, 1)
@@ -146,7 +206,21 @@ def materials():
         if imgui.tree_node(sm.currentScene.sceneRenderer.matNames[i]):
             drawMaterialControls(i, i)
             imgui.tree_pop()
+        # if imgui.begin_popup_context_item("Edit Material").opened:
+        #     imgui.text("Woo, yeah")
+        #     imgui.end_popup()
 
+    cleanupNewMat = lambda selfIndex: sm.currentScene.uiManager.removeJob(selfIndex)
+
+    if imgui.button("Create Material"):
+        sm.currentScene.uiManager.addJob(
+            createMaterial,
+            [sm.currentScene.uiManager.globalJobID, ""],
+            cleanupNewMat,
+            [sm.currentScene.uiManager.globalJobID],
+            True,
+            False,
+        )
     sm.currentScene.resetFrame()
     imgui.end()
 
@@ -305,6 +379,14 @@ def objects():
 
                         imgui.tree_pop()
             imgui.tree_pop()
+
+        if imgui.begin_popup_context_item("Edit Models##" + str(i)).opened:
+            if imgui.button("Delete Model##" + str(i)):
+                delete.deleteObject(i)
+                imgui.end_popup()
+                imgui.end()
+                return
+            imgui.end_popup()
 
     imgui.end()
 

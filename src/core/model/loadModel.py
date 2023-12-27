@@ -31,9 +31,9 @@ def numFaces(shapes):
 
 
 def loadTexture(
-    rendererInstance: renderer.renderer, filename, modelDir, texType, appendTexDir=True
+    rendererInstance: renderer.renderer, filename, modelDir, texType, prependTexDir=True
 ):
-    if appendTexDir and filename != "":
+    if prependTexDir and filename != "":
         filename = os.path.join(modelDir, filename)
         # print("Loading texture:", filename)
     maxSize = (4096, 4096)
@@ -181,7 +181,7 @@ def loadModel(self, filename):
     modelDir = os.path.dirname(os.path.realpath(filename))
     # Add materials
     for i in range(len(materials)):
-        tempName = materials[i].name
+        tempName = materials[i].name if materials[i].name != "" else "(Unnamed)"
         if materials[i].name in self.sceneRenderer.matNames:
             tempName = (
                 tempName + "(" + str(self.sceneRenderer.matnames.count(tempName)) + ")"
