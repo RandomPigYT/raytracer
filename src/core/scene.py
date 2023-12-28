@@ -62,12 +62,17 @@ class Scene:
         if sm.currentScene == None:
             sm.currentScene = self
 
+        self.sceneRenderer = None
+
+        if self.sceneRenderer != None:
+            self.deleteBuffers()
         self.sceneRenderer = renderer.renderer(self, renderMode)
 
         self.uiManager = uiManager.UIManager()
         initGUI.initGUI(self)
 
         self.name = name.lower()
+        self.saved = False
 
         self.resolution = resolution
 
@@ -185,6 +190,78 @@ class Scene:
 
     def setAsCurrent(self):
         sm.currentScene = self
+
+    def deleteBuffers(self):
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.vertSSBO
+                    if self.sceneRenderer.vertSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.meshSSBO
+                    if self.sceneRenderer.meshSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.materialSSBO
+                    if self.sceneRenderer.materialSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.spheresSSBO
+                    if self.sceneRenderer.spheresSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.bvhSSBO
+                    if self.sceneRenderer.bvhSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.vertMeshRelSSBO
+                    if self.sceneRenderer.vertMeshRelSSBO != None
+                    else 0
+                )
+            ),
+        )
+        gl.glDeleteBuffers(
+            1,
+            ct.byref(
+                ct.c_uint32(
+                    self.sceneRenderer.texSSBO
+                    if self.sceneRenderer.texSSBO != None
+                    else 0
+                )
+            ),
+        )
 
     def initSSBO(self):
         self.sceneRenderer.vertSSBO = gl.glGenBuffers(1)

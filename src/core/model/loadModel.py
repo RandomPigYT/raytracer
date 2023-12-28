@@ -227,27 +227,27 @@ def loadModel(self, filename):
             self.sceneRenderer, materials[i].diffuse_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].roughnessMapID = loadTexture(
-            self.sceneRenderer, materials[i].roughness_texname, modelDir, 1
+            self.sceneRenderer, materials[i].roughness_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].metallicMapID = loadTexture(
-            self.sceneRenderer, materials[i].metallic_texname, modelDir, 2
+            self.sceneRenderer, materials[i].metallic_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].emissiveMapID = loadTexture(
-            self.sceneRenderer, materials[i].emissive_texname, modelDir, 3
+            self.sceneRenderer, materials[i].emissive_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].normalMapID = loadTexture(
-            self.sceneRenderer, materials[i].normal_texname, modelDir, 4
+            self.sceneRenderer, materials[i].normal_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].opacityMapID = loadTexture(
-            self.sceneRenderer, materials[i].alpha_texname, modelDir, 5
+            self.sceneRenderer, materials[i].alpha_texname, modelDir, 0
         )
         self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
-            self.sceneRenderer, materials[i].specular_texname, modelDir, 6
+            self.sceneRenderer, materials[i].specular_texname, modelDir, 0
         )
         self.sceneRenderer.materials[
             oldMaterialLen + i
         ].displacementMapID = loadTexture(
-            self.sceneRenderer, materials[i].displacement_texname, modelDir, 7
+            self.sceneRenderer, materials[i].displacement_texname, modelDir, 0
         )
 
     # Set object data

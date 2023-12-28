@@ -5,6 +5,7 @@ import core.GUI.modelDebugUI as modelDebugUI
 import OpenGL.GL as gl
 import core.GUI.modelUI as modelUI
 import core.save_and_load.save as save
+import core.save_and_load.load as load
 
 frameNum = 0
 avgFPS = 0
@@ -82,7 +83,8 @@ def elements(window):
 
     if imgui.button("Save"):
         save.save()
+        sm.currentScene.saved = True
 
     if imgui.button("Load"):
-        pass
+        load.load(sm.currentScene.name)
     imgui.end()

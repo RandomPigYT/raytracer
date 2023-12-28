@@ -7,15 +7,15 @@ def createTables(sceneName, wrapper):
     wrapper.execute(
         "create table if not exists {0}_obj_transform(   \
             id int unsigned primary key,                \
-            pos_x dec(8, 3),                            \
-            pos_y dec(8, 3),                            \
-            pos_z dec(8, 3),                            \
-            rot_x dec(8, 3),                            \
-            rot_y dec(8, 3),                            \
-            rot_z dec(8, 3),                            \
-            scale_x dec(8, 3),                          \
-            scale_y dec(8, 3),                          \
-            scale_z dec(8, 3)                           \
+            pos_x dec(11, 6),                            \
+            pos_y dec(11, 6),                            \
+            pos_z dec(11, 6),                            \
+            rot_x dec(11, 6),                            \
+            rot_y dec(11, 6),                            \
+            rot_z dec(11, 6),                            \
+            scale_x dec(11, 6),                          \
+            scale_y dec(11, 6),                          \
+            scale_z dec(11, 6)                           \
         )".format(
             sceneName
         )
@@ -24,15 +24,15 @@ def createTables(sceneName, wrapper):
     wrapper.execute(
         "create table if not exists {0}_mesh_transform(  \
             id int unsigned primary key,                \
-            pos_x dec(8, 3),                            \
-            pos_y dec(8, 3),                            \
-            pos_z dec(8, 3),                            \
-            rot_x dec(8, 3),                            \
-            rot_y dec(8, 3),                            \
-            rot_z dec(8, 3),                            \
-            scale_x dec(8, 3),                          \
-            scale_y dec(8, 3),                          \
-            scale_z dec(8, 3)                           \
+            pos_x dec(11, 6),                            \
+            pos_y dec(11, 6),                            \
+            pos_z dec(11, 6),                            \
+            rot_x dec(11, 6),                            \
+            rot_y dec(11, 6),                            \
+            rot_z dec(11, 6),                            \
+            scale_x dec(11, 6),                          \
+            scale_y dec(11, 6),                          \
+            scale_z dec(11, 6)                           \
         )".format(
             sceneName
         )
@@ -50,14 +50,14 @@ def createTables(sceneName, wrapper):
     wrapper.execute(
         "create table if not exists {0}_vertices(    \
             id int unsigned primary key,    \
-            pos_x dec(8, 3),                            \
-            pos_y dec(8, 3),                            \
-            pos_z dec(8, 3),                            \
-            norm_x dec(8, 3),                            \
-            norm_y dec(8, 3),                            \
-            norm_z dec(8, 3),                            \
-            tex_x dec(8, 3),                            \
-            tex_y dec(8, 3)                            \
+            pos_x dec(11, 6),                            \
+            pos_y dec(11, 6),                            \
+            pos_z dec(11, 6),                            \
+            norm_x dec(11, 6),                            \
+            norm_y dec(11, 6),                            \
+            norm_z dec(11, 6),                            \
+            tex_x dec(11, 6),                            \
+            tex_y dec(11, 6)                            \
         )".format(
             sceneName
         )
@@ -131,13 +131,10 @@ def createTables(sceneName, wrapper):
 
 def save():
     wrapper = sm.currentScene.sqlWrapper
-    r = sm.currentScene.sceneRenderer
     sceneName = sm.currentScene.name
 
-    try:
+    if not sm.currentScene.saved:
         wrapper.execute("insert into scenes values('{}')".format(sceneName))
-    except con.errors.IntegrityError:
-        pass
 
     createTables(sceneName, wrapper)
 
@@ -206,7 +203,7 @@ def save():
         wrapper.execute(
             "insert into {0}_materials values({1})".format(sceneName, valueStr)
         )
-    
+
     # Meshes
     for i, mesh in enumerate(sm.currentScene.sceneRenderer.meshes):
         valueStr = "{}, '{}', {}, {}, {}, {}".format(
@@ -215,7 +212,7 @@ def save():
             mesh.startingVertex,
             mesh.numTriangles,
             i,
-            mesh.materialID
+            mesh.materialID,
         )
         wrapper.execute(
             "insert into {0}_meshes values({1})".format(sceneName, valueStr)
@@ -228,11 +225,10 @@ def save():
             sm.currentScene.sceneRenderer.objectNames[i],
             obj.startingMesh,
             obj.numMeshes,
-            i
+            i,
         )
         wrapper.execute(
             "insert into {0}_objects values({1})".format(sceneName, valueStr)
         )
-
 
     wrapper.execute("commit")

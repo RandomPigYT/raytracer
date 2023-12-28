@@ -93,6 +93,11 @@ class Transform(ct.Structure):
     rotation = [0, 0, 0]
     scale = [1, 1, 1]
 
+    def __repr__(self):
+        return "Transform(\n  position: {}, {}, {}\n  rotation: {}, {}, {}\n  scale:    {}, {}, {}\n)".format(
+            *self.position, *self.rotation, *self.scale
+        )
+
 
 class renderer:
     # mode:
