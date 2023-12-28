@@ -34,7 +34,8 @@ def loadTexture(
     rendererInstance: renderer.renderer, filename, modelDir, texType, prependTexDir=True
 ):
     if prependTexDir and filename != "":
-        filename = os.path.join(modelDir, filename)
+        filename = os.path.join(modelDir, filename).replace("\\", "/")
+        filename = os.path.realpath(filename).replace("\\", "/")
         # print("Loading texture:", filename)
     maxSize = (4096, 4096)
 
@@ -68,6 +69,20 @@ def loadTexture(
         stderr.write("Failed to load texture " + filename + "\n")
         return -1
 
+    if filename not in rendererInstance.texPaths:
+        rendererInstance.texPaths.append(filename)
+
+        texBaseName = os.path.basename(filename)
+
+        if texBaseName in texArray[1]:
+            texBaseName += "(" + str(texArray[1].count(texBaseName)) + ")"
+
+        texArray[1].append(texBaseName)
+
+    else:
+        image.close()
+        return rendererInstance.texPaths.index(filename)
+
     oldLen = len(texArray[0])
     texArray[0] = util.realloc(texArray[0], oldLen + 1)
     texArray[0][texIndex] = gl.glGenTextures(1)
@@ -90,13 +105,6 @@ def loadTexture(
 
     else:
         data = np.array(image).flatten() / 255
-
-    texBaseName = os.path.basename(filename)
-
-    if texBaseName in texArray[1]:
-        texBaseName += "(" + str(texArray[1].count(texBaseName)) + ")"
-
-    texArray[1].append(texBaseName)
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, texArray[0][texIndex])
 
@@ -236,7 +244,9 @@ def loadModel(self, filename):
         self.sceneRenderer.materials[oldMaterialLen + i].specularMapID = loadTexture(
             self.sceneRenderer, materials[i].specular_texname, modelDir, 6
         )
-        self.sceneRenderer.materials[oldMaterialLen + i].displacementMapID = loadTexture(
+        self.sceneRenderer.materials[
+            oldMaterialLen + i
+        ].displacementMapID = loadTexture(
             self.sceneRenderer, materials[i].displacement_texname, modelDir, 7
         )
 

@@ -4,6 +4,7 @@ import sceneManager as sm
 import core.GUI.modelDebugUI as modelDebugUI
 import OpenGL.GL as gl
 import core.GUI.modelUI as modelUI
+import core.save_and_load.save as save
 
 frameNum = 0
 avgFPS = 0
@@ -78,4 +79,10 @@ def elements(window):
 
     if imgui.button("Refresh Scene"):
         sm.currentScene.allocateSSBO()
+
+    if imgui.button("Save"):
+        save.save()
+
+    if imgui.button("Load"):
+        pass
     imgui.end()

@@ -12,7 +12,7 @@ import core.sendToShader as sendToShader
 import core.renderer as renderer
 import core.GUI.uiManager as uiManager
 import core.GUI.initGUI as initGUI
-import threading
+import core.save_and_load.sqlWrapper as SQLWrapper
 
 
 class Camera:
@@ -84,6 +84,10 @@ class Scene:
         self.initSSBO()
 
         lm.loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
+
+        self.sqlWrapper = SQLWrapper.SQLWrapper(
+            "localhost", "root", "1234", "raytracer"
+        )
 
     # Methods
     loadModel = lm.loadModel

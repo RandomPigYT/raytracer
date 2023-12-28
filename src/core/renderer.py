@@ -115,8 +115,9 @@ class renderer:
         self.objectTransforms = []
 
         # Texture arrays
-        # Format: [<Texture array ID>, <List of texture names>, <Texture handle>]
+        # Format: [<Texture array ID>, <List of texture names>, <Texture handles>]
         self.textures = [(0 * ct.c_uint32)(), [], (0 * ct.c_uint64)()]
+        self.texPaths = []
 
         self.vertMeshRelations = (0 * ct.c_uint32)()
 

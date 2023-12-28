@@ -2,6 +2,7 @@ import sceneManager as sm
 import ctypes as ct
 import util
 
+
 def deleteMaterial(index):
     pass
 
@@ -14,23 +15,23 @@ def deleteVerts(meshIndex):
 
     if startingVert + numVerts != len(r.vertices):
         import core.renderer as renderer
-        dst = ct.cast(
-            ct.byref(r.vertices[startingVert]), ct.POINTER(renderer.Vertex)
-        )
+
+        dst = ct.cast(ct.byref(r.vertices[startingVert]), ct.POINTER(renderer.Vertex))
         src = ct.cast(
             ct.byref(r.vertices[startingVert + numVerts]), ct.POINTER(renderer.Vertex)
         )
-        ct.memmove(dst, src, len(r.vertices[startingVert + numVerts:]) * ct.sizeof(renderer.Vertex))
+        ct.memmove(
+            dst,
+            src,
+            len(r.vertices[startingVert + numVerts :]) * ct.sizeof(renderer.Vertex),
+        )
         del renderer
-        
-    r.vertices = util.realloc(r.vertices, len(r.vertices) - numVerts)
 
+    r.vertices = util.realloc(r.vertices, len(r.vertices) - numVerts)
 
     for i in range(meshIndex + 1, len(r.meshes)):
         r.meshes[i].startingVertex -= numVerts
 
-
-    
 
 def deleteObject(index):
     r = sm.currentScene.sceneRenderer
@@ -42,40 +43,41 @@ def deleteObject(index):
 
     if startingMesh + numMeshes != len(r.meshes):
         import core.renderer as renderer
-        dst = ct.cast(
-            ct.byref(r.meshes[startingMesh]), ct.POINTER(renderer.Mesh)
-        )
+
+        dst = ct.cast(ct.byref(r.meshes[startingMesh]), ct.POINTER(renderer.Mesh))
         src = ct.cast(
             ct.byref(r.meshes[startingMesh + numMeshes]), ct.POINTER(renderer.Mesh)
         )
-        ct.memmove(dst, src, len(r.meshes[startingMesh + numMeshes:]) * ct.sizeof(renderer.Mesh))
+        ct.memmove(
+            dst,
+            src,
+            len(r.meshes[startingMesh + numMeshes :]) * ct.sizeof(renderer.Mesh),
+        )
         del renderer
 
     r.meshes = util.realloc(r.meshes, len(r.meshes) - numMeshes)
 
-
-    r.meshNames = r.meshNames[:startingMesh] + r.meshNames[startingMesh + numMeshes:]
-    r.meshTransforms = r.meshTransforms[:startingMesh] + r.meshTransforms[startingMesh + numMeshes:]
-    r.meshVBO = r.meshVBO[:startingMesh] + r.meshVBO[startingMesh + numMeshes:]
+    r.meshNames = r.meshNames[:startingMesh] + r.meshNames[startingMesh + numMeshes :]
+    r.meshTransforms = (
+        r.meshTransforms[:startingMesh] + r.meshTransforms[startingMesh + numMeshes :]
+    )
+    r.meshVBO = r.meshVBO[:startingMesh] + r.meshVBO[startingMesh + numMeshes :]
 
     for i in range(index + 1, len(r.objects)):
         r.objects[i].startingMesh -= numMeshes
 
     if index + 1 != len(r.objects):
         import core.renderer as renderer
-        dst = ct.cast(
-            ct.byref(r.objects[index]), ct.POINTER(renderer.Object)
-        )
-        src = ct.cast(
-            ct.byref(r.objects[index + 1]), ct.POINTER(renderer.Object)
-        )
-        ct.memmove(dst, src, len(r.objects[index + 1:]) * ct.sizeof(renderer.Object))
+
+        dst = ct.cast(ct.byref(r.objects[index]), ct.POINTER(renderer.Object))
+        src = ct.cast(ct.byref(r.objects[index + 1]), ct.POINTER(renderer.Object))
+        ct.memmove(dst, src, len(r.objects[index + 1 :]) * ct.sizeof(renderer.Object))
         del renderer
 
     r.objects = util.realloc(r.objects, len(r.objects) - 1)
-    
-    r.objectNames = r.objectNames[:index] + r.objectNames[index + 1:]
-    r.objectTransforms = r.objectTransforms[:index] + r.objectTransforms[index + 1:]
+
+    r.objectNames = r.objectNames[:index] + r.objectNames[index + 1 :]
+    r.objectTransforms = r.objectTransforms[:index] + r.objectTransforms[index + 1 :]
 
     r.updateBvh()
     r.getVertMeshRelation(0)

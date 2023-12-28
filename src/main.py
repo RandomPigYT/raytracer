@@ -10,6 +10,7 @@ import input as inp
 import core.GUI.initImgui as initImgui
 import imgui
 import random
+import core.save_and_load.save as save
 
 
 import core.drawScene as drawScene
@@ -40,63 +41,11 @@ def main():
 
     gl.glEnable(gl.GL_DEPTH_TEST)
 
-    numExts = gl.glGetIntegerv(gl.GL_NUM_EXTENSIONS)
-    exts = [gl.glGetStringi(gl.GL_EXTENSIONS, i) for i in range(numExts)]
-    print(
-        "floating texture compression enabled:",
-        b"GL_ARB_texture_compression_bptc" in exts,
-    )
-
     camPos = (ct.c_float * 3)(0, 0, 3)
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
-    scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1920, 1080), 1)
-    # scene: sc.Scene = sc.Scene("main", camPos, 0, 90, (1280, 720), 0)
-
-    # scene.initCanvas()
-
-    # scene.loadModel("models/plane.obj")
-
-    # scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(249 / 255, 170 / 255, 70 / 255, 0))
-    # scene.sceneRenderer.materials[scene.sceneRenderer.meshes[0].materialID].textureID = 0
-
-    # scene.loadModel("models/king.obj")
-    # scene.loadModel("models/triangle.obj")
-    # scene.loadModel("models/cube.obj")
-    # scene.loadModel("models/sphere.obj")
-    # scene.loadModel("models/utah_upgraded.obj")
-    # scene.loadModel("models/suzanne.obj")
-    # scene.loadModel("models/casa2.obj")
-    # scene.loadModel("models/car.obj")
-    # scene.loadModel("models/normal_cornell_box.obj")
-    # scene.loadModel("models/lamp.obj")
-    # scene.loadModel("models/office.obj")
-    # scene.createSphere(0.73, (ct.c_float * 4)(0.96, 0.05, 2.37, 0))
-    # scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(84 / 255, 255 / 255, 119 / 255, 0))
-
-    # scene.createSphere(36.86, (ct.c_float * 4)(4.62, 12.19, 70.37, 0))
-    # scene.sceneRenderer.materials[scene.sceneRenderer.spheres[0].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(0, 0, 0, 0))
-    # scene.sceneRenderer.materials[
-    #     scene.sceneRenderer.spheres[0].materialID
-    # ].emission = (ct.c_float * 4)(0xF6 / 255, 0xCD / 255, 0x8B / 255, 0)
-    # scene.sceneRenderer.materials[
-    #     scene.sceneRenderer.spheres[0].materialID
-    # ].intensity = (ct.c_float * 4)(*(5, 5, 5, 0))
-
-    # scene.createSphere(27.5, (ct.c_float * 4)(2, -28.05, 2, 0))
-    # scene.materials[scene.spheres[2].materialID].albedo = (ct.c_float * 4)(*(249 / 255, 170 / 255, 70 / 255, 0))
-
-    # scene.createSphere(0.25, (ct.c_float * 4)(2, -0.32, 2, 0))
-    # scene.sceneRenderer.materials[scene.sceneRenderer.spheres[2].materialID].albedo = (
-    #     ct.c_float * 4
-    # )(*(random.random(), random.random(), random.random(), 0))
-    scene.sendMats()
+    scene: sc.Scene = sc.Scene("testScene", camPos, 0, 90, (1920, 1080), 1)
+    # save.save()
 
     drawScene.render(window, scene, impl)
 

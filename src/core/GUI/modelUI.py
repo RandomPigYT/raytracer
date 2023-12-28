@@ -132,7 +132,6 @@ def drawMaterialControls(materialID, num):
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex = ref
 
-
     status, roughness = imgui.drag_float2(
         "roughness##" + str(num),
         *sm.currentScene.sceneRenderer.materials[materialID].roughness,
@@ -212,7 +211,9 @@ def drawMaterialControls(materialID, num):
         sm.currentScene.sceneRenderer.materials[materialID].displacementMapID
     )
     textureCombo(ct.pointer(tempTexID), "Displacement Map", num)
-    sm.currentScene.sceneRenderer.materials[materialID].displacementMapID = tempTexID.value
+    sm.currentScene.sceneRenderer.materials[
+        materialID
+    ].displacementMapID = tempTexID.value
 
 
 def materials():
