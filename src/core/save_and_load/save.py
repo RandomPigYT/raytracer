@@ -1,5 +1,6 @@
 import core.save_and_load.sqlWrapper as sqlWrapper
 import sceneManager as sm
+import mysql.connector as con
 
 
 def createTables(sceneName, wrapper):
@@ -133,7 +134,10 @@ def save():
     r = sm.currentScene.sceneRenderer
     sceneName = sm.currentScene.name
 
-    wrapper.execute("insert into scenes values('{}')".format(sceneName))
+    try:
+        wrapper.execute("insert into scenes values('{}')".format(sceneName))
+    except con.errors.IntegrityError:
+        pass
 
     createTables(sceneName, wrapper)
 

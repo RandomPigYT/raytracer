@@ -35,13 +35,13 @@ def loadTexture(
 ):
     if prependTexDir and filename != "":
         filename = os.path.join(modelDir, filename).replace("\\", "/")
-        filename = os.path.realpath(filename).replace("\\", "/")
         # print("Loading texture:", filename)
     maxSize = (4096, 4096)
 
     if filename == "":
         return -1
 
+    filename = os.path.realpath(filename).replace("\\", "/")
     # types
     # 0: diffuse texture
     # 1: roughness map
