@@ -8,7 +8,6 @@ import core.GUI.delete as delete
 import core.GUI.enterText as enterText
 
 
-
 def createMaterial(selfIndex, name):
     name, done, cancel = enterText.enterName("Material Name", name)
 

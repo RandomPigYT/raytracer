@@ -7,16 +7,18 @@ import core.GUI.modelUI as modelUI
 import core.save_and_load.save as save
 import core.save_and_load.load as load
 
+
 def docking_space(name: str):
-    flags = (imgui.WINDOW_MENU_BAR 
-    | imgui.WINDOW_NO_DOCKING 
-    # | imgui.WINDOW_NO_BACKGROUND
-    | imgui.WINDOW_NO_TITLE_BAR
-    | imgui.WINDOW_NO_COLLAPSE
-    | imgui.WINDOW_NO_RESIZE
-    | imgui.WINDOW_NO_MOVE
-    | imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
-    | imgui.WINDOW_NO_NAV_FOCUS
+    flags = (
+        imgui.WINDOW_MENU_BAR
+        | imgui.WINDOW_NO_DOCKING
+        # | imgui.WINDOW_NO_BACKGROUND
+        | imgui.WINDOW_NO_TITLE_BAR
+        | imgui.WINDOW_NO_COLLAPSE
+        | imgui.WINDOW_NO_RESIZE
+        | imgui.WINDOW_NO_MOVE
+        | imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
+        | imgui.WINDOW_NO_NAV_FOCUS
     )
 
     viewport = imgui.get_main_viewport()
@@ -51,8 +53,10 @@ def docking_space(name: str):
 
     imgui.end()
 
+
 frameNum = 0
 avgFPS = 0
+
 
 def elements(window):
     global frameNum, avgFPS

@@ -1,20 +1,10 @@
 import sceneManager as sm
-import imgui
-import os
-import core.GUI.drawDirTree as ddt
-import time
-import threading
-import core.GUI.manage_scenes.newScene as newScene
-import core.GUI.modelLoadUI as modelLoadUI
 import core.save_and_load.save as save
 import mysql.connector
 import core.GUI.enterText as enterText
 
 
-    
-
 def saveSceneAs(selfIndex, name, nameConflict):
-    
     wrapper = sm.currentScene.sqlWrapper
 
     label = "Save As" + (" (Conflicting names)" if nameConflict else "")
@@ -27,7 +17,9 @@ def saveSceneAs(selfIndex, name, nameConflict):
     if done:
         sm.currentScene.name = name
         try:
-            wrapper.execute("insert into scenes values('{}')".format(sm.currentScene.name))
+            wrapper.execute(
+                "insert into scenes values('{}')".format(sm.currentScene.name)
+            )
             sm.currentScene.saved = True
         except mysql.connector.errors.IntegrityError:
             for i in range(len(sm.currentScene.uiManager.jobs)):
@@ -36,18 +28,19 @@ def saveSceneAs(selfIndex, name, nameConflict):
                     sm.currentScene.uiManager.jobs[i].renderArgs[2] = True
             return False
         save.save()
-        
-        
+
     if cancel:
-        return True 
+        return True
 
     # sm.currentScene.saved = True
     return done
+
 
 def saveSceneAsCleanup(selfIndex, prevJobs):
     ids = [i.id for i in prevJobs]
     sm.currentScene.uiManager.removeJob(selfIndex)
     sm.currentScene.uiManager.activateJobs(ids)
+
 
 def addSaveAsJob(nameConflict):
     sm.currentScene.uiManager.deactivateAll()
@@ -55,29 +48,23 @@ def addSaveAsJob(nameConflict):
         saveSceneAs,
         [sm.currentScene.uiManager.globalJobID, "", nameConflict],
         saveSceneAsCleanup,
-        [
-            sm.currentScene.uiManager.globalJobID,
-            [*sm.currentScene.uiManager.jobs]
-        ],
+        [sm.currentScene.uiManager.globalJobID, [*sm.currentScene.uiManager.jobs]],
         True,
-        False
+        False,
     )
 
+
 def saveScene():
-
-
     wrapper = sm.currentScene.sqlWrapper
 
     if not sm.currentScene.saved:
         try:
-            wrapper.execute("insert into scenes values('{}')".format(sm.currentScene.name))
+            wrapper.execute(
+                "insert into scenes values('{}')".format(sm.currentScene.name)
+            )
             sm.currentScene.saved = True
         except mysql.connector.errors.IntegrityError:
             addSaveAsJob(True)
             return
-    
+
     save.save()
-
-        
-
-        

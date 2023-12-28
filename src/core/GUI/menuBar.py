@@ -30,21 +30,20 @@ def renderMenuBar(selfIndex):
                     True,
                     False,
                 )
-            
+
             clicked_saveScene, selected_saveScene = imgui.menu_item(
                 "Save", "Ctrl+S", False, True
             )
 
             if clicked_saveScene:
                 saveScene.saveScene()
-            
+
             clicked_saveSceneAs, selected_saveSceneAs = imgui.menu_item(
                 "Save As", "Ctrl+S", False, True
             )
 
             if clicked_saveSceneAs:
                 saveScene.addSaveAsJob(False)
-            
 
             clicked_loadScene, selected_LoadScene = imgui.menu_item(
                 "Load Scene", "Ctrl+O", False, True

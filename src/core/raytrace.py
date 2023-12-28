@@ -14,7 +14,6 @@ def raytrace(scene, maxBounces, raysPerPixel, voidColour):
         gl.glClearColor(*voidColour)
         return
 
-
     scene.sceneRenderer.frameNum += 1
 
     raysPerPixelLoc = gl.glGetUniformLocation(

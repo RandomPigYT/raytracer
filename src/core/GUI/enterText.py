@@ -6,6 +6,7 @@ import util
 import math
 import core.GUI.delete as delete
 
+
 def enterName(label, name):
     imgui.begin(label)
     changed, name = imgui.input_text("", value=name, buffer_length=400)

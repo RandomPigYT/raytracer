@@ -7,6 +7,7 @@ import threading
 import core.GUI.manage_scenes.newScene as newScene
 import core.GUI.modelLoadUI as modelLoadUI
 
+
 def loadModel(selfIndex, pathInp):
     imgui.begin("Select file")
 
