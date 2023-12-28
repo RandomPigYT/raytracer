@@ -133,6 +133,8 @@ def save():
     r = sm.currentScene.sceneRenderer
     sceneName = sm.currentScene.name
 
+    wrapper.execute("insert into scenes values({})".format(sceneName))
+
     createTables(sceneName, wrapper)
 
     wrapper.execute("delete from {}_objects".format(sceneName))

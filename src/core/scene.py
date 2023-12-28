@@ -67,7 +67,7 @@ class Scene:
         self.uiManager = uiManager.UIManager()
         initGUI.initGUI(self)
 
-        self.name = name
+        self.name = name.lower()
 
         self.resolution = resolution
 
