@@ -7,8 +7,13 @@ import graphics.shader as shader
 import math
 
 
-def raytrace(scene, maxBounces, raysPerPixel):
+def raytrace(scene, maxBounces, raysPerPixel, voidColour):
     global framNum
+
+    if len(sm.currentScene.sceneRenderer.meshes) == 0:
+        gl.glClearColor(*voidColour)
+        return
+
 
     scene.sceneRenderer.frameNum += 1
 

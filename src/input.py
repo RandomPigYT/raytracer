@@ -25,6 +25,7 @@ def keyCallback(window, key, scancode, action, mods):
         else:
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
             sm.currentScene.uiManager.deactivateAll()
+            sm.currentScene.uiManager.removeNonDefault()
 
     if key == GLFW_KEY_BACKSPACE and action == GLFW_PRESS:
         io = imgui.get_io()

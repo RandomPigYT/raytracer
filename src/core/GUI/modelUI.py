@@ -5,26 +5,12 @@ import glm
 import util
 import math
 import core.GUI.delete as delete
+import core.GUI.enterText as enterText
 
-
-def enterName(label, name):
-    imgui.begin(label)
-    changed, name = imgui.input_text("", value=name, buffer_length=400)
-    imgui.same_line()
-    done = imgui.button("Done")
-    imgui.same_line()
-    cancel = imgui.button("Cancel")
-
-    if done and name == "":
-        cancel = True
-        done = False
-    imgui.end()
-
-    return name, done, cancel
 
 
 def createMaterial(selfIndex, name):
-    name, done, cancel = enterName("Material Name", name)
+    name, done, cancel = enterText.enterName("Material Name", name)
 
     # sm.currentScene.uiManager.jobs[selfIndex].renderArgs[1] = name
     for i in range(len(sm.currentScene.uiManager.jobs)):

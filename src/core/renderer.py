@@ -159,7 +159,7 @@ class renderer:
 
     def render(self, voidColour=(0.663, 0.965, 0.969, 1)):
         if self.mode == RAYTRACE:
-            rt.raytrace(self.scene, self.numBounces, self.raysPerPixel)
+            rt.raytrace(self.scene, self.numBounces, self.raysPerPixel, voidColour)
 
         elif self.mode == RASTERIZE:
             self.renderRasterized(voidColour)

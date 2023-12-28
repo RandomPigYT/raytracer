@@ -77,6 +77,11 @@ class UIManager:
         self.jobs.append(temp)
         return self.globalJobID - 1
 
+    def removeNonDefault(self):
+        for i in range(len(self.jobs)):
+            if not self.jobs[i].isDefaultJob:
+                self.removeJob(self.jobs[i].id)
+
     def removeJob(self, jobID):
         for i in range(len(self.jobs)):
             if self.jobs[i].id == jobID:

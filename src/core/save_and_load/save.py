@@ -133,8 +133,8 @@ def save():
     wrapper = sm.currentScene.sqlWrapper
     sceneName = sm.currentScene.name
 
-    if not sm.currentScene.saved:
-        wrapper.execute("insert into scenes values('{}')".format(sceneName))
+    # if not sm.currentScene.saved:
+    #     wrapper.execute("insert into scenes values('{}')".format(sceneName))
 
     createTables(sceneName, wrapper)
 

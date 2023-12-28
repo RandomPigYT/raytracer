@@ -22,11 +22,6 @@ def main():
     window = graphics.window.createWindow(
         1920, 1080, "raytracer", glfwGetPrimaryMonitor()
     )
-    # window = graphics.window.createWindow(1920, 1080, "test")
-
-    viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
-    width = viewport[2]
-    height = viewport[3]
 
     impl = initImgui.init(window)
 
@@ -45,7 +40,6 @@ def main():
     camDir = (ct.c_float * 3)(0, 0, -1.0)
 
     scene: sc.Scene = sc.Scene("testScene", camPos, 0, 90, (1920, 1080), 1)
-    # save.save()
 
     drawScene.render(window, scene, impl)
 
