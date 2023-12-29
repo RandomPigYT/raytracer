@@ -118,6 +118,8 @@ uniform mat4 camToWorld;
 uniform float fov;
 uniform float blurStrength;
 
+uniform vec4 voidColour;
+
 uint pcg_hash(uint inp) {
   uint state = inp * 747796405u + 2891336453u;
   uint word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
@@ -827,7 +829,8 @@ void main() {
 
       vec3 offset = vec3((random(seed) * 2 - 1) * pixelLength, (random(seed) * 2 - 1) * pixelHeight, 0);
 
-      colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+      // colour += trace(rayDir + offset, vec4(0.663, 0.965, 0.969, 1), seed) / raysPerPixel;
+      colour += trace(rayDir + offset, clamp(voidColour, 0, 1.0f / 0.0f), seed) / raysPerPixel;
       // colour += trace(rayDir + offset, vec4(0, 0, 0, 1), seed) / raysPerPixel; 
     }
 

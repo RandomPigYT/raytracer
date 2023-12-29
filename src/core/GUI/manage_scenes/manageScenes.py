@@ -76,6 +76,7 @@ def rename(selfIndex, scene, name, nameConflict):
 
         wrapper.execute("delete from scenes where name = '{}'".format(scene))
         renameTables(scene, name)
+        sm.currentScene.name = name
 
     if cancel:
         return True

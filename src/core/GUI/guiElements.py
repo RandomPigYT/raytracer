@@ -1,11 +1,9 @@
 import imgui
 import deltatime
 import sceneManager as sm
-import core.GUI.modelDebugUI as modelDebugUI
 import OpenGL.GL as gl
 import core.GUI.modelUI as modelUI
-import core.save_and_load.save as save
-import core.save_and_load.load as load
+import math
 
 
 def docking_space(name: str):
@@ -91,7 +89,7 @@ def elements(window):
     )
 
     status, blur = imgui.drag_float(
-        "blur strength",
+        "Blur Strength",
         sm.currentScene.camera.blur,
         0.01,
         format="%0.2f",
@@ -110,7 +108,7 @@ def elements(window):
         sm.currentScene.camera.fov = fov
 
     status, numBounces = imgui.drag_int(
-        "bounce limit", sm.currentScene.sceneRenderer.numBounces, min_value=1
+        "Bounce Limit", sm.currentScene.sceneRenderer.numBounces, min_value=1
     )
     numBounces = max(numBounces, 1)
 
@@ -118,18 +116,32 @@ def elements(window):
         sm.currentScene.sceneRenderer.numBounces = numBounces
 
     status, raysPerPixel = imgui.drag_int(
-        "rays per pixel", sm.currentScene.sceneRenderer.raysPerPixel, min_value=1
+        "Rays Per Pixel", sm.currentScene.sceneRenderer.raysPerPixel, min_value=1
     )
     raysPerPixel = max(raysPerPixel, 1)
 
     if status:
         sm.currentScene.sceneRenderer.raysPerPixel = raysPerPixel
 
+    status, voidColour = imgui.drag_float3(
+        "Void Colour",
+        *sm.currentScene.voidColour[:-1],
+        0.01,
+        format="%0.2f",
+        min_value=0,
+        max_value=math.inf,
+    )
+    if status:
+        sm.currentScene.voidColour = (*voidColour, 1.0)
+
     if imgui.button("Toggle Raytracy"):
         sm.currentScene.resetFrame()
         sm.currentScene.sceneRenderer.updateBvh()
         sm.currentScene.sendBvhs()
         sm.currentScene.sceneRenderer.mode ^= 1
+    
+    imgui.same_line()
+    imgui.text("Ray Tracing" if sm.currentScene.sceneRenderer.mode == 0 else "Rasterizing")
 
     if imgui.button("Refresh Scene"):
         sm.currentScene.allocateSSBO()

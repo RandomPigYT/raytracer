@@ -27,15 +27,13 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
 
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
 
-        # rt.raytrace(scene, scene.numBounces, max(scene.raysPerPixel, 1))
         if os.name == "nt":
-            scene.sceneRenderer.render()
+            scene.sceneRenderer.render(scene.voidColour)
             gl.glFinish()
 
         cam.move()
 
         sm.currentScene.uiManager.render()
-        # gElem.elements(window)
 
         imgui.render()
         impl.render(imgui.get_draw_data())
@@ -43,5 +41,3 @@ def render(window, scene: sc.Scene, impl: GlfwRenderer):
         glfwPollEvents()
         impl.process_inputs()
         glfwSwapBuffers(window)
-
-        # print(1 / deltatime.deltaTime())

@@ -5,13 +5,14 @@ import time
 import sceneManager as sm
 import graphics.shader as shader
 import math
+import core.rasterize as rasterize
 
 
 def raytrace(scene, maxBounces, raysPerPixel, voidColour):
     global framNum
 
     if len(sm.currentScene.sceneRenderer.meshes) == 0:
-        gl.glClearColor(*voidColour)
+        gl.glClearColor(*rasterize.gammaCorrect(rasterize.toneMap(voidColour), 2.2))
         return
 
     scene.sceneRenderer.frameNum += 1

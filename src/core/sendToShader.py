@@ -36,12 +36,6 @@ def sendUniforms(self):
 
     gl.glUniform2f(resolutionLoc, *(ct.c_float * 2)(*self.resolution))
 
-    # viewMat = glm.lookAt(
-    #     self.camera.position,
-    #     glm.vec3(self.camera.position) + glm.vec3(self.camera.direction),
-    #     glm.vec3(0, 1, 0),
-    # )
-
     viewMat = glm.lookAt(
         glm.vec3(0, 0, 0), glm.vec3(self.camera.direction), glm.vec3(0, 1, 0)
     )
@@ -60,3 +54,6 @@ def sendUniforms(self):
 
     fovLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "fov")
     gl.glUniform1f(fovLoc, self.camera.fov)
+
+    voidColourLoc = gl.glGetUniformLocation(self.sceneRenderer.compute, "voidColour")
+    gl.glUniform4f(voidColourLoc, *(self.voidColour)[:-1], 1.0)

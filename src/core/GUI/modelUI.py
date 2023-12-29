@@ -218,6 +218,8 @@ def materials():
             True,
             False,
         )
+
+    sm.currentScene.allocateSSBO()
     sm.currentScene.resetFrame()
     imgui.end()
 

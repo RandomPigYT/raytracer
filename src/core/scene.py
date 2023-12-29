@@ -85,6 +85,8 @@ class Scene:
         self.camera.prevMousePos[0] = 0
         self.camera.prevMousePos[1] = 0
 
+        self.voidColour = (0.663, 0.965, 0.969, 1)
+
         self.initCanvas()
         self.initSSBO()
 
