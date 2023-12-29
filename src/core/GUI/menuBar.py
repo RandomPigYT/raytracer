@@ -7,9 +7,15 @@ import threading
 import core.GUI.manage_scenes.newScene as newScene
 import core.GUI.modelLoadUI as modelLoadUI
 import core.GUI.manage_scenes.saveScene as saveScene
+import core.GUI.manage_scenes.loadScene as loadScene
+import core.GUI.manage_scenes.manageScenes as manageScenes
 
 
 def renderMenuBar(selfIndex):
+
+    def loadModelUiDelFunc():
+        modelLoadUI.prevUiIndex = None
+
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
             clicked_newScene, selected_newScene = imgui.menu_item(
@@ -50,7 +56,38 @@ def renderMenuBar(selfIndex):
             )
 
             if clicked_loadScene:
-                pass
+                sm.currentScene.uiManager.deactivateAll()
+
+                sm.currentScene.uiManager.addJob(
+                    loadScene.loadScene,
+                    [sm.currentScene.uiManager.globalJobID],
+                    loadScene.loadSceneCleanup,
+                    [
+                        sm.currentScene.uiManager.globalJobID,
+                        [*sm.currentScene.uiManager.jobs],
+                    ],
+                    True,
+                    False,
+                )
+
+            clicked_manageScnenes, selected_manageScnenes = imgui.menu_item(
+                "Manage Scenes", "", False, True
+            )
+
+            if clicked_manageScnenes:
+                sm.currentScene.uiManager.deactivateAll()
+
+                sm.currentScene.uiManager.addJob(
+                    manageScenes.manage,
+                    [sm.currentScene.uiManager.globalJobID],
+                    manageScenes.manageScenesCleanup,
+                    [
+                        sm.currentScene.uiManager.globalJobID,
+                        [*sm.currentScene.uiManager.jobs],
+                    ],
+                    True,
+                    False,
+                )
 
             clicked_loadModel, selected_loadModel = imgui.menu_item(
                 "Load Model", "Ctrl+I", False, True
@@ -64,6 +101,8 @@ def renderMenuBar(selfIndex):
                     [sm.currentScene.uiManager.globalJobID],
                     True,
                     False,
+                    loadModelUiDelFunc,
+                    []
                 )
 
             imgui.end_menu()

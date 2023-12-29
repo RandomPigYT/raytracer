@@ -7,8 +7,16 @@ import threading
 import core.GUI.manage_scenes.newScene as newScene
 import core.GUI.modelLoadUI as modelLoadUI
 
+prevUiIndex = None
+
 
 def loadModel(selfIndex, pathInp):
+    global prevUiIndex
+
+    if prevUiIndex != selfIndex and prevUiIndex != None:
+        return True
+
+    prevUiIndex = selfIndex
     imgui.begin("Select file")
 
     result = False
@@ -42,4 +50,5 @@ def loadModel(selfIndex, pathInp):
 
 
 def loadModelCleanup(selfIndex):
+    global prevUiIndex
     sm.currentScene.uiManager.removeJob(selfIndex)

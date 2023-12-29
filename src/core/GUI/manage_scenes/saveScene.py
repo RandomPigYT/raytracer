@@ -8,7 +8,7 @@ def saveSceneAs(selfIndex, name, nameConflict):
     wrapper = sm.currentScene.sqlWrapper
 
     label = "Save As" + (" (Conflicting names)" if nameConflict else "")
-    name, done, cancel = enterText.enterName(label, name)
+    name, done, cancel = enterText.enterName(label, name, False, False)
 
     for i in range(len(sm.currentScene.uiManager.jobs)):
         if sm.currentScene.uiManager.jobs[i].id == selfIndex:
@@ -57,7 +57,11 @@ def addSaveAsJob(nameConflict):
 def saveScene():
     wrapper = sm.currentScene.sqlWrapper
 
+
     if not sm.currentScene.saved:
+        if sm.currentScene.name == "":
+            addSaveAsJob(False)
+            return
         try:
             wrapper.execute(
                 "insert into scenes values('{}')".format(sm.currentScene.name)

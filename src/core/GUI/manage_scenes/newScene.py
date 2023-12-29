@@ -11,7 +11,7 @@ import core.GUI.enterText as enterText
 
 # name = ""
 def newScene(selfIndex, name):
-    name, done, cancel = enterText.enterName("Scene Name", name)
+    name, done, cancel = enterText.enterName("Scene Name", name, False, False)
 
     # sm.currentScene.uiManager.jobs[selfIndex].renderArgs[1] = name
     for i in range(len(sm.currentScene.uiManager.jobs)):

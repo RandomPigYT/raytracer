@@ -37,6 +37,8 @@ class Job:
         cleanupArgs,
         isActive,
         isDefaultJob,
+        deleteFunc=None,
+        deleteArgs=None,
     ):
         self.id = jobID
 
@@ -44,6 +46,8 @@ class Job:
         self.renderArgs = renderArgs
         self.cleanupFunc = cleanupFunc
         self.cleanupArgs = cleanupArgs
+        self.deleteFunc = deleteFunc
+        self.deleteArgs = deleteArgs
 
         self.isActive = isActive
         self.isDefaultJob = isDefaultJob
@@ -55,6 +59,10 @@ class Job:
         if self.cleanupFunc != None:
             self.cleanupFunc(*self.cleanupArgs)
 
+    def deleteCleanup(self):
+        if self.deleteFunc != None:
+            self.deleteFunc(*self.deleteArgs)
+
 
 class UIManager:
     def __init__(self):
@@ -62,7 +70,15 @@ class UIManager:
         self.globalJobID = 0
 
     def addJob(
-        self, renderFunc, renderArgs, cleanupFunc, cleanupArgs, isActive, isDefaultJob
+        self,
+        renderFunc,
+        renderArgs,
+        cleanupFunc,
+        cleanupArgs,
+        isActive,
+        isDefaultJob,
+        deleteFunc=None,
+        deleteArgs=None,
     ):
         self.globalJobID += 1
         temp = Job(
@@ -73,6 +89,8 @@ class UIManager:
             cleanupArgs,
             isActive,
             isDefaultJob,
+            deleteFunc,
+            deleteArgs
         )
         self.jobs.append(temp)
         return self.globalJobID - 1
@@ -80,11 +98,13 @@ class UIManager:
     def removeNonDefault(self):
         for i in range(len(self.jobs)):
             if not self.jobs[i].isDefaultJob:
+                self.jobs[i].deleteCleanup()
                 self.removeJob(self.jobs[i].id)
 
     def removeJob(self, jobID):
         for i in range(len(self.jobs)):
             if self.jobs[i].id == jobID:
+                self.jobs[i].deleteCleanup()
                 self.jobs.pop(i)
                 return
 
