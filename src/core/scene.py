@@ -91,7 +91,7 @@ class Scene:
         lm.loadTexture(self.sceneRenderer, "./src/core/model/BLANK.jpg", "", 0, False)
 
         self.sqlWrapper = SQLWrapper.SQLWrapper(
-            "localhost", "root", "1234", "raytracer"
+            "localhost", "raytracerBot", "password", "raytracer"
         )
 
     # Methods
