@@ -685,6 +685,8 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     mat.opacity = mat.opacityMapID != -1 ? texture(textures[mat.opacityMapID], textureCoord).x : mat.opacity;
     hit.normal = mat.normalMapID != -1 ? normalize(texture(textures[mat.normalMapID], textureCoord).xyz) : hit.normal;
 
+    mat.emission = clamp(mat.emission, 0.0f, 1.0f / 0.0f);
+
     mat4 rotate = meshes[meshIndex].transform;
     rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     rotate /= determinant(rotate);

@@ -9,8 +9,6 @@ import init
 import input as inp
 import core.GUI.initImgui as initImgui
 import imgui
-import random
-import core.save_and_load.save as save
 
 
 import core.drawScene as drawScene

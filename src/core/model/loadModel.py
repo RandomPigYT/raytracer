@@ -190,12 +190,12 @@ def loadModel(self, filename):
     modelDir = os.path.dirname(os.path.realpath(filename))
     # Add materials
     for i in range(len(materials)):
-        tempName = materials[i].name if materials[i].name != "" else "(Unnamed)"
-        if materials[i].name in self.sceneRenderer.matNames:
-            tempName = (
-                tempName + "(" + str(self.sceneRenderer.matNames.count(tempName)) + ")"
-            )
-        self.sceneRenderer.matNames.append(tempName)
+        # tempName = materials[i].name if materials[i].name != "" else "(Unnamed)"
+        # if materials[i].name in self.sceneRenderer.matNames:
+        #     tempName = (
+        #         tempName + "(" + str(self.sceneRenderer.matNames.count(tempName)) + ")"
+        #     )
+        self.sceneRenderer.matNames.append(materials[i].name + "_" + str(oldMaterialLen + i - 1))
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
             *materials[i].diffuse, 0.0
         )
@@ -260,29 +260,29 @@ def loadModel(self, filename):
     self.sceneRenderer.objects[objIndex].numMeshes = len(shapes)
 
     objname = pathlib.Path(filename).stem
-    if objname not in self.sceneRenderer.objectNames:
-        self.sceneRenderer.objectNames.append(objname)
+    # if objname not in self.sceneRenderer.objectNames:
+    self.sceneRenderer.objectNames.append(objname + "_" + str(objIndex))
 
-    else:
-        self.sceneRenderer.objectNames.append(
-            objname + "(" + str(self.sceneRenderer.objectNames.count(objname)) + ")"
-        )
+    # else:
+    #     self.sceneRenderer.objectNames.append(
+    #         objname + "(" + str(self.sceneRenderer.objectNames.count(objname)) + ")"
+    #     )
 
     self.sceneRenderer.objectTransforms.append(renderer.Transform())
 
     # generate mesh data
     startingVertCount = 0
     for i in range(len(shapes)):
-        if shapes[i].name not in self.sceneRenderer.meshNames:
-            self.sceneRenderer.meshNames.append(shapes[i].name)
+        # if shapes[i].name not in self.sceneRenderer.meshNames:
+        self.sceneRenderer.meshNames.append(shapes[i].name + "_" + str(i + meshOffset))
 
-        else:
-            self.sceneRenderer.meshNames.append(
-                shapes[i].name
-                + "("
-                + str(self.sceneRenderer.meshNames.count(shapes[i].name))
-                + ")"
-            )
+        # else:
+        #     self.sceneRenderer.meshNames.append(
+        #         shapes[i].name
+        #         + "("
+        #         + str(self.sceneRenderer.meshNames.count(shapes[i].name))
+        #         + ")"
+        #     )
 
         self.sceneRenderer.meshes[i + meshOffset].startingVertex = (
             startingVertCount + vertOffset
