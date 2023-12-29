@@ -781,7 +781,7 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
     if (isSpecular)
       weight = 1 / pdf;
 
-    colour += throughput * mat.emission.xyz * mat.intensity.x;
+    colour += throughput * mat.emission.xyz;
 
     if (!refracted)
       throughput *= brdf * weight * dot(hit.normal, reflectedRay);

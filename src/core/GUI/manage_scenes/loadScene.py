@@ -4,6 +4,7 @@ import mysql.connector
 import core.GUI.enterText as enterText
 import imgui
 
+
 def loadScene(selfIndex):
     wrapper = sm.currentScene.sqlWrapper
 
@@ -13,13 +14,13 @@ def loadScene(selfIndex):
     done = False
 
     imgui.begin("Load Scene")
-    
+
     for i in scenes:
         if done := imgui.button(i[0]):
             sm.currentScene.__init__(i[0], (0, 0, 3), 0, 90, (1920, 1080), 1)
+            load.load(i[0])
             sm.currentScene.camera.lockCam ^= True
             sm.currentScene.saved = True
-            load.load(i[0])
 
     imgui.separator()
 
@@ -28,6 +29,7 @@ def loadScene(selfIndex):
     imgui.end()
 
     return done
+
 
 def loadSceneCleanup(selfIndex, prevJobs):
     ids = [i.id for i in prevJobs]

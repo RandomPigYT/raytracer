@@ -4,7 +4,27 @@ import util
 
 
 def deleteMaterial(index):
-    pass
+    r = sm.currentScene.sceneRenderer
+
+    if index + 1 != len(r.materials):
+        import core.renderer as renderer
+
+        dst = ct.cast(ct.byref(r.materials[index]), ct.POINTER(renderer.Material))
+        src = ct.cast(ct.byref(r.materials[index + 1]), ct.POINTER(renderer.Material))
+        ct.memmove(
+            dst, src, len(r.materials[index + 1 :]) * ct.sizeof(renderer.Material)
+        )
+        del renderer
+
+    r.materials = util.realloc(r.materials, len(r.materials) - 1)
+
+    r.matNames = r.matNames[:index] + r.matNames[index + 1 :]
+
+    for i, mesh in enumerate(r.meshes):
+        if mesh.materialID == index:
+            r.meshes[i].materialID = 0
+
+    sm.currentScene.allocateSSBO()
 
 
 def deleteVerts(meshIndex):

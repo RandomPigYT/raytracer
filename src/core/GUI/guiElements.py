@@ -72,11 +72,10 @@ def elements(window):
     height = viewport[3]
 
     fps = 1 / dt
-    avgFPS = ((frameNum - 1) * avgFPS + (fps)) / frameNum
+    # avgFPS = ((frameNum - 1) * avgFPS + (fps)) / frameNum
 
     imgui.begin("FPS")
     imgui.text(str("FPS: " + str(fps)))
-    imgui.text(str("Avg FPS: " + str(avgFPS)))
     imgui.text("Frame: " + str(sm.currentScene.sceneRenderer.frameNum))
     imgui.text("Res: " + str(width) + " " + str(height))
     imgui.end()
@@ -85,6 +84,11 @@ def elements(window):
     modelUI.drawUI()
 
     imgui.begin("Scene")
+
+    imgui.text(
+        "Scene name: "
+        + (sm.currentScene.name if sm.currentScene.name != "" else "(Untitled)")
+    )
 
     status, blur = imgui.drag_float(
         "blur strength",
@@ -129,11 +133,4 @@ def elements(window):
 
     if imgui.button("Refresh Scene"):
         sm.currentScene.allocateSSBO()
-
-    if imgui.button("Save"):
-        save.save()
-        sm.currentScene.saved = True
-
-    if imgui.button("Load"):
-        load.load(sm.currentScene.name)
     imgui.end()

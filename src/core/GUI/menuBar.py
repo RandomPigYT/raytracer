@@ -12,7 +12,6 @@ import core.GUI.manage_scenes.manageScenes as manageScenes
 
 
 def renderMenuBar(selfIndex):
-
     def loadModelUiDelFunc():
         modelLoadUI.prevUiIndex = None
 
@@ -102,7 +101,7 @@ def renderMenuBar(selfIndex):
                     True,
                     False,
                     loadModelUiDelFunc,
-                    []
+                    [],
                 )
 
             imgui.end_menu()

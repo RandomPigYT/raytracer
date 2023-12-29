@@ -88,15 +88,6 @@ def drawMaterialControls(materialID, num):
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].emission = (*emission, 1)
 
-    status, intensity = imgui.drag_float3(
-        "intensity##" + str(num),
-        *(sm.currentScene.sceneRenderer.materials[materialID].intensity[:-1]),
-        0.01,
-        format="%0.2f",
-    )
-    if status:
-        sm.currentScene.sceneRenderer.materials[materialID].intensity = (*intensity, 1)
-
     status, op = imgui.drag_float(
         "opacity##" + str(num),
         sm.currentScene.sceneRenderer.materials[materialID].opacity,
@@ -117,16 +108,16 @@ def drawMaterialControls(materialID, num):
     if status:
         sm.currentScene.sceneRenderer.materials[materialID].refractiveIndex = ref
 
-    status, roughness = imgui.drag_float2(
+    status, roughness = imgui.drag_float(
         "roughness##" + str(num),
-        *sm.currentScene.sceneRenderer.materials[materialID].roughness,
+        sm.currentScene.sceneRenderer.materials[materialID].roughness[0],
         0.001,
         format="%0.3f",
         min_value=0,
         max_value=1,
     )
     if status:
-        sm.currentScene.sceneRenderer.materials[materialID].roughness = roughness
+        sm.currentScene.sceneRenderer.materials[materialID].roughness[0] = roughness
 
     status, metallic = imgui.drag_float(
         "metallic##" + str(num),
@@ -208,9 +199,13 @@ def materials():
         if imgui.tree_node(sm.currentScene.sceneRenderer.matNames[i]):
             drawMaterialControls(i, i)
             imgui.tree_pop()
-        # if imgui.begin_popup_context_item("Edit Material").opened:
-        #     imgui.text("Woo, yeah")
-        #     imgui.end_popup()
+        if imgui.begin_popup_context_item("Edit Materials##" + str(i)).opened:
+            if imgui.button("Delete Material##" + str(i)):
+                delete.deleteMaterial(i)
+                imgui.end_popup()
+                imgui.end()
+                return
+            imgui.end_popup()
 
     cleanupNewMat = lambda selfIndex: sm.currentScene.uiManager.removeJob(selfIndex)
 

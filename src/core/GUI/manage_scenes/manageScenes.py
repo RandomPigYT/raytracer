@@ -4,10 +4,12 @@ import mysql.connector
 import core.GUI.enterText as enterText
 import imgui
 
+
 def manageScenesCleanup(selfIndex, prevJobs):
     ids = [i.id for i in prevJobs]
     sm.currentScene.uiManager.removeJob(selfIndex)
     sm.currentScene.uiManager.activateJobs(ids)
+
 
 def delete(scene):
     wrapper = sm.currentScene.sqlWrapper
@@ -28,14 +30,27 @@ def renameTables(oldName, newName):
 
     wrapper.execute("alter table {}_objects rename {}_objects".format(oldName, newName))
     wrapper.execute("alter table {}_meshes rename {}_meshes".format(oldName, newName))
-    wrapper.execute("alter table {}_materials rename {}_materials".format(oldName, newName))
-    wrapper.execute("alter table {}_vertices rename {}_vertices".format(oldName, newName))
-    wrapper.execute("alter table {}_textures rename {}_textures".format(oldName, newName))
-    wrapper.execute("alter table {}_mesh_transform rename {}_mesh_transform".format(oldName, newName))
-    wrapper.execute("alter table {}_obj_transform rename {}_obj_transform".format(oldName, newName))
+    wrapper.execute(
+        "alter table {}_materials rename {}_materials".format(oldName, newName)
+    )
+    wrapper.execute(
+        "alter table {}_vertices rename {}_vertices".format(oldName, newName)
+    )
+    wrapper.execute(
+        "alter table {}_textures rename {}_textures".format(oldName, newName)
+    )
+    wrapper.execute(
+        "alter table {}_mesh_transform rename {}_mesh_transform".format(
+            oldName, newName
+        )
+    )
+    wrapper.execute(
+        "alter table {}_obj_transform rename {}_obj_transform".format(oldName, newName)
+    )
 
     if sm.currentScene.name == oldName and sm.currentScene.saved:
         sm.currentScene.name = newName
+
 
 def rename(selfIndex, scene, name, nameConflict):
     wrapper = sm.currentScene.sqlWrapper
@@ -49,9 +64,7 @@ def rename(selfIndex, scene, name, nameConflict):
 
     if done:
         try:
-            wrapper.execute(
-                "insert into scenes values('{}')".format(name)
-            )
+            wrapper.execute("insert into scenes values('{}')".format(name))
         except mysql.connector.errors.IntegrityError:
             if name == scene:
                 return True
@@ -70,7 +83,6 @@ def rename(selfIndex, scene, name, nameConflict):
     wrapper.execute("commit")
     # sm.currentScene.saved = True
     return done
-
 
 
 def manage(selfIndex):
@@ -98,14 +110,14 @@ def manage(selfIndex):
                 False,
             )
             return False
-        
+
         imgui.same_line()
 
         if imgui.button("Delete##" + i[0]):
             delete(i[0])
             imgui.end()
             return False
-        
+
         imgui.separator()
 
     if imgui.button("Done"):
@@ -113,8 +125,3 @@ def manage(selfIndex):
         return True
 
     imgui.end()
-
-
-
-
-

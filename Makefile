@@ -3,7 +3,7 @@ HOST:=localhost
 PASSWORD:=1234
 
 run:
-	mysql -h $(HOST) -u $(USER) -p < ./sqlSetup.sql
+	@python -OO src/sqlSetup.py
 	@python -OO src/main.py
 
 pyinst:

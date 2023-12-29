@@ -57,7 +57,6 @@ def addSaveAsJob(nameConflict):
 def saveScene():
     wrapper = sm.currentScene.sqlWrapper
 
-
     if not sm.currentScene.saved:
         if sm.currentScene.name == "":
             addSaveAsJob(False)

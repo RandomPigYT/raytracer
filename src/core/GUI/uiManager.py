@@ -90,7 +90,7 @@ class UIManager:
             isActive,
             isDefaultJob,
             deleteFunc,
-            deleteArgs
+            deleteArgs,
         )
         self.jobs.append(temp)
         return self.globalJobID - 1
