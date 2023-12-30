@@ -1,8 +1,6 @@
-USER:=root
-HOST:=localhost
-PASSWORD:=1234
 
 .PHONY: run, sqlSetup, pyinst, frmt, fmtWin, v, clean
+
 run: sqlSetup
 	@python -OO src/main.py
 
