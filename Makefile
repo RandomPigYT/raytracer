@@ -2,9 +2,13 @@ USER:=root
 HOST:=localhost
 PASSWORD:=1234
 
-run:
-	@python -OO src/sqlSetup.py
+.PHONY: run, sqlSetup, pyinst, frmt, fmtWin, v, clean
+run: sqlSetup
 	@python -OO src/main.py
+
+sqlSetup:
+	@python -OO src/sqlSetup.py
+
 
 pyinst:
 	@pyi-makespec.exe .\src\main.py --paths ./c_extension/lib --paths C:\Users\HP\AppData\Local\Programs\Python\Python310\Lib\site-packages\glfw --onefile

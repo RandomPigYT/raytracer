@@ -1,13 +1,17 @@
 import os
+import sys
 
 
 def readLoginFromFile(handle):
     lines = handle.readlines()
     print("Hostname:", lines[0][:-1])
     print("User:", lines[1][:-1])
-    os.system(
+    res = os.system(
         "mysql -h {} -u {} -p < ./sqlSetup.sql".format(lines[0][:-1], lines[1][:-1])
     )
+    sys.exit(res)
+    
+
 
 
 try:
@@ -21,6 +25,8 @@ except FileNotFoundError:
     host = input("Hostname: ")
     user = input("User: ")
 
-    os.system("mysql -h {} -u {} -p < ./sqlSetup.sql".format(host, user))
+    res = os.system("mysql -h {} -u {} -p < ./sqlSetup.sql".format(host, user))
     loginText.writelines([host + "\n", user + "\n"])
     loginText.close()
+
+    sys.exit(res)
