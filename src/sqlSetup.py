@@ -10,8 +10,6 @@ def readLoginFromFile(handle):
         "mysql -h {} -u {} -p < ./sqlSetup.sql".format(lines[0][:-1], lines[1][:-1])
     )
     sys.exit(res)
-    
-
 
 
 try:
