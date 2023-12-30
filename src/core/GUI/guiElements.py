@@ -140,9 +140,11 @@ def elements(window):
             sm.currentScene.sceneRenderer.updateBvh()
             sm.currentScene.sendBvhs()
         sm.currentScene.sceneRenderer.mode ^= 1
-    
+
     imgui.same_line()
-    imgui.text("Ray Tracing" if sm.currentScene.sceneRenderer.mode == 0 else "Rasterizing")
+    imgui.text(
+        "Ray Tracing" if sm.currentScene.sceneRenderer.mode == 0 else "Rasterizing"
+    )
 
     if imgui.button("Refresh Scene"):
         sm.currentScene.allocateSSBO()

@@ -192,7 +192,6 @@ def save():
     query = "insert into {0}_vertices values({1})"
     [wrapper.execute(query.format(sceneName, i)) for i in valuesList]
 
-
     # Materials
     for i, mat in enumerate(sm.currentScene.sceneRenderer.materials):
         valueStr = ("{},'{}'," + "{}," * 18)[:-1].format(

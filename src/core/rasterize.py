@@ -16,7 +16,6 @@ def clampVec3(x, l, u):
     x[2] = max(x[2], l)
 
     return x
-    
 
 
 def toneMap(x):
@@ -27,7 +26,10 @@ def toneMap(x):
     d = 0.59
     e = 0.14
 
-    return glm.vec4(*clampVec3((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0), 1.0)
+    return glm.vec4(
+        *clampVec3((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0), 1.0
+    )
+
 
 def gammaCorrect(x, gamma):
     invGamma = 1 / gamma

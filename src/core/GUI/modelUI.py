@@ -20,7 +20,9 @@ def createMaterial(selfIndex, name):
         # if name in sm.currentScene.sceneRenderer.matNames:
         #     name += "(" + str(sm.currentScene.sceneRenderer.matNames.count(name)) + ")"
 
-        sm.currentScene.sceneRenderer.matNames.append(name + '_' + str(len(sm.currentScene.sceneRenderer.matNames)))
+        sm.currentScene.sceneRenderer.matNames.append(
+            name + "_" + str(len(sm.currentScene.sceneRenderer.matNames))
+        )
 
         newMatIndex = len(sm.currentScene.sceneRenderer.materials)
         sm.currentScene.sceneRenderer.materials = util.realloc(

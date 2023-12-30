@@ -194,7 +194,9 @@ def loadModel(self, filename):
         #     tempName = (
         #         tempName + "(" + str(self.sceneRenderer.matNames.count(tempName)) + ")"
         #     )
-        self.sceneRenderer.matNames.append(materials[i].name + "_" + str(oldMaterialLen + i - 1))
+        self.sceneRenderer.matNames.append(
+            materials[i].name + "_" + str(oldMaterialLen + i - 1)
+        )
         self.sceneRenderer.materials[oldMaterialLen + i].albedo = (4 * ct.c_float)(
             *materials[i].diffuse, 0.0
         )
