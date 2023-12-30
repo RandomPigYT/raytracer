@@ -12,8 +12,6 @@ uniform mat4 view;
 #define NEAR 0.1f
 #define SCREEN_ORIGIN vec2(0, 0)
 
-// layout(pixel_center_integer) in vec4 gl_FragCoord;
-
 vec3 toneMap(vec3 x){
 	float a = 2.51f;
 	float b = 0.03f;
@@ -46,8 +44,6 @@ void main(){
 
     vec3 fragDir = normalize(relativePos.xyz);
 
-
-    // float multiplier = dot(vec3(0.0f, 0.0f, -1.0f), -normalCoords.xyz);
     float multiplier = dot(-fragDir.xyz, -normalCoords.xyz);
     
     fragColour = vec4(baseColour * abs(multiplier), 1.0f);

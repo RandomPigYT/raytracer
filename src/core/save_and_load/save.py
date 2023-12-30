@@ -172,13 +172,26 @@ def save():
         )
 
     # Vertices
-    for i, v in enumerate(sm.currentScene.sceneRenderer.vertices):
-        valueStr = "{}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+    # for i, v in enumerate(sm.currentScene.sceneRenderer.vertices):
+    #     valueStr = "{}, {}, {}, {}, {}, {}, {}, {}, {}".format(
+    #         i, *v.position[:-1], *v.normal[:-1], *v.textureCoord
+    #     )
+    #     wrapper.execute(
+    #         "insert into {0}_vertices values({1})".format(sceneName, valueStr)
+    #     )
+
+    # Vertices
+    vertices = sm.currentScene.sceneRenderer.vertices
+    valuesList = [
+        "{}, {}, {}, {}, {}, {}, {}, {}, {}".format(
             i, *v.position[:-1], *v.normal[:-1], *v.textureCoord
         )
-        wrapper.execute(
-            "insert into {0}_vertices values({1})".format(sceneName, valueStr)
-        )
+        for i, v in enumerate(vertices)
+    ]
+
+    query = "insert into {0}_vertices values({1})"
+    [wrapper.execute(query.format(sceneName, i)) for i in valuesList]
+
 
     # Materials
     for i, mat in enumerate(sm.currentScene.sceneRenderer.materials):

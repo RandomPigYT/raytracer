@@ -21,5 +21,4 @@ void main(){
 
 
     normalCoords = normalize(view * rotate * normal);
-    // normalCoords = normalize(rotate * normal);
 }

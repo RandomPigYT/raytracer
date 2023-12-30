@@ -6,7 +6,6 @@ import c_extension as cext
 import core.renderer as renderer
 import OpenGL.GL as gl
 import glm
-import time
 import os
 import pathlib
 from PIL import Image
@@ -336,7 +335,8 @@ def loadModel(self, filename):
         vertOffset += len(temp)
 
     self.sceneRenderer.generateNormals(oldLen)
-    self.sceneRenderer.updateBvh()
+    if self.sceneRenderer.mode == 0:
+        self.sceneRenderer.updateBvh()
     self.sceneRenderer.getVertMeshRelation(oldLen)
 
     self.sceneRenderer.updateBuffers(oldMeshLen)

@@ -11,7 +11,7 @@ class SQLWrapper:
         self.database = database
 
         self.connection = con.connect(
-            host=self.host, user=self.user, passwd=self.passwd, database=self.database
+            host=self.host, user=self.user, passwd=self.passwd, database=self.database, connection_timeout=99999
         )
 
         if not self.connection.is_connected():
