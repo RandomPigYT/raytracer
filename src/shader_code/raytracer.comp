@@ -538,11 +538,13 @@ vec4 trace(vec3 rayDir, vec4 bgColour, inout uint seed){
 
     mat.emission = clamp(mat.emission, 0.0f, 1.0f / 0.0f);
 
-    mat4 rotate = meshes[meshIndex].transform;
-    rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    rotate /= determinant(rotate);
+    if (mat.normalMapID != -1){
+      mat4 rotate = meshes[meshIndex].transform;
+      rotate[3] = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+      rotate /= determinant(rotate);
 
-    hit.normal = normalize((rotate * vec4(hit.normal, 1.0f)).xyz);
+      hit.normal = normalize((rotate * vec4(hit.normal, 1.0f)).xyz);
+    }
     
     // Perfectly vertical normals don't work properly, so this is needed to offset it by a tiny amount
     hit.normal += 0.000000001;
