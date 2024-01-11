@@ -476,12 +476,6 @@ struct bvh_t* constructBvh(uint32_t* numBvh, struct vertex_t* verts,
 
   free(centroids);
 
-  // system("clear");
-  // for (int i = 0; i < vector_size(bvhInfo); i++){
-  //	printf("%d.\t%ld %ld %ld %ld\n", i, bvhInfo[i].left, bvhInfo[i].right,
-  //bvhInfo[i].parent, vector_size(bvhInfo[i].triangles));
-  // }
-
   cleanBvhInfo(bvhInfo);
   vector_free(bvhInfo);
 
